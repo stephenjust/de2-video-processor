@@ -1,10 +1,17 @@
 # Generated files
+.*/
 db/
 incremental_db/
 simulation/
+synthesis/
 output_files/
 *.jdi
 *.qws
+*.html
+*.rpt
+*.bsf
+*.cmp
+*.sopcinfo
 
 # Temporary files
 *.bak
