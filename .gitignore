@@ -1,0 +1,16 @@
+# Generated files
+db/
+incremental_db/
+simulation/
+output_files/
+*.jdi
+*.qws
+
+# Temporary files
+*.bak
+*.flock
+*~
+\#*\#
+
+# Scripts to use in the lab at school
+scripts/
