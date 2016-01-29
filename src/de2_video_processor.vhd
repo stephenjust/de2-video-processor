@@ -51,6 +51,78 @@ entity de2_video_processor is
 end de2_video_processor;
 
 architecture structure of de2_video_processor is
+	component de2_video_processor_system is
+	port (
+		clk_clk                                         : in    std_logic                     := 'X';             -- clk
+		reset_reset_n                                   : in    std_logic                     := 'X';             -- reset_n
+		altpll_0_c0_clk                                 : out   std_logic;                                        -- clk
+		sdram_0_wire_addr                               : out   std_logic_vector(11 downto 0);                    -- addr
+		sdram_0_wire_ba                                 : out   std_logic_vector(1 downto 0);                     -- ba
+		sdram_0_wire_cas_n                              : out   std_logic;                                        -- cas_n
+		sdram_0_wire_cke                                : out   std_logic;                                        -- cke
+		sdram_0_wire_cs_n                               : out   std_logic;                                        -- cs_n
+		sdram_0_wire_dq                                 : inout std_logic_vector(15 downto 0) := (others => 'X'); -- dq
+		sdram_0_wire_dqm                                : out   std_logic_vector(1 downto 0);                     -- dqm
+		sdram_0_wire_ras_n                              : out   std_logic;                                        -- ras_n
+		sdram_0_wire_we_n                               : out   std_logic;                                        -- we_n
+		sram_0_external_interface_DQ                    : inout std_logic_vector(15 downto 0) := (others => 'X'); -- DQ
+		sram_0_external_interface_ADDR                  : out   std_logic_vector(17 downto 0);                    -- ADDR
+		sram_0_external_interface_LB_N                  : out   std_logic;                                        -- LB_N
+		sram_0_external_interface_UB_N                  : out   std_logic;                                        -- UB_N
+		sram_0_external_interface_CE_N                  : out   std_logic;                                        -- CE_N
+		sram_0_external_interface_OE_N                  : out   std_logic;                                        -- OE_N
+		sram_0_external_interface_WE_N                  : out   std_logic;                                        -- WE_N
+		video_vga_controller_0_external_interface_CLK   : out   std_logic;                                        -- CLK
+		video_vga_controller_0_external_interface_HS    : out   std_logic;                                        -- HS
+		video_vga_controller_0_external_interface_VS    : out   std_logic;                                        -- VS
+		video_vga_controller_0_external_interface_BLANK : out   std_logic;                                        -- BLANK
+		video_vga_controller_0_external_interface_SYNC  : out   std_logic;                                        -- SYNC
+		video_vga_controller_0_external_interface_R     : out   std_logic_vector(9 downto 0);                     -- R
+		video_vga_controller_0_external_interface_G     : out   std_logic_vector(9 downto 0);                     -- G
+		video_vga_controller_0_external_interface_B     : out   std_logic_vector(9 downto 0)                      -- B
+	);
+	end component de2_video_processor_system;
+
+	-- Signals to interface with DRAM
+	signal BA	: std_logic_vector (1 downto 0);
+	signal DQM	:	std_logic_vector (1 downto 0);
+	
 begin
+	DRAM_BA_1 <= BA(1);
+	DRAM_BA_0 <= BA(0);
+	
+	DRAM_UDQM <= DQM(1);
+	DRAM_LDQM <= DQM(0);
+
+	u0 : component de2_video_processor_system
+		port map (
+		clk_clk                                         => CLOCK_50,              --                                       clk.clk
+		reset_reset_n                                   => KEY(0),                --                                     reset.reset_n
+		altpll_0_c0_clk                                 => DRAM_CLK,      
+		sdram_0_wire_addr                               => DRAM_ADDR,             --                              sdram_0_wire.addr
+		sdram_0_wire_ba                                 => BA,                    --                                          .ba
+		sdram_0_wire_cas_n                              => DRAM_CAS_N,            --                                          .cas_n
+		sdram_0_wire_cke                                => DRAM_CKE,              --                                          .cke
+		sdram_0_wire_cs_n                               => DRAM_CS_N,             --                                          .cs_n
+		sdram_0_wire_dq                                 => DRAM_DQ,               --                                          .dq
+		sdram_0_wire_dqm                                => DQM,                   --                                          .dqm
+		sdram_0_wire_ras_n                              => DRAM_RAS_N,            --                                          .ras_n
+		sdram_0_wire_we_n                               => DRAM_WE_N,             --                                          .we_n
+		sram_0_external_interface_DQ                    => SRAM_DQ,                    --                 sram_0_external_interface.DQ
+		sram_0_external_interface_ADDR                  => SRAM_ADDR,             --                                          .ADDR
+		sram_0_external_interface_LB_N                  => SRAM_LB_N,             --                                          .LB_N
+		sram_0_external_interface_UB_N                  => SRAM_UB_N,             --                                          .UB_N
+		sram_0_external_interface_CE_N                  => SRAM_CE_N,             --                                          .CE_N
+		sram_0_external_interface_OE_N                  => SRAM_OE_N,             --                                          .OE_N
+		sram_0_external_interface_WE_N                  => SRAM_WE_N,             --                                          .WE_N
+		video_vga_controller_0_external_interface_CLK   => VGA_CLK,   -- video_vga_controller_0_external_interface.CLK
+		video_vga_controller_0_external_interface_HS    => VGA_HS,    --                                          .HS
+		video_vga_controller_0_external_interface_VS    => VGA_VS,    --                                          .VS
+		video_vga_controller_0_external_interface_BLANK => VGA_BLANK, --                                          .BLANK
+		video_vga_controller_0_external_interface_SYNC  => VGA_SYNC,  --                                          .SYNC
+		video_vga_controller_0_external_interface_R     => VGA_R,     --                                          .R
+		video_vga_controller_0_external_interface_G     => VGA_G,     --                                          .G
+		video_vga_controller_0_external_interface_B     => VGA_B      --                                          .B
+	);
 
 end structure;
