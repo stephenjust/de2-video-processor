@@ -7,7 +7,7 @@ USE ieee.numeric_std.all;
 ENTITY video_fb_streamer IS 
 	GENERIC(
 		BUFFER_START_ADDRESS : std_logic_vector(31 downto 0) := (others => '0');
-		BITS_PER_PIXEL       : integer                       := 24;
+		BITS_PER_PIXEL       : integer                       := 8;
 		FRAME_WIDTH          : integer                       := 640;
 		FRAME_HEIGHT         : integer                       := 480
 	);
@@ -38,9 +38,7 @@ END video_fb_streamer;
 
 ARCHITECTURE Behaviour OF video_fb_streamer IS
 	-- Internal Wires
-	SIGNAL red                       : std_logic_vector (7 downto 0);
-	SIGNAL green                     : std_logic_vector (7 downto 0);
-	SIGNAL blue                      : std_logic_vector (7 downto 0);
+	SIGNAL pixel                       : std_logic_vector (7 downto 0);
 
 	-- Internal Registers
 	SIGNAL x                         : std_logic_vector (9 downto 0);
@@ -81,15 +79,13 @@ BEGIN
 
 
 	-- Output Assignments
-	aso_source_data            <= (red & green & blue);
+	aso_source_data            <= pixel;
 	aso_source_startofpacket   <= '1' WHEN ((x = 0) AND (y = 0)) ELSE '0';
 	aso_source_endofpacket     <= '1' WHEN ((x = (FRAME_WIDTH - 1)) AND (y = (FRAME_HEIGHT - 1))) ELSE '0';
 	aso_source_valid           <= '1';
 
 	-- Internal Assignments
-	red             <= (others => '1');
-	green           <= (others => '0');
-	blue            <= (others => '0');
+	pixel        <= x"AA";
 
 
 END Behaviour;

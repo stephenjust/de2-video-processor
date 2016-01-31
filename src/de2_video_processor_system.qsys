@@ -89,19 +89,19 @@
          type = "String";
       }
    }
-   element sdram_0.s1
-   {
-      datum baseAddress
-      {
-         value = "8388608";
-         type = "String";
-      }
-   }
    element onchip_memory2_0.s1
    {
       datum baseAddress
       {
          value = "17842176";
+         type = "String";
+      }
+   }
+   element sdram_0.s1
+   {
+      datum baseAddress
+      {
+         value = "8388608";
          type = "String";
       }
    }
@@ -189,7 +189,7 @@
  <parameter name="projectName" value="" />
  <parameter name="sopcBorderPoints" value="false" />
  <parameter name="systemHash" value="1" />
- <parameter name="timeStamp" value="1454205555675" />
+ <parameter name="timeStamp" value="1454260942552" />
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
  <interface name="clk" internal="clk_0.clk_in" type="clock" dir="end" />
@@ -614,7 +614,7 @@
    version="12.0"
    enabled="1"
    name="video_rgb_resampler_0">
-  <parameter name="input_type" value="24-bit RGB" />
+  <parameter name="input_type" value="8-bit RGB" />
   <parameter name="output_type" value="30-bit RGB" />
   <parameter name="alpha" value="1023" />
   <parameter name="AUTO_CLOCK_RESET_CLOCK_RATE" value="26000000" />
@@ -626,9 +626,10 @@
    enabled="1"
    name="video_fb_streamer_0">
   <parameter name="BUFFER_START_ADDRESS" value="17301504" />
-  <parameter name="BITS_PER_PIXEL" value="24" />
+  <parameter name="BITS_PER_PIXEL" value="8" />
   <parameter name="FRAME_WIDTH" value="640" />
   <parameter name="FRAME_HEIGHT" value="480" />
+  <parameter name="AUTO_CLOCK_SINK_CLOCK_RATE" value="26000000" />
  </module>
  <connection
    kind="avalon"
