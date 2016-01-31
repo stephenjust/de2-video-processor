@@ -37,13 +37,16 @@ ENTITY video_fb_streamer IS
 		avm_dma0_write           : out   std_logic;
 		avm_dma0_readdatavalid	 : in    std_logic;
 		avm_dma0_waitrequest     : in    std_logic;
-		avm_dma0_address         : out   std_logic_vector(31 downto 0);	
+		avm_dma0_address         : buffer std_logic_vector(31 downto 0);	
 		avm_dma0_burstcount      : out   std_logic_vector(7 downto 0)
 	);
 
 END video_fb_streamer;
 
 ARCHITECTURE Behaviour OF video_fb_streamer IS
+	-- Type definitions
+	TYPE state IS (INIT, INIT_SRAM, SRAM_TO_FIFO, IDLE);
+
 	-- Internal Wires
 	SIGNAL pixel                       : std_logic_vector (7 downto 0);
 
@@ -59,8 +62,74 @@ ARCHITECTURE Behaviour OF video_fb_streamer IS
 	SIGNAL fifo_output_data          : std_logic_vector (7 downto 0);
 	SIGNAL fifo_output_valid         : std_logic;
 	SIGNAL fifo_read_next            : std_logic;
+	
+	SIGNAL current_state             : state := INIT;
+	SIGNAL next_state                : state;
+
+	SIGNAL sram_written              : integer := 0;
 BEGIN
 
+	PROCESS (clk)
+	BEGIN
+		IF rising_edge(clk) THEN
+			IF reset = '1' THEN
+				current_state <= INIT;
+			ELSE
+				current_state <= next_state;
+			END IF;
+		END IF;
+	END PROCESS;
+
+	PROCESS (current_state, sram_written)
+	BEGIN
+		CASE current_state IS
+			WHEN INIT =>
+				avm_dma0_address <= BUFFER_START_ADDRESS;
+				avm_dma0_burstcount <= std_logic_vector(to_unsigned(32, avm_dma0_burstcount'length));
+				avm_dma0_write <= '1';
+				avm_dma0_writedata <= x"33CC";
+				next_state <= INIT_SRAM;
+			WHEN INIT_SRAM =>
+				IF (sram_written >= 32) THEN
+					avm_dma0_address <= avm_dma0_address + '1';
+					avm_dma0_write <= '0';
+					next_state <= SRAM_TO_FIFO;
+				ELSE
+					next_state <= INIT_SRAM;
+				END IF;
+			WHEN SRAM_TO_FIFO =>
+				avm_dma0_address <= BUFFER_START_ADDRESS;
+				avm_dma0_burstcount <= std_logic_vector(to_unsigned(1, avm_dma0_burstcount'length));
+				avm_dma0_read <= '1';
+				next_state <= SRAM_TO_FIFO;
+			WHEN IDLE =>
+				next_state <= IDLE;
+			WHEN OTHERS =>
+				next_state <= INIT;
+		END CASE;
+	END PROCESS;
+
+	PROCESS (clk)
+	BEGIN
+		IF rising_edge(clk) THEN
+			IF (current_state = INIT_SRAM and avm_dma0_waitrequest = '0') THEN
+				sram_written <= sram_written + 1;
+			END IF;
+		END IF;
+	END PROCESS;
+
+	PROCESS (clk, avm_dma0_readdatavalid)
+	BEGIN
+		IF (current_state = SRAM_TO_FIFO) THEN
+			IF (avm_dma0_readdatavalid = '1') THEN
+				fifo_input_data <= avm_dma0_readdata;
+				fifo_write_next <= '1';
+			ELSE
+				fifo_write_next <= '0';
+			END IF;
+		END IF;
+	END PROCESS;
+	
 	-- Internal Registers
 	PROCESS (pix_clk)
 	BEGIN
@@ -106,8 +175,6 @@ BEGIN
 
 	-- Internal Assignments
 	pixel        <= fifo_output_data;
-	fifo_input_data <= x"00FF";
-	fifo_write_next <= not fifo_write_full;
 
 	-- Instantiate Components
 	f0 : dcfifo_mixed_widths
