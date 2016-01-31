@@ -14,6 +14,7 @@ ENTITY video_fb_streamer IS
 
 	PORT (
 		clk                      : in    std_logic;
+		pix_clk                  : in    std_logic;
 		reset                    : in    std_logic;
 
 		coe_swap_frame           : in    std_logic;
@@ -46,9 +47,9 @@ ARCHITECTURE Behaviour OF video_fb_streamer IS
 BEGIN
 
 	-- Internal Registers
-	PROCESS (clk)
+	PROCESS (pix_clk)
 	BEGIN
-		IF clk'EVENT AND clk = '1' THEN
+		IF rising_edge(pix_clk) THEN
 			IF (reset = '1') THEN
 				x <= (OTHERS => '0');
 			ELSIF (aso_source_ready = '1') THEN
@@ -62,9 +63,9 @@ BEGIN
 	END PROCESS;
 
 
-	PROCESS (clk)
+	PROCESS (pix_clk)
 	BEGIN
-		IF clk'EVENT AND clk = '1' THEN
+		IF rising_edge(pix_clk) THEN
 			IF (reset = '1') THEN
 				y <= (OTHERS => '0');
 			ELSIF ((aso_source_ready = '1') AND (x = (FRAME_WIDTH - 1))) THEN
