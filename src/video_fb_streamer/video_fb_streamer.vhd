@@ -32,11 +32,13 @@ ENTITY video_fb_streamer IS
 
 		-- DMA Master
 		avm_dma0_readdata        : in    std_logic_vector(15 downto 0);
+		avm_dma0_read            : out   std_logic;
+		avm_dma0_writedata       : out   std_logic_vector(15 downto 0);
+		avm_dma0_write           : out   std_logic;
 		avm_dma0_readdatavalid	 : in    std_logic;
 		avm_dma0_waitrequest     : in    std_logic;
 		avm_dma0_address         : out   std_logic_vector(31 downto 0);	
-		avm_dma0_burstcount      : out   std_logic_vector(7 downto 0) := x"01";
-		avm_dma0_read            : out   std_logic
+		avm_dma0_burstcount      : out   std_logic_vector(7 downto 0)
 	);
 
 END video_fb_streamer;

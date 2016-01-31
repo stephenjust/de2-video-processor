@@ -89,11 +89,11 @@
          type = "String";
       }
    }
-   element timer_0.s1
+   element onchip_memory2_0.s1
    {
       datum baseAddress
       {
-         value = "17862656";
+         value = "17842176";
          type = "String";
       }
    }
@@ -105,11 +105,11 @@
          type = "String";
       }
    }
-   element onchip_memory2_0.s1
+   element timer_0.s1
    {
       datum baseAddress
       {
-         value = "17842176";
+         value = "17862656";
          type = "String";
       }
    }
@@ -189,7 +189,7 @@
  <parameter name="projectName" value="" />
  <parameter name="sopcBorderPoints" value="false" />
  <parameter name="systemHash" value="1" />
- <parameter name="timeStamp" value="1454265467848" />
+ <parameter name="timeStamp" value="1454268429833" />
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
  <interface name="clk" internal="clk_0.clk_in" type="clock" dir="end" />
@@ -629,8 +629,6 @@
   <parameter name="BITS_PER_PIXEL" value="8" />
   <parameter name="FRAME_WIDTH" value="640" />
   <parameter name="FRAME_HEIGHT" value="480" />
-  <parameter name="AUTO_CLK_CLOCK_RATE" value="50000000" />
-  <parameter name="AUTO_PIX_CLK_CLOCK_RATE" value="26000000" />
  </module>
  <connection
    kind="avalon"
@@ -886,9 +884,14 @@
    start="video_rgb_resampler_0.avalon_rgb_source"
    end="video_vga_controller_0.avalon_vga_sink" />
  <connection
+   kind="avalon_streaming"
+   version="12.1"
+   start="video_fb_streamer_0.source"
+   end="video_rgb_resampler_0.avalon_rgb_sink" />
+ <connection
    kind="avalon"
    version="12.1"
-   start="video_fb_streamer_0.avalon_master"
+   start="video_fb_streamer_0.dma0"
    end="sram_0.avalon_sram_slave">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x01080000" />
@@ -896,11 +899,16 @@
  <connection
    kind="avalon"
    version="12.1"
-   start="video_fb_streamer_0.avalon_master"
+   start="video_fb_streamer_0.dma0"
    end="sdram_0.s1">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x00800000" />
  </connection>
+ <connection
+   kind="reset"
+   version="12.1"
+   start="nios2_qsys_0.jtag_debug_module_reset"
+   end="video_fb_streamer_0.reset" />
  <connection
    kind="clock"
    version="12.1"
@@ -911,19 +919,4 @@
    version="12.1"
    start="altpll_0.c1"
    end="video_fb_streamer_0.clk" />
- <connection
-   kind="reset"
-   version="12.1"
-   start="clk_0.clk_reset"
-   end="video_fb_streamer_0.reset" />
- <connection
-   kind="reset"
-   version="12.1"
-   start="nios2_qsys_0.jtag_debug_module_reset"
-   end="video_fb_streamer_0.reset" />
- <connection
-   kind="avalon_streaming"
-   version="12.1"
-   start="video_fb_streamer_0.source"
-   end="video_rgb_resampler_0.avalon_rgb_sink" />
 </system>
