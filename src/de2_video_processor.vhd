@@ -79,7 +79,8 @@ architecture structure of de2_video_processor is
 		video_vga_controller_0_external_interface_SYNC  : out   std_logic;                                        -- SYNC
 		video_vga_controller_0_external_interface_R     : out   std_logic_vector(9 downto 0);                     -- R
 		video_vga_controller_0_external_interface_G     : out   std_logic_vector(9 downto 0);                     -- G
-		video_vga_controller_0_external_interface_B     : out   std_logic_vector(9 downto 0)                      -- B
+		video_vga_controller_0_external_interface_B     : out   std_logic_vector(9 downto 0);                     -- B
+		video_fb_streamer_0_conduit_end_0_export        : in    std_logic                     := 'X'
 	);
 	end component de2_video_processor_system;
 
@@ -122,7 +123,8 @@ begin
 		video_vga_controller_0_external_interface_SYNC  => VGA_SYNC,  --                                          .SYNC
 		video_vga_controller_0_external_interface_R     => VGA_R,     --                                          .R
 		video_vga_controller_0_external_interface_G     => VGA_G,     --                                          .G
-		video_vga_controller_0_external_interface_B     => VGA_B      --                                          .B
+		video_vga_controller_0_external_interface_B     => VGA_B,     --                                          .B
+		video_fb_streamer_0_conduit_end_0_export        => KEY(1)     --         video_fb_streamer_0_conduit_end_0.export
 	);
 
 end structure;

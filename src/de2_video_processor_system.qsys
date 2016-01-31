@@ -30,6 +30,11 @@
    }
    element sram_0.avalon_sram_slave
    {
+      datum _lockedAddress
+      {
+         value = "1";
+         type = "boolean";
+      }
       datum baseAddress
       {
          value = "17301504";
@@ -133,7 +138,7 @@
    {
       datum _sortIndex
       {
-         value = "8";
+         value = "11";
          type = "int";
       }
    }
@@ -145,15 +150,15 @@
          type = "int";
       }
    }
-   element video_rgb_resampler_0
+   element video_fb_streamer_0
    {
       datum _sortIndex
       {
-         value = "10";
+         value = "8";
          type = "int";
       }
    }
-   element video_test_pattern_0
+   element video_rgb_resampler_0
    {
       datum _sortIndex
       {
@@ -165,7 +170,7 @@
    {
       datum _sortIndex
       {
-         value = "11";
+         value = "10";
          type = "int";
       }
    }
@@ -184,7 +189,7 @@
  <parameter name="projectName" value="" />
  <parameter name="sopcBorderPoints" value="false" />
  <parameter name="systemHash" value="1" />
- <parameter name="timeStamp" value="1454196475861" />
+ <parameter name="timeStamp" value="1454205555675" />
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
  <interface name="clk" internal="clk_0.clk_in" type="clock" dir="end" />
@@ -199,6 +204,11 @@
  <interface
    name="video_vga_controller_0_external_interface"
    internal="video_vga_controller_0.external_interface"
+   type="conduit"
+   dir="end" />
+ <interface
+   name="video_fb_streamer_0_conduit_end_0"
+   internal="video_fb_streamer_0.conduit_end_0"
    type="conduit"
    dir="end" />
  <module kind="clock_source" version="12.1" enabled="1" name="clk_0">
@@ -611,14 +621,14 @@
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone II" />
  </module>
  <module
-   kind="altera_up_avalon_video_test_pattern"
-   version="12.0"
+   kind="video_fb_streamer"
+   version="1.0"
    enabled="1"
-   name="video_test_pattern_0">
-  <parameter name="width" value="640" />
-  <parameter name="height" value="480" />
-  <parameter name="AUTO_CLOCK_RESET_CLOCK_RATE" value="26000000" />
-  <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone II" />
+   name="video_fb_streamer_0">
+  <parameter name="BUFFER_START_ADDRESS" value="17301504" />
+  <parameter name="BITS_PER_PIXEL" value="24" />
+  <parameter name="FRAME_WIDTH" value="640" />
+  <parameter name="FRAME_HEIGHT" value="480" />
  </module>
  <connection
    kind="avalon"
@@ -859,31 +869,6 @@
    start="clk_0.clk_reset"
    end="video_rgb_resampler_0.clock_reset_reset" />
  <connection
-   kind="reset"
-   version="12.1"
-   start="clk_0.clk_reset"
-   end="video_test_pattern_0.clock_reset_reset" />
- <connection
-   kind="reset"
-   version="12.1"
-   start="nios2_qsys_0.jtag_debug_module_reset"
-   end="video_test_pattern_0.clock_reset_reset" />
- <connection
-   kind="avalon_streaming"
-   version="12.1"
-   start="video_test_pattern_0.avalon_generator_source"
-   end="video_rgb_resampler_0.avalon_rgb_sink" />
- <connection
-   kind="avalon_streaming"
-   version="12.1"
-   start="video_rgb_resampler_0.avalon_rgb_source"
-   end="video_vga_controller_0.avalon_vga_sink" />
- <connection
-   kind="clock"
-   version="12.1"
-   start="altpll_0.c2"
-   end="video_test_pattern_0.clock_reset" />
- <connection
    kind="clock"
    version="12.1"
    start="altpll_0.c2"
@@ -893,4 +878,45 @@
    version="12.1"
    start="altpll_0.c2"
    end="video_vga_controller_0.clock_reset" />
+ <connection
+   kind="avalon_streaming"
+   version="12.1"
+   start="video_rgb_resampler_0.avalon_rgb_source"
+   end="video_vga_controller_0.avalon_vga_sink" />
+ <connection
+   kind="avalon_streaming"
+   version="12.1"
+   start="video_fb_streamer_0.source"
+   end="video_rgb_resampler_0.avalon_rgb_sink" />
+ <connection
+   kind="reset"
+   version="12.1"
+   start="nios2_qsys_0.jtag_debug_module_reset"
+   end="video_fb_streamer_0.reset_sink" />
+ <connection
+   kind="reset"
+   version="12.1"
+   start="clk_0.clk_reset"
+   end="video_fb_streamer_0.reset_sink" />
+ <connection
+   kind="clock"
+   version="12.1"
+   start="altpll_0.c2"
+   end="video_fb_streamer_0.clock_sink" />
+ <connection
+   kind="avalon"
+   version="12.1"
+   start="video_fb_streamer_0.avalon_master"
+   end="sram_0.avalon_sram_slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x01080000" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="12.1"
+   start="video_fb_streamer_0.avalon_master"
+   end="sdram_0.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00800000" />
+ </connection>
 </system>
