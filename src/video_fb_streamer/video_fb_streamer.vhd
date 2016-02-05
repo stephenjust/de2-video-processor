@@ -47,8 +47,29 @@ ARCHITECTURE Behaviour OF video_fb_streamer IS
 	-- Type definitions
 	TYPE state IS (INIT, INIT_SRAM, SRAM_TO_FIFO, IDLE);
 
-	-- Internal Wires
-	SIGNAL pixel                       : std_logic_vector (7 downto 0);
+	-- Component definitions
+	COMPONENT video_fb_fifo IS 
+		PORT (
+			in_clk                   : in    std_logic;
+			out_clk                  : in    std_logic;
+			reset                    : in    std_logic;
+
+			in_startofpacket         : in    std_logic;
+			in_endofpacket           : in    std_logic;
+			in_pixdata               : in    std_logic_vector (15 downto 0);
+
+			out_startofpacket        : out   std_logic;
+			out_endofpacket          : out   std_logic;
+			out_pixdata              : out   std_logic_vector (7 downto 0);
+
+			in_req                   : in    std_logic;
+			out_req                  : in    std_logic;
+
+			full                     : out   std_logic;
+			empty                    : out   std_logic;
+			almost_empty             : out   std_logic
+		);
+	END COMPONENT video_fb_fifo;
 
 	-- Internal Registers
 	SIGNAL x                         : std_logic_vector (9 downto 0);
@@ -56,7 +77,6 @@ ARCHITECTURE Behaviour OF video_fb_streamer IS
 
 	SIGNAL fifo_input_data           : std_logic_vector (15 downto 0);
 	SIGNAL fifo_write_next           : std_logic;
-	SIGNAL fifo_write_used           : std_logic_vector (6 downto 0);
 	SIGNAL fifo_write_full           : std_logic;
 
 	SIGNAL fifo_output_data          : std_logic_vector (7 downto 0);
@@ -168,40 +188,31 @@ BEGIN
 
 
 	-- Output Assignments
-	aso_source_data            <= pixel;
 	aso_source_startofpacket   <= '1' WHEN ((x = 0) AND (y = 0)) ELSE '0';
 	aso_source_endofpacket     <= '1' WHEN ((x = (FRAME_WIDTH - 1)) AND (y = (FRAME_HEIGHT - 1))) ELSE '0';
 	aso_source_valid           <= fifo_output_valid;
 
-	-- Internal Assignments
-	pixel        <= fifo_output_data;
-
 	-- Instantiate Components
-	f0 : dcfifo_mixed_widths
-	GENERIC MAP(
-		add_ram_output_register => "OFF",
-		lpm_numwords            => 128,
-		lpm_showahead           => "ON",
-		lpm_type                => "dcfifo_mixed_widths",
-		lpm_width               => 16,
-		lpm_width_r             => 8,
-		lpm_widthu_r				=> 8,
-		lpm_widthu              => 7,
-		overflow_checking       => "OFF",
-		underflow_checking      => "OFF",
-		use_eab                 => "ON"
-	)
+	f0 : video_fb_fifo
 	PORT MAP(
-		wrclk				=> clk,
-		wrreq				=> fifo_write_next,
-		wrusedw        => fifo_write_used,
-		wrfull         => fifo_write_full,
-		data				=> fifo_input_data,
+		in_clk            => clk,
+		out_clk           => pix_clk,
+		reset             => reset,
 
-		rdclk          => pix_clk,
-		rdreq				=> fifo_read_next,
-		rdempty        => fifo_output_valid,
-		q					=> fifo_output_data
+		in_startofpacket  => '0',
+		in_endofpacket    => '0',
+		in_pixdata        => fifo_input_data,
+
+		out_startofpacket => open,
+		out_endofpacket   => open,
+		out_pixdata       => aso_source_data,
+
+		in_req            => fifo_write_next,
+		out_req           => aso_source_ready,
+
+		full              => fifo_write_full,
+		empty             => fifo_output_valid,
+		almost_empty      => open
 	);
 
 END Behaviour;
