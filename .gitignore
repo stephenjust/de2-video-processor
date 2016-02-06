@@ -2,6 +2,7 @@
 .*/
 db/
 incremental_db/
+obj/
 simulation/
 synthesis/
 output_files/
@@ -12,12 +13,25 @@ output_files/
 *.bsf
 *.cmp
 *.sopcinfo
+*.elf
+*.map
+*.objdump
+*.a
 
 # Temporary files
 *.bak
 *.flock
 *~
 \#*\#
+
+# Rules for eclipse projects
+software/*/*
+!software/de2_video_processor*/.cproject
+!software/de2_video_processor*/.project
+!software/de2_video_processor*/Makefile
+!software/de2_video_processor/*.c
+!software/de2_video_processor/*.h
+!software/de2_video_processor_bsp/*.bsp
 
 # Scripts to use in the lab at school
 scripts/
