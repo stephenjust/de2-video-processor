@@ -51,8 +51,8 @@ ARCHITECTURE Behaviour OF video_fb_fifo IS
 	SIGNAL fifo_data_in    : std_logic_vector (PIXEL_BITS_IN+3 downto 0);
 	SIGNAL fifo_data_out   : std_logic_vector (PIXEL_BITS_IN+3 downto 0);
 	SIGNAL fifo_write_used : std_logic_vector (6 downto 0);
-	SIGNAL fifo_word       : std_logic := '1';
-	SIGNAL fifo_out_clk    : std_logic := '0';
+	SIGNAL fifo_read       : std_logic := '0';
+	SIGNAL fifo_word       : std_logic := '0';
 
 BEGIN
 
@@ -60,21 +60,27 @@ BEGIN
 	PROCESS (out_clk) IS
 	BEGIN
 		IF rising_edge(out_clk) THEN
-			IF out_req = '1' THEN
+			IF reset = '1' THEN
+				fifo_read <= '0';
+				fifo_word <= '0';
+			ELSIF out_req = '1' THEN
 				fifo_word <= NOT fifo_word;
+				fifo_read <= NOT fifo_word;
+			ELSE
+				fifo_read <= '0';
 			END IF;
-			fifo_out_clk <= NOT fifo_out_clk;
 		END IF;
 	END PROCESS;
 
 	-- Combinational logic
 	fifo_data_in <= ('0' & in_endofpacket & in_pixdata(15 downto 8) & in_startofpacket & '0' & in_pixdata(7 downto 0));
-	out_pixdata <= fifo_data_out(7 downto 0) WHEN fifo_word = '1' ELSE
-						fifo_data_out(17 downto 10) WHEN fifo_word = '0' ELSE
+	out_pixdata <= fifo_data_out(7 downto 0) WHEN fifo_read = '0' ELSE
+						fifo_data_out(17 downto 10) WHEN fifo_read = '1' ELSE
 						(others => '0');
-	out_startofpacket <= fifo_data_out(9) WHEN fifo_word = '1' ELSE '0';
-	out_endofpacket <= fifo_data_out(18) WHEN fifo_word = '0' ELSE '0';
+	out_startofpacket <= fifo_data_out(9) WHEN fifo_read = '0' ELSE '0';
+	out_endofpacket <= fifo_data_out(18) WHEN fifo_read = '1' ELSE '0';
 	almost_empty <= '1' WHEN (to_integer(unsigned(fifo_write_used)) < ALMOST_EMPTY_THRESHOLD) ELSE '0';
+	full <= '1' WHEN (to_integer(unsigned(fifo_write_used)) > 120) ELSE '0'; -- Indicate full a little bit early
 
 	-- Instantiate an altera-provided dual-clock FIFO
 	f0 : dcfifo
@@ -82,7 +88,7 @@ BEGIN
 		intended_device_family  => "Cyclone II",
 		add_ram_output_register => "OFF",
 		lpm_numwords            => 128,
-		lpm_showahead           => "ON",
+		lpm_showahead           => "OFF",
 		lpm_type                => "dcfifo",
 		lpm_width               => PIXEL_BITS_IN+4,
 		lpm_widthu              => 7,
@@ -94,11 +100,11 @@ BEGIN
 		wrclk				=> in_clk,
 		wrreq				=> in_req,
 		wrusedw        => fifo_write_used,
-		wrfull         => full,
+		wrfull         => open,
 		data				=> fifo_data_in,
 
-		rdclk          => fifo_out_clk,
-		rdreq				=> out_req,
+		rdclk          => out_clk,
+		rdreq				=> fifo_read,
 		rdempty        => empty,
 		q					=> fifo_data_out,
 
