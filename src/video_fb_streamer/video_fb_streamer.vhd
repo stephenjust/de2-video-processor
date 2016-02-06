@@ -140,6 +140,7 @@ ARCHITECTURE Behaviour OF video_fb_streamer IS
 
 	SIGNAL fifo_output_data          : std_logic_vector (7 downto 0);
 	SIGNAL fifo_output_empty         : std_logic;
+	SIGNAL fifo_almost_empty         : std_logic;
 	
 	SIGNAL current_state             : state := INIT;
 	SIGNAL next_state                : state;
@@ -147,30 +148,6 @@ ARCHITECTURE Behaviour OF video_fb_streamer IS
 	SIGNAL sram_written              : integer := 0;
 BEGIN
 
-	PROCESS (clk)
-	BEGIN
-		IF rising_edge(clk) THEN
-			IF (reset = '1') THEN
-				fifo_input_data <= (others => '0');
-				fifo_write_next <= '0';
-				pix <= 0;
-			ELSIF (fifo_write_full = '0') THEN
-				IF (pix = FRAME_ADDR_COUNT - 1) THEN
-					pix <= 0;
-				ELSE
-					pix <= pix + 1;
-				END IF;
-				fifo_input_data <= std_logic_vector(to_unsigned(pix, fifo_input_data'length));
-				fifo_write_next <= '1';
-			ELSE
-				fifo_input_data <= (others => '0');
-				fifo_write_next <= '0';
-			END IF;
-		END IF;
-	END PROCESS;
-
-	fifo_input_startofpacket   <= '1' WHEN pix = 0 ELSE '0';
-	fifo_input_endofpacket     <= '1' WHEN pix = FRAME_ADDR_COUNT - 1 ELSE '0';
 	aso_source_valid           <= not fifo_output_empty;
 
 	-- Instantiate Components
@@ -183,17 +160,56 @@ BEGIN
 		in_startofpacket  => fifo_input_startofpacket,
 		in_endofpacket    => fifo_input_endofpacket,
 		in_pixdata        => fifo_input_data,
+		in_req            => fifo_write_next,
 
 		out_startofpacket => aso_source_startofpacket,
 		out_endofpacket   => aso_source_endofpacket,
 		out_pixdata       => aso_source_data,
-
-		in_req            => fifo_write_next,
 		out_req           => aso_source_ready,
 
 		full              => fifo_write_full,
 		empty             => fifo_output_empty,
-		almost_empty      => open
+		almost_empty      => fifo_almost_empty
+	);
+
+	d0 : video_fb_dma_manager 
+	GENERIC MAP (
+		SRAM_BUF_START_ADDRESS   => SRAM_BUF_START_ADDRESS,
+		SDRAM_BUF_START_ADDRESS  => SDRAM_BUF_START_ADDRESS,
+		FRAME_WIDTH              => FRAME_WIDTH,
+		FRAME_HEIGHT             => FRAME_HEIGHT
+	)
+	PORT MAP (
+		clk                  => clk,
+		reset                => reset,
+
+		-- Control Signals
+		swap_next_frame      => '0',
+
+		-- FIFO source
+		fifo_startofpacket   => fifo_input_startofpacket,
+		fifo_endofpacket     => fifo_input_endofpacket,
+		fifo_pixdata         => fifo_input_data,
+		fifo_write           => fifo_write_next,
+		fifo_ready           => fifo_almost_empty,
+
+		-- DMA Master 0 (for SRAM, Read-write)
+		dma0_readdata        => avm_dma0_readdata,
+		dma0_read            => avm_dma0_read,
+		dma0_writedata       => avm_dma0_writedata,
+		dma0_write           => avm_dma0_write,
+		dma0_readdatavalid   => avm_dma0_readdatavalid,
+		dma0_waitrequest     => avm_dma0_waitrequest,
+		dma0_address         => avm_dma0_address,
+		dma0_burstcount      => avm_dma0_burstcount,
+
+		-- DMA Master 1 (for SDRAM, Read only)
+		dma1_readdata        => avm_dma1_readdata,
+		dma1_read            => avm_dma1_read,
+		dma1_readdatavalid   => avm_dma1_readdatavalid,
+		dma1_waitrequest     => avm_dma1_waitrequest,
+		dma1_address         => avm_dma1_address,
+		dma1_burstcount      => avm_dma1_burstcount
 	);
 
 END Behaviour;

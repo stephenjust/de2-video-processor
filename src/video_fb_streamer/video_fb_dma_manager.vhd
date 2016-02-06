@@ -65,6 +65,58 @@ END video_fb_dma_manager;
 
 ARCHITECTURE Behaviour OF video_fb_dma_manager IS
 
+	CONSTANT sram_burst_size : std_logic_vector(7 downto 0) := x"20"; -- 32
+
+	SIGNAL sram_read_offset : std_logic_vector(31 downto 0) := (others => '0');
+	SIGNAL sram_read_count  : std_logic_vector(7 downto 0) := (others => '0');
+	SIGNAL sram_busy        : std_logic := '0';
+
 BEGIN
+
+	sram_dma : PROCESS (clk)
+	BEGIN
+		IF rising_edge(clk) THEN
+			-- FIXME: Account for frame swap
+			IF sram_busy = '0' AND fifo_ready = '1' THEN
+				sram_busy <= '1';
+				sram_read_count <= (others => '0');
+				dma0_address <= SRAM_BUF_START_ADDRESS + sram_read_offset;
+				dma0_burstcount <= sram_burst_size;
+				dma0_read <= '1';
+			ELSIF sram_busy = '1' THEN
+				dma0_address <= (others => '0');
+				dma0_burstcount <= (others => '0');
+				dma0_read <= '0';
+				IF sram_read_count >= sram_burst_size THEN
+					sram_busy <= '0';
+					-- Our pixel count is a multiple of the burst size, so we can get away with only
+					-- checking that we have reached the end of a frame when the burst is over.
+					IF (sram_read_offset + sram_burst_size <
+							std_logic_vector(to_unsigned(FRAME_WIDTH * FRAME_HEIGHT, sram_read_offset'length))) THEN
+						sram_read_offset <= sram_read_offset + sram_burst_size;
+					ELSE
+						sram_read_offset <= (others => '0');
+					END IF;
+				END IF;
+				IF dma0_readdatavalid = '1' THEN
+					sram_read_count <= sram_read_count + x"2";
+				END IF;
+			END IF;
+		END IF;
+	END PROCESS sram_dma;
+
+	
+	sdram_dma : PROCESS (clk)
+	BEGIN
+	
+	END PROCESS sdram_dma;
+
+	-- Output of SRAM read is always input to FIFO so we can glue them
+	-- directly together without any additional logic.
+	fifo_pixdata       <= dma0_readdata;
+	fifo_write         <= dma0_readdatavalid;
+	fifo_startofpacket <= '1' WHEN OR_REDUCE(sram_read_offset + sram_read_count) = '0' ELSE '0';
+	fifo_endofpacket   <= '1' WHEN sram_read_offset + sram_read_count >=
+			std_logic_vector(to_unsigned(FRAME_WIDTH * FRAME_HEIGHT - 2, sram_read_offset'length)) ELSE '0';
 
 END Behaviour;
