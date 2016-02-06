@@ -10,10 +10,11 @@ USE altera_mf.altera_mf_components.all;
 
 ENTITY video_fb_streamer IS 
 	GENERIC(
-		BUFFER_START_ADDRESS : std_logic_vector(31 downto 0) := (others => '0');
-		BITS_PER_PIXEL       : integer                       := 8;
-		FRAME_WIDTH          : integer                       := 640;
-		FRAME_HEIGHT         : integer                       := 480
+		SRAM_BUF_START_ADDRESS   : std_logic_vector(31 downto 0) := (others => '0');
+		SDRAM_BUF_START_ADDRESS  : std_logic_vector(31 downto 0) := (others => '0');
+		BITS_PER_PIXEL           : integer                       := 8;
+		FRAME_WIDTH              : integer                       := 640;
+		FRAME_HEIGHT             : integer                       := 480
 	);
 
 	PORT (
@@ -30,15 +31,23 @@ ENTITY video_fb_streamer IS
 		aso_source_endofpacket   : out   std_logic;
 		aso_source_valid         : out   std_logic;
 
-		-- DMA Master
-		avm_dma0_readdata        : in    std_logic_vector(15 downto 0);
-		avm_dma0_read            : out   std_logic;
-		avm_dma0_writedata       : buffer   std_logic_vector(15 downto 0);
-		avm_dma0_write           : out   std_logic;
-		avm_dma0_readdatavalid	 : in    std_logic;
-		avm_dma0_waitrequest     : in    std_logic;
+		-- DMA Master 0 (for SRAM, Read-write)
+		avm_dma0_readdata        : in     std_logic_vector(15 downto 0);
+		avm_dma0_read            : buffer std_logic;
+		avm_dma0_writedata       : buffer std_logic_vector(15 downto 0);
+		avm_dma0_write           : buffer std_logic;
+		avm_dma0_readdatavalid	 : in     std_logic;
+		avm_dma0_waitrequest     : in     std_logic;
 		avm_dma0_address         : buffer std_logic_vector(31 downto 0);	
-		avm_dma0_burstcount      : out   std_logic_vector(7 downto 0)
+		avm_dma0_burstcount      : buffer std_logic_vector(7 downto 0);
+
+		-- DMA Master 1 (for SDRAM, Read only)
+		avm_dma1_readdata        : in     std_logic_vector(15 downto 0);
+		avm_dma1_read            : buffer std_logic;
+		avm_dma1_readdatavalid   : in     std_logic;
+		avm_dma1_waitrequest     : in     std_logic;
+		avm_dma1_address         : buffer std_logic_vector(31 downto 0);
+		avm_dma1_burstcount      : buffer std_logic_vector(7 downto 0)
 	);
 
 END video_fb_streamer;
@@ -113,68 +122,6 @@ ARCHITECTURE Behaviour OF video_fb_streamer IS
 
 	SIGNAL sram_written              : integer := 0;
 BEGIN
-
---	PROCESS (clk)
---	BEGIN
---		IF rising_edge(clk) THEN
---			IF reset = '1' THEN
---				current_state <= INIT;
---			ELSE
---				current_state <= next_state;
---			END IF;
---		END IF;
---	END PROCESS;
---
---	PROCESS (current_state, sram_written)
---	BEGIN
---		CASE current_state IS
---			WHEN INIT =>
---				avm_dma0_address <= BUFFER_START_ADDRESS;
---				avm_dma0_burstcount <= std_logic_vector(to_unsigned(32, avm_dma0_burstcount'length));
---				avm_dma0_write <= '1';
---				avm_dma0_writedata <= x"33CC";
---				next_state <= INIT_SRAM;
---			WHEN INIT_SRAM =>
---				IF (sram_written >= 32) THEN
---					avm_dma0_writedata <= NOT avm_dma0_writedata;
---					avm_dma0_address <= avm_dma0_address + '1';
---					avm_dma0_write <= '0';
---					next_state <= SRAM_TO_FIFO;
---				ELSE
---					next_state <= INIT_SRAM;
---				END IF;
---			WHEN SRAM_TO_FIFO =>
---				dma_read_start <= '1';
---				dma_read_startaddress <= BUFFER_START_ADDRESS;
---				dma_read_burstcount <= std_logic_vector(to_unsigned(32, dma_read_burstcount'length));
---				next_state <= SRAM_TO_FIFO;
---			WHEN IDLE =>
---				next_state <= IDLE;
---			WHEN OTHERS =>
---				next_state <= INIT;
---		END CASE;
---	END PROCESS;
---
---	PROCESS (clk)
---	BEGIN
---		IF rising_edge(clk) THEN
---			IF (current_state = INIT_SRAM and avm_dma0_waitrequest = '0') THEN
---				sram_written <= sram_written + 1;
---			END IF;
---		END IF;
---	END PROCESS;
---
---	PROCESS (clk, avm_dma0_readdatavalid)
---	BEGIN
---		IF (current_state = SRAM_TO_FIFO) THEN
---			IF (avm_dma0_readdatavalid = '1') THEN
---				fifo_input_data <= avm_dma0_readdata;
---				fifo_write_next <= '1';
---			ELSE
---				fifo_write_next <= '0';
---			END IF;
---		END IF;
---	END PROCESS;
 
 	PROCESS (clk)
 	BEGIN
