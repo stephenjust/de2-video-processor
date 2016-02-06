@@ -80,22 +80,46 @@ ARCHITECTURE Behaviour OF video_fb_streamer IS
 		);
 	END COMPONENT video_fb_fifo;
 
-	COMPONENT video_fb_dma_burst_reader IS 
-		PORT (
-			clk                 : in     std_logic;
-			reset               : in     std_logic;
-
-			ctl_start           : in     std_logic;
-			ctl_burstcount      : in     std_logic_vector(7 downto 0);
-			ctl_busy            : buffer std_logic := '0';
-
-			dma_read            : buffer std_logic;
-			dma_readdatavalid	  : in     std_logic;
-			dma_waitrequest     : in     std_logic;
-			dma_address         : buffer std_logic_vector(31 downto 0);
-			dma_burstcount      : buffer std_logic_vector(7 downto 0)
+	COMPONENT video_fb_dma_manager IS 
+		GENERIC(
+			SRAM_BUF_START_ADDRESS   : std_logic_vector(31 downto 0) := (others => '0');
+			SDRAM_BUF_START_ADDRESS  : std_logic_vector(31 downto 0) := (others => '0');
+			FRAME_WIDTH              : integer                       := 640;
+			FRAME_HEIGHT             : integer                       := 480
 		);
-	END COMPONENT video_fb_dma_burst_reader;
+		PORT (
+			clk                  : in     std_logic;
+			reset                : in     std_logic;
+
+			-- Control Signals
+			swap_next_frame      : in     std_logic;
+
+			-- FIFO source
+			fifo_startofpacket   : buffer std_logic;
+			fifo_endofpacket     : buffer std_logic;
+			fifo_pixdata         : buffer std_logic_vector(15 downto 0);
+			fifo_write           : buffer std_logic;
+			fifo_ready           : in     std_logic;
+
+			-- DMA Master 0 (for SRAM, Read-write)
+			dma0_readdata        : in     std_logic_vector(15 downto 0);
+			dma0_read            : buffer std_logic;
+			dma0_writedata       : buffer std_logic_vector(15 downto 0);
+			dma0_write           : buffer std_logic;
+			dma0_readdatavalid   : in     std_logic;
+			dma0_waitrequest     : in     std_logic;
+			dma0_address         : buffer std_logic_vector(31 downto 0);	
+			dma0_burstcount      : buffer std_logic_vector(7 downto 0);
+
+			-- DMA Master 1 (for SDRAM, Read only)
+			dma1_readdata        : in     std_logic_vector(15 downto 0);
+			dma1_read            : buffer std_logic;
+			dma1_readdatavalid   : in     std_logic;
+			dma1_waitrequest     : in     std_logic;
+			dma1_address         : buffer std_logic_vector(31 downto 0);
+			dma1_burstcount      : buffer std_logic_vector(7 downto 0)
+		);
+	END COMPONENT video_fb_dma_manager;
 
 	-- Constants
 	CONSTANT FRAME_ADDR_COUNT        : integer := (FRAME_WIDTH * FRAME_HEIGHT / 2);
@@ -170,22 +194,6 @@ BEGIN
 		full              => fifo_write_full,
 		empty             => fifo_output_empty,
 		almost_empty      => open
-	);
-
-	d0 : video_fb_dma_burst_reader
-	PORT MAP(
-		clk                => clk,
-		reset              => reset,
-
-		ctl_start          => dma_read_start,
-		ctl_burstcount     => dma_read_burstcount,
-		ctl_busy           => dma_read_busy,
-
-		dma_read           => avm_dma0_read,
-		dma_readdatavalid	 => avm_dma0_readdatavalid,
-		dma_waitrequest    => avm_dma0_waitrequest,
-		dma_address        => avm_dma0_address,
-		dma_burstcount     => avm_dma0_burstcount
 	);
 
 END Behaviour;
