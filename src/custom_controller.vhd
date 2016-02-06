@@ -17,7 +17,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use ieee.VITAL_Primitives.all;
-use work.DE2_CONSTANTS.all;
+--use work.DE2_CONSTANTS.all;
 
 -- Code for Register
 
@@ -37,7 +37,7 @@ entity genesis_controller_interface is
 		dpad_right_input1	: in std_logic;
 		select_input1	:	in std_logic;
 		start_c_input1	:	in std_logic;
-		ab_input1:		:	in std_logic;
+		ab_input1	:	in std_logic;
 		
 		--Controller 2
 		dpad_up_input2	:	in std_logic;
@@ -46,7 +46,7 @@ entity genesis_controller_interface is
 		dpad_right_input2	: in std_logic;
 		select_input2	:	in std_logic;
 		start_c_input2	:	in std_logic;
-		ab_input2:		:	in std_logic;
+		ab_input2		:	in std_logic;
 		
         --Reading portion, needs to be 
 		avs_s0_read_n	: in std_logic ;
@@ -72,8 +72,6 @@ architecture avalon of genesis_controller_interface is
 	signal b_2		:	std_logic;
 	signal c_1		:	std_logic;
 	signal c_2		:	std_logic;
-	signal start_1	:	std_logic;
-	signal start_2	:	std_logic;
 
 begin
     assign_signals_1:
@@ -83,57 +81,57 @@ begin
         begin
 			if ( dpad_up_input1 = '1' and dpad_up_input1'event) then
 				up_1 <= '1';
-			else then
+			else
 				up_1 <= '0';
 			end if;
 			
 			if ( dpad_down_input1 = '1' and dpad_down_input1'event) then
 				down_1 <= '1';
-			else then
+			else
 				down_1 <= '0';
 			end if;
 			
 			--Technically, select_input1 should be high for left/right, 0 o.w.
 			if ( dpad_left_input1 = '1' and dpad_left_input1'event) then
 				left_1 <= '1';
-			else then
+			else
 				left_1 <= '0';
 			end if;
 			
 			if ( dpad_right_input1 = '1' and dpad_right_input1'event) then
 				right_1 <= '1';
-			else then
+			else
 				right_1 <= '0';
 			end if;
 			
 			--A and B can't b pressed at the same time in this implementation
 			if ( select_input1 = '1' and ab_input1 = '1' and ab_input1'event) then
 				a_1 <= '1';
-			else then
+			else
 				a_1 <= '0';
 			end if;
 			
 			if ( select_input1 = '1' and ab_input1 = '1' and ab_input1'event) then
 				a_1 <= '1';
-			else then
+			else
 				a_1 <= '0';
 			end if;
 			
 			if ( select_input1 = '0' and ab_input1 = '1' and ab_input1'event) then
 				b_1 <= '1';
-			else then
+			else
 				b_1 <= '0';
 			end if;
 			
 			if ( select_input1 = '1' and start_c_input1 = '1' and start_c_input1'event) then
 				c_1 <= '1';
-			else then
+			else
 				c_1 <= '0';
             end if;
 			
 			if ( select_input1 = '0' and start_c_input1 = '1' and start_c_input1'event) then
 				start_1 <= '1';
-			else then
+			else
 				start_1 <= '0';
             end if;
         end process;
@@ -144,57 +142,57 @@ begin
         begin
 			if ( dpad_up_input2 = '1' and dpad_up_input2'event) then
 				up_2 <= '1';
-			else then
+			else
 				up_2 <= '0';
 			end if;
 			
 			if ( dpad_down_input2 = '1' and dpad_down_input2'event) then
 				down_2 <= '1';
-			else then
+			else
 				down_2 <= '0';
 			end if;
 			
 			--Technically, select_input2 should be high for left/right, 0 o.w.
 			if ( dpad_left_input2 = '1' and dpad_left_input2'event) then
 				left_2 <= '1';
-			else then
+			else
 				left_2 <= '0';
 			end if;
 			
 			if ( dpad_right_input2 = '1' and dpad_right_input2'event) then
 				right_2 <= '1';
-			else then
+			else
 				right_2 <= '0';
 			end if;
 			
 			--A and B can't b pressed at the same time in this implementation
 			if ( select_input2 = '1' and ab_input2 = '1' and ab_input2'event) then
 				a_2 <= '1';
-			else then
+			else
 				a_2 <= '0';
 			end if;
 			
 			if ( select_input2 = '1' and ab_input2 = '1' and ab_input2'event) then
 				a_2 <= '1';
-			else then
+			else
 				a_2 <= '0';
 			end if;
 			
 			if ( select_input2 = '0' and ab_input2 = '1' and ab_input2'event) then
 				b_2 <= '1';
-			else then
+			else
 				b_2 <= '0';
 			end if;
 			
 			if ( select_input2 = '1' and start_c_input2 = '1' and start_c_input2'event) then
 				c_2 <= '1';
-			else then
+			else
 				c_2 <= '0';
             end if;
 			
 			if ( select_input2 = '0' and start_c_input2 = '1' and start_c_input2'event) then
 				start_2 <= '1';
-			else then
+			else
 				start_2 <= '0';
             end if;
         end process;
@@ -228,3 +226,4 @@ begin
 			end process;
 
 end avalon;
+
