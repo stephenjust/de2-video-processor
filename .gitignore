@@ -33,5 +33,12 @@ software/*/*
 !software/de2_video_processor/*.h
 !software/de2_video_processor_bsp/*.bsp
 
+!software/sram_test_pattern*/.cproject
+!software/sram_test_pattern*/.project
+!software/sram_test_pattern*/Makefile
+!software/sram_test_pattern/*.c
+!software/sram_test_pattern/*.h
+!software/sram_test_pattern_bsp/*.bsp
+
 # Scripts to use in the lab at school
 scripts/
