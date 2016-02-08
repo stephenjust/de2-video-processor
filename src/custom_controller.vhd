@@ -76,20 +76,20 @@ architecture avalon of genesis_controller_interface is
 		process(vsync, clk, reset_n)
 			--This may need to be set up 
 			begin
-				if(reset_n = '1')
+				if(reset_n = '1') then
 					current_state <= s0;
-				elsif(rising_edge(clk))
+				elsif(rising_edge(clk)) then
 					current_state <= next_state;
 				end if;
 		
-				if (rising_edge(vsync) then
+				if (rising_edge(vsync)) then
 					vsync_triggered <= '1';
 				end if;
 		end process;
 			
 		process(current_state, vsync_triggered, dpad_up_input1, dpad_down_input1, dpad_up_input2, dpad_down_input2, 
-						dpad_left_input1, dpad_right_input1, select_input1, start_c_input1, ab_input1, 
-						dpad_left_input2, dpad_right_input2, select_input2, start_c_input2, ab_input2)
+						dpad_left_input1, dpad_right_input1, start_c_input1, ab_input1, 
+						dpad_left_input2, dpad_right_input2, start_c_input2, ab_input2)
 				begin
 					case current_state is
 						when s0 =>
