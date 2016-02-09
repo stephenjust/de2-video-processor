@@ -80,22 +80,46 @@ ARCHITECTURE Behaviour OF video_fb_streamer IS
 		);
 	END COMPONENT video_fb_fifo;
 
-	COMPONENT video_fb_dma_burst_reader IS 
-		PORT (
-			clk                 : in     std_logic;
-			reset               : in     std_logic;
-
-			ctl_start           : in     std_logic;
-			ctl_burstcount      : in     std_logic_vector(7 downto 0);
-			ctl_busy            : buffer std_logic := '0';
-
-			dma_read            : buffer std_logic;
-			dma_readdatavalid	  : in     std_logic;
-			dma_waitrequest     : in     std_logic;
-			dma_address         : buffer std_logic_vector(31 downto 0);
-			dma_burstcount      : buffer std_logic_vector(7 downto 0)
+	COMPONENT video_fb_dma_manager IS 
+		GENERIC(
+			SRAM_BUF_START_ADDRESS   : std_logic_vector(31 downto 0) := (others => '0');
+			SDRAM_BUF_START_ADDRESS  : std_logic_vector(31 downto 0) := (others => '0');
+			FRAME_WIDTH              : integer                       := 640;
+			FRAME_HEIGHT             : integer                       := 480
 		);
-	END COMPONENT video_fb_dma_burst_reader;
+		PORT (
+			clk                  : in     std_logic;
+			reset                : in     std_logic;
+
+			-- Control Signals
+			swap_next_frame      : in     std_logic;
+
+			-- FIFO source
+			fifo_startofpacket   : buffer std_logic;
+			fifo_endofpacket     : buffer std_logic;
+			fifo_pixdata         : buffer std_logic_vector(15 downto 0);
+			fifo_write           : buffer std_logic;
+			fifo_ready           : in     std_logic;
+
+			-- DMA Master 0 (for SRAM, Read-write)
+			dma0_readdata        : in     std_logic_vector(15 downto 0);
+			dma0_read            : buffer std_logic;
+			dma0_writedata       : buffer std_logic_vector(15 downto 0);
+			dma0_write           : buffer std_logic;
+			dma0_readdatavalid   : in     std_logic;
+			dma0_waitrequest     : in     std_logic;
+			dma0_address         : buffer std_logic_vector(31 downto 0);	
+			dma0_burstcount      : buffer std_logic_vector(7 downto 0);
+
+			-- DMA Master 1 (for SDRAM, Read only)
+			dma1_readdata        : in     std_logic_vector(15 downto 0);
+			dma1_read            : buffer std_logic;
+			dma1_readdatavalid   : in     std_logic;
+			dma1_waitrequest     : in     std_logic;
+			dma1_address         : buffer std_logic_vector(31 downto 0);
+			dma1_burstcount      : buffer std_logic_vector(7 downto 0)
+		);
+	END COMPONENT video_fb_dma_manager;
 
 	-- Constants
 	CONSTANT FRAME_ADDR_COUNT        : integer := (FRAME_WIDTH * FRAME_HEIGHT / 2);
@@ -116,6 +140,7 @@ ARCHITECTURE Behaviour OF video_fb_streamer IS
 
 	SIGNAL fifo_output_data          : std_logic_vector (7 downto 0);
 	SIGNAL fifo_output_empty         : std_logic;
+	SIGNAL fifo_almost_empty         : std_logic;
 	
 	SIGNAL current_state             : state := INIT;
 	SIGNAL next_state                : state;
@@ -123,30 +148,6 @@ ARCHITECTURE Behaviour OF video_fb_streamer IS
 	SIGNAL sram_written              : integer := 0;
 BEGIN
 
-	PROCESS (clk)
-	BEGIN
-		IF rising_edge(clk) THEN
-			IF (reset = '1') THEN
-				fifo_input_data <= (others => '0');
-				fifo_write_next <= '0';
-				pix <= 0;
-			ELSIF (fifo_write_full = '0') THEN
-				IF (pix = FRAME_ADDR_COUNT - 1) THEN
-					pix <= 0;
-				ELSE
-					pix <= pix + 1;
-				END IF;
-				fifo_input_data <= std_logic_vector(to_unsigned(pix, fifo_input_data'length));
-				fifo_write_next <= '1';
-			ELSE
-				fifo_input_data <= (others => '0');
-				fifo_write_next <= '0';
-			END IF;
-		END IF;
-	END PROCESS;
-
-	fifo_input_startofpacket   <= '1' WHEN pix = 0 ELSE '0';
-	fifo_input_endofpacket     <= '1' WHEN pix = FRAME_ADDR_COUNT - 1 ELSE '0';
 	aso_source_valid           <= not fifo_output_empty;
 
 	-- Instantiate Components
@@ -159,33 +160,56 @@ BEGIN
 		in_startofpacket  => fifo_input_startofpacket,
 		in_endofpacket    => fifo_input_endofpacket,
 		in_pixdata        => fifo_input_data,
+		in_req            => fifo_write_next,
 
 		out_startofpacket => aso_source_startofpacket,
 		out_endofpacket   => aso_source_endofpacket,
 		out_pixdata       => aso_source_data,
-
-		in_req            => fifo_write_next,
 		out_req           => aso_source_ready,
 
 		full              => fifo_write_full,
 		empty             => fifo_output_empty,
-		almost_empty      => open
+		almost_empty      => fifo_almost_empty
 	);
 
-	d0 : video_fb_dma_burst_reader
-	PORT MAP(
-		clk                => clk,
-		reset              => reset,
+	d0 : video_fb_dma_manager 
+	GENERIC MAP (
+		SRAM_BUF_START_ADDRESS   => SRAM_BUF_START_ADDRESS,
+		SDRAM_BUF_START_ADDRESS  => SDRAM_BUF_START_ADDRESS,
+		FRAME_WIDTH              => FRAME_WIDTH,
+		FRAME_HEIGHT             => FRAME_HEIGHT
+	)
+	PORT MAP (
+		clk                  => clk,
+		reset                => reset,
 
-		ctl_start          => dma_read_start,
-		ctl_burstcount     => dma_read_burstcount,
-		ctl_busy           => dma_read_busy,
+		-- Control Signals
+		swap_next_frame      => '0',
 
-		dma_read           => avm_dma0_read,
-		dma_readdatavalid	 => avm_dma0_readdatavalid,
-		dma_waitrequest    => avm_dma0_waitrequest,
-		dma_address        => avm_dma0_address,
-		dma_burstcount     => avm_dma0_burstcount
+		-- FIFO source
+		fifo_startofpacket   => fifo_input_startofpacket,
+		fifo_endofpacket     => fifo_input_endofpacket,
+		fifo_pixdata         => fifo_input_data,
+		fifo_write           => fifo_write_next,
+		fifo_ready           => fifo_almost_empty,
+
+		-- DMA Master 0 (for SRAM, Read-write)
+		dma0_readdata        => avm_dma0_readdata,
+		dma0_read            => avm_dma0_read,
+		dma0_writedata       => avm_dma0_writedata,
+		dma0_write           => avm_dma0_write,
+		dma0_readdatavalid   => avm_dma0_readdatavalid,
+		dma0_waitrequest     => avm_dma0_waitrequest,
+		dma0_address         => avm_dma0_address,
+		dma0_burstcount      => avm_dma0_burstcount,
+
+		-- DMA Master 1 (for SDRAM, Read only)
+		dma1_readdata        => avm_dma1_readdata,
+		dma1_read            => avm_dma1_read,
+		dma1_readdatavalid   => avm_dma1_readdatavalid,
+		dma1_waitrequest     => avm_dma1_waitrequest,
+		dma1_address         => avm_dma1_address,
+		dma1_burstcount      => avm_dma1_burstcount
 	);
 
 END Behaviour;
