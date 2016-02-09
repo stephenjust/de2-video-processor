@@ -1,0 +1,35 @@
+%
+    
+    Colour Space Converter
+    Cspace Registers Default
+   
+    ECE 492, Group 6
+    Stefan Martynkiw, Stephen Just, Mason Strong
+
+
+	/* Stores the defaults for the Registers in the colour space
+       converter.*/
+
+%
+
+
+-- http://quartushelp.altera.com/15.0/mergedProjects/reference/glossary/def_mif.htm
+-- http://www.mil.ufl.edu/4712/docs/mif_help.pdf
+
+
+DEPTH = 16;                   -- The size of memory in words
+WIDTH = 32;                    -- The size of data in bits
+ADDRESS_RADIX = UNS;          -- The radix for address values (unsigned DEC)
+DATA_RADIX = HEX;             -- The radix for data values
+CONTENT                       -- start of (address : data pairs)
+BEGIN
+
+-- memory address : data
+
+
+00: 00000000
+01: 00025800 -- Default palette storage base address in SRAM.
+02: 00000000
+03: 00000000
+
+END;
