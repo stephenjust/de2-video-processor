@@ -91,7 +91,6 @@ architecture structure of de2_video_processor is
 		video_vga_controller_0_external_interface_R     : out   std_logic_vector(9 downto 0);                     -- R
 		video_vga_controller_0_external_interface_G     : out   std_logic_vector(9 downto 0);                     -- G
 		video_vga_controller_0_external_interface_B     : out   std_logic_vector(9 downto 0);                     -- B
-		video_fb_streamer_0_conduit_end_0_export        : in    std_logic                     := 'X';
 		tristate_conduit_bridge_0_out_generic_tristate_controller_0_tcm_read_n_out       : out   std_logic_vector(0 downto 0);
 		tristate_conduit_bridge_0_out_generic_tristate_controller_0_tcm_data_out         : inout std_logic_vector(7 downto 0) := (others => 'X');
 		tristate_conduit_bridge_0_out_generic_tristate_controller_0_tcm_chipselect_n_out : out   std_logic_vector(0 downto 0);
@@ -142,7 +141,6 @@ begin
 		video_vga_controller_0_external_interface_R     => VGA_R,     --                                          .R
 		video_vga_controller_0_external_interface_G     => VGA_G,     --                                          .G
 		video_vga_controller_0_external_interface_B     => VGA_B,     --                                          .B
-		video_fb_streamer_0_conduit_end_0_export        => KEY(1),    --         video_fb_streamer_0_conduit_end_0.export
 		tristate_conduit_bridge_0_out_generic_tristate_controller_0_tcm_read_n_out       => FL_OE_N,
 		tristate_conduit_bridge_0_out_generic_tristate_controller_0_tcm_data_out         => FL_DQ,
 		tristate_conduit_bridge_0_out_generic_tristate_controller_0_tcm_chipselect_n_out => FL_CE_N,
