@@ -8,8 +8,9 @@ entity de2_video_processor is
 
 	port
 	(
-		-- 50 MHz Clock
+		-- Clocks
 		CLOCK_50     : in       std_logic;
+		CLOCK_27     : in       std_logic;
 
 		-- SDRAM on board
 		DRAM_ADDR    : out      std_logic_vector (11 downto 0);
@@ -61,9 +62,11 @@ end de2_video_processor;
 architecture structure of de2_video_processor is
 	component de2_video_processor_system is
 	port (
-		clk_clk                                         : in    std_logic                     := 'X';             -- clk
-		reset_reset_n                                   : in    std_logic                     := 'X';             -- reset_n
-		altpll_0_c0_clk                                 : out   std_logic;                                        -- clk
+		clk_clk                                         : in    std_logic                     := 'X';             -- 50M clock
+		reset_reset_n                                   : in    std_logic                     := 'X';             -- 50M clock reset
+		altpll_0_c0_clk                                 : out   std_logic;                                        -- SDRAM clock
+		clk_0_clk                                       : in    std_logic                     := 'X';             -- 27M clock
+		reset_0_reset_n                                 : in    std_logic;                                        -- 27M clock reset
 		sdram_0_wire_addr                               : out   std_logic_vector(11 downto 0);                    -- addr
 		sdram_0_wire_ba                                 : out   std_logic_vector(1 downto 0);                     -- ba
 		sdram_0_wire_cas_n                              : out   std_logic;                                        -- cas_n
@@ -112,7 +115,9 @@ begin
 		port map (
 		clk_clk                                         => CLOCK_50,              --                                       clk.clk
 		reset_reset_n                                   => KEY(0),                --                                     reset.reset_n
-		altpll_0_c0_clk                                 => DRAM_CLK,      
+		altpll_0_c0_clk                                 => DRAM_CLK,
+		clk_0_clk                                       => CLOCK_27,
+		reset_0_reset_n                                 => KEY(0),
 		sdram_0_wire_addr                               => DRAM_ADDR,             --                              sdram_0_wire.addr
 		sdram_0_wire_ba                                 => BA,                    --                                          .ba
 		sdram_0_wire_cas_n                              => DRAM_CAS_N,            --                                          .cas_n
