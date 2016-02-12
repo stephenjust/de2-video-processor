@@ -164,19 +164,6 @@
          type = "String";
       }
    }
-   element sdram_0.s1
-   {
-      datum _lockedAddress
-      {
-         value = "1";
-         type = "boolean";
-      }
-      datum baseAddress
-      {
-         value = "8388608";
-         type = "String";
-      }
-   }
    element timer_0.s1
    {
       datum baseAddress
@@ -190,6 +177,19 @@
       datum baseAddress
       {
          value = "4210688";
+         type = "String";
+      }
+   }
+   element sdram_0.s1
+   {
+      datum _lockedAddress
+      {
+         value = "1";
+         type = "boolean";
+      }
+      datum baseAddress
+      {
+         value = "8388608";
          type = "String";
       }
    }
@@ -318,7 +318,7 @@
  <parameter name="projectName" value="" />
  <parameter name="sopcBorderPoints" value="false" />
  <parameter name="systemHash" value="1" />
- <parameter name="timeStamp" value="1455216939735" />
+ <parameter name="timeStamp" value="1455314147679" />
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
  <interface name="clk" internal="clk_0.clk_in" type="clock" dir="end" />

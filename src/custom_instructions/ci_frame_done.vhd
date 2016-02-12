@@ -13,6 +13,9 @@ USE ieee.std_logic_1164.all;
 
 ENTITY ci_frame_done IS
 	PORT (
+		clk              : in     std_logic;
+		reset            : in     std_logic;
+
 		-- Custom instruction ports
 		ncs_ci_clk       : in     std_logic;
 		ncs_ci_clk_en    : in     std_logic;
