@@ -298,7 +298,7 @@ begin
                 outdata_aclr_a          => "NONE",   --Async clear clock.     --
                 outdata_aclr_b          => "NONE",   --Async clear clock.     --
                 outdata_reg_a           => "CLOCK0", --Output data clock.     --
-                outdata_reg_b           => "CLOCK0", --Output data clock.     --
+                outdata_reg_b           => "CLOCK1", --Output data clock.     --
                 ----------------------------------------------------------------
 
                 ----------------------------------------------------------------
@@ -366,8 +366,8 @@ begin
             )
             port map (
                 -- Inputs
-                clock0			=> clk_cpu, -- Should have the same clock domain
-                clock1          => clk_cpu, -- for each clock input?????????????
+                clock0			=> clk_cpu, -- PortA, talks to CPU.
+                clock1          => clk_video, -- Port B, timed to video.
 
 		        address_a		=> sram_palette_store_portA_address,     -- Address bus for port A.
 	            address_b		=> sram_palette_store_portB_address,     -- Address bus for port B.
@@ -385,6 +385,12 @@ begin
 --https://github.com/jterweeme/mediacenter/blob/master/ip/University_Program/Audio_Video/Video/altera_up_avalon_video_rgb_resampler/hdl/altera_up_avalon_video_rgb_resampler.vhd
 
 
+-- Clk_video is for pixels. every tick is a VBI.
+-- Clk_cpu is for cpu access.
+
+--The ready signal will go low during blanking space so that the 
+--pipeline doesn't shove new pixels in, as there's no place to store it.
+
 
 -- Need to tell the FIFO when we're ready to stream, so this needs to be outside
 -- all the processes.
@@ -393,10 +399,11 @@ asi_fifoin_ready    <= aso_vgaout_ready;
 -- Need to wait a clock for the memory to respond to request
 -- Can't assume things are instantaneous.
 
+
     -- Output Registers
-    process (clk_cpu)
+    process (clk_video)
         begin
-            if clk_cpu'EVENT and clk_cpu = '1' then
+            if Rising_edge(clk_video) then
                 if (reset_n = '1') then
                     aso_vgaout_data             <= (others => '0');
                     aso_vgaout_startofpacket    <= '0';
