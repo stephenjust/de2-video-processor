@@ -47,7 +47,9 @@ entity colour_space_converter is
     port (
         ------------------------------------------------------------------------
         -- Clock interface (to CPU) 
-        clk                             : in std_logic;
+        clk_cpu                             : in std_logic;
+        -- Clock interface (to video clock)
+        clk_video                           : in std_logic;
 		-- reset interface (Magic avalon reset)
 		reset_n		                    : in std_logic;
         ------------------------------------------------------------------------
@@ -205,7 +207,7 @@ begin
     -- Port B: To video output / colour conversion logic. 
 
 
-	process(clk, 
+	process(clk_cpu, 
             avs_paletteram_read_n, 
             avs_paletteram_address, 
             avs_paletteram_write_n) is
@@ -364,8 +366,8 @@ begin
             )
             port map (
                 -- Inputs
-                clock0			=> clk, -- Should have the same clock domain
-                clock1          => clk, -- for each clock input?????????????
+                clock0			=> clk_cpu, -- Should have the same clock domain
+                clock1          => clk_cpu, -- for each clock input?????????????
 
 		        address_a		=> sram_palette_store_portA_address,     -- Address bus for port A.
 	            address_b		=> sram_palette_store_portB_address,     -- Address bus for port B.
@@ -383,13 +385,18 @@ begin
 --https://github.com/jterweeme/mediacenter/blob/master/ip/University_Program/Audio_Video/Video/altera_up_avalon_video_rgb_resampler/hdl/altera_up_avalon_video_rgb_resampler.vhd
 
 
+
+-- Need to tell the FIFO when we're ready to stream, so this needs to be outside
+-- all the processes.
+asi_fifoin_ready    <= aso_vgaout_ready;
+
 -- Need to wait a clock for the memory to respond to request
 -- Can't assume things are instantaneous.
 
     -- Output Registers
-    process (clk)
+    process (clk_cpu)
         begin
-            if clk'EVENT and clk = '1' then
+            if clk_cpu'EVENT and clk_cpu = '1' then
                 if (reset_n = '1') then
                     aso_vgaout_data             <= (others => '0');
                     aso_vgaout_startofpacket    <= '0';
