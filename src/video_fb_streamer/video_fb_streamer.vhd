@@ -18,18 +18,20 @@ ENTITY video_fb_streamer IS
 	);
 
 	PORT (
-		clk                      : in    std_logic;
-		pix_clk                  : in    std_logic;
-		reset                    : in    std_logic;
+		clk                      : in     std_logic;
+		pix_clk                  : in     std_logic;
+		reset                    : in     std_logic;
 
-		coe_swap_frame           : in    std_logic;
+		-- Conduit to frame swap instruction
+		coe_ext_trigger          : in     std_logic;
+		coe_ext_done             : buffer std_logic;
 
 		-- Avalon-ST Interface
-		aso_source_ready         : in    std_logic;
-		aso_source_data          : out   std_logic_vector(BITS_PER_PIXEL-1 downto 0);
-		aso_source_startofpacket : out   std_logic;
-		aso_source_endofpacket   : out   std_logic;
-		aso_source_valid         : out   std_logic;
+		aso_source_ready         : in     std_logic;
+		aso_source_data          : out    std_logic_vector(BITS_PER_PIXEL-1 downto 0);
+		aso_source_startofpacket : out    std_logic;
+		aso_source_endofpacket   : out    std_logic;
+		aso_source_valid         : out    std_logic;
 
 		-- DMA Master 0 (for SRAM, Read-write)
 		avm_dma0_readdata        : in     std_logic_vector(15 downto 0);

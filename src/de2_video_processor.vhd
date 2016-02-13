@@ -8,8 +8,9 @@ entity de2_video_processor is
 
 	port
 	(
-		-- 50 MHz Clock
+		-- Clocks
 		CLOCK_50     : in       std_logic;
+		CLOCK_27     : in       std_logic;
 
 		-- SDRAM on board
 		DRAM_ADDR    : out      std_logic_vector (11 downto 0);
@@ -61,9 +62,11 @@ end de2_video_processor;
 architecture structure of de2_video_processor is
 	component de2_video_processor_system is
 	port (
-		clk_clk                                         : in    std_logic                     := 'X';             -- clk
-		reset_reset_n                                   : in    std_logic                     := 'X';             -- reset_n
-		altpll_0_c0_clk                                 : out   std_logic;                                        -- clk
+		clk_clk                                         : in    std_logic                     := 'X';             -- 50M clock
+		reset_reset_n                                   : in    std_logic                     := 'X';             -- 50M clock reset
+		altpll_0_c0_clk                                 : out   std_logic;                                        -- SDRAM clock
+		clk_0_clk                                       : in    std_logic                     := 'X';             -- 27M clock
+		reset_0_reset_n                                 : in    std_logic;                                        -- 27M clock reset
 		sdram_0_wire_addr                               : out   std_logic_vector(11 downto 0);                    -- addr
 		sdram_0_wire_ba                                 : out   std_logic_vector(1 downto 0);                     -- ba
 		sdram_0_wire_cas_n                              : out   std_logic;                                        -- cas_n
@@ -88,7 +91,6 @@ architecture structure of de2_video_processor is
 		video_vga_controller_0_external_interface_R     : out   std_logic_vector(9 downto 0);                     -- R
 		video_vga_controller_0_external_interface_G     : out   std_logic_vector(9 downto 0);                     -- G
 		video_vga_controller_0_external_interface_B     : out   std_logic_vector(9 downto 0);                     -- B
-		video_fb_streamer_0_conduit_end_0_export        : in    std_logic                     := 'X';
 		tristate_conduit_bridge_0_out_generic_tristate_controller_0_tcm_read_n_out       : out   std_logic_vector(0 downto 0);
 		tristate_conduit_bridge_0_out_generic_tristate_controller_0_tcm_data_out         : inout std_logic_vector(7 downto 0) := (others => 'X');
 		tristate_conduit_bridge_0_out_generic_tristate_controller_0_tcm_chipselect_n_out : out   std_logic_vector(0 downto 0);
@@ -112,7 +114,9 @@ begin
 		port map (
 		clk_clk                                         => CLOCK_50,              --                                       clk.clk
 		reset_reset_n                                   => KEY(0),                --                                     reset.reset_n
-		altpll_0_c0_clk                                 => DRAM_CLK,      
+		altpll_0_c0_clk                                 => DRAM_CLK,
+		clk_0_clk                                       => CLOCK_27,
+		reset_0_reset_n                                 => KEY(0),
 		sdram_0_wire_addr                               => DRAM_ADDR,             --                              sdram_0_wire.addr
 		sdram_0_wire_ba                                 => BA,                    --                                          .ba
 		sdram_0_wire_cas_n                              => DRAM_CAS_N,            --                                          .cas_n
@@ -137,7 +141,6 @@ begin
 		video_vga_controller_0_external_interface_R     => VGA_R,     --                                          .R
 		video_vga_controller_0_external_interface_G     => VGA_G,     --                                          .G
 		video_vga_controller_0_external_interface_B     => VGA_B,     --                                          .B
-		video_fb_streamer_0_conduit_end_0_export        => KEY(1),    --         video_fb_streamer_0_conduit_end_0.export
 		tristate_conduit_bridge_0_out_generic_tristate_controller_0_tcm_read_n_out       => FL_OE_N,
 		tristate_conduit_bridge_0_out_generic_tristate_controller_0_tcm_data_out         => FL_DQ,
 		tristate_conduit_bridge_0_out_generic_tristate_controller_0_tcm_chipselect_n_out => FL_CE_N,

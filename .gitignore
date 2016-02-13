@@ -40,5 +40,12 @@ software/*/*
 !software/sram_test_pattern/*.h
 !software/sram_test_pattern_bsp/*.bsp
 
+!software/sdram_test_pattern*/.cproject
+!software/sdram_test_pattern*/.project
+!software/sdram_test_pattern*/Makefile
+!software/sdram_test_pattern/*.c
+!software/sdram_test_pattern/*.h
+!software/sdram_test_pattern_bsp/*.bsp
+
 # Scripts to use in the lab at school
 scripts/
