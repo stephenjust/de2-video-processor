@@ -194,6 +194,17 @@ end component;
     -- Converted colour from the SRAM. 
     signal colour_converted : std_logic_vector(16 downto 0); 
 
+    -- Expose signals from palette ram for controls.
+
+    -- Write enable on A (avalon side) required. Read optional.
+    signal sram_palette_store_portA_rden_a  : std_logic;
+    signal sram_palette_store_portA_wren_a  : std_logic;
+    -- For port B, only a read enable is required. Write is optional, and
+    -- typically unused.
+    signal sram_palette_store_portB_rden_b  : std_logic;
+    signal sram_palette_store_portB_wren_b  : std_logic;
+
+
 begin
     -- This ram stores the palette data needed for the conversion.
     -- This ram is set up as a dual port ram so that it can be written
@@ -207,26 +218,28 @@ begin
     -- Port B: To video output / colour conversion logic. 
 
 
-	process(clk_cpu, 
-            avs_paletteram_read_n, 
-            avs_paletteram_address, 
-            avs_paletteram_write_n) is
+	process(clk_cpu) is
 	begin
-		if (avs_paletteram_read_n = '0' ) then 
-            --Reading all the things
-            sram_palette_store_portA_address <= "00000000" or avs_paletteram_address;
-            avs_paletteram_readdata <= x"00000000" or sram_palette_store_portA_datain;
-        elsif (avs_paletteram_write_n = '0') then
-            --Writing all the things
-            sram_palette_store_portA_address <= "00000000" or avs_paletteram_address;
-            sram_palette_store_portA_datain  <= sram_palette_store_portA_datain;
-		else
-            -- Put everything to high impedance.
-            sram_palette_store_portA_address <= (others => 'Z');
-            sram_palette_store_portA_datain <= (others => 'Z');
-            sram_palette_store_portA_dataout <= (others => 'Z');
-		end if;
+
+        if Rising_edge(clk_cpu) then
+		    if (avs_paletteram_read_n = '0' ) then 
+                --Reading all the things
+                sram_palette_store_portA_address <= "00000000" or avs_paletteram_address;
+                avs_paletteram_readdata <= x"00000000" or sram_palette_store_portA_datain;
+            elsif (avs_paletteram_write_n = '0') then
+                --Writing all the things
+                sram_palette_store_portA_address <= "00000000" or avs_paletteram_address;
+                sram_palette_store_portA_datain  <= sram_palette_store_portA_datain;
+		    else
+                -- Put everything to high impedance.
+                sram_palette_store_portA_address <= (others => 'Z');
+                sram_palette_store_portA_datain <= (others => 'Z');
+                sram_palette_store_portA_dataout <= (others => 'Z');
+		    end if;
+        end if;
 	end process;
+
+
 
 
     -- Syntax for generic maps on instantiating a component.
@@ -376,7 +389,14 @@ begin
                 data_b          => sram_palette_store_portB_datain,     --Data input for port B.
         		-- Outputs
                 q_a				=> sram_palette_store_portA_dataout,     --Data output port from memory
-                q_b             => sram_palette_store_portB_dataout     --Data output port from memory
+                q_b             => sram_palette_store_portB_dataout,     --Data output port from memory
+
+                -- Read/Write enable control signals
+                --rden_a => sram_palette_store_portA_rden_a,
+                rden_b => sram_palette_store_portB_rden_b,
+                --wren_a => sram_palette_store_portA_wren_a,
+                wren_b => sram_palette_store_portB_wren_b
+
 
             )
     ;
@@ -396,15 +416,29 @@ begin
 -- all the processes.
 asi_fifoin_ready    <= aso_vgaout_ready;
 
--- Need to wait a clock for the memory to respond to request
--- Can't assume things are instantaneous.
+-- 8 bit pixel data is the address into the ram.
+sram_palette_store_portB_address <= asi_fifoin_data;
+
+-- Assert chip ram read before the pixel clock. (Stephen has explaination).
+
+-- A is CPU
+-- B is video.
+
+
+--Sink valid signal. We have a valid address. So read from it.
+sram_palette_store_portB_rden_b <= asi_fifoin_valid;
+
+--Set to zero for now. Typically tie it to write signal on avalon bus.
+-- Since using write_n, need to negate. 
+sram_palette_store_portA_wren_a <= not avs_paletteram_write_n;
+
 
 
     -- Output Registers
     process (clk_video)
         begin
             if Rising_edge(clk_video) then
-                if (reset_n = '1') then
+                if (reset_n = '0') then
                     aso_vgaout_data             <= (others => '0');
                     aso_vgaout_startofpacket    <= '0';
                     aso_vgaout_endofpacket      <= '0';
@@ -412,7 +446,7 @@ asi_fifoin_ready    <= aso_vgaout_ready;
                     aso_vgaout_valid            <= '0';
                 elsif ((aso_vgaout_ready = '1') or (aso_vgaout_valid = '0')) then
                     --aso_vgaout_data             <= converted_data;
-                    aso_vgaout_data             <= X"0000" or asi_fifoin_data;
+                    aso_vgaout_data             <= sram_palette_store_portB_dataout;
                     aso_vgaout_startofpacket    <= asi_fifoin_startofpacket;
                     aso_vgaout_endofpacket      <= asi_fifoin_endofpacket;
                     --aso_vgaout_empty				<= asi_fifoin_empty;
