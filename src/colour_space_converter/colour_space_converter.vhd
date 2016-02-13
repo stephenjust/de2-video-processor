@@ -51,17 +51,6 @@ entity colour_space_converter is
 		reset_n		                    : in std_logic;
         ------------------------------------------------------------------------
         ------------------------------------------------------------------------
-        -- Avalon Memory-Mapped Master 
-        -- (for interfacing with SRAM)
-        ----- Interface Prefix: avm
-        avm_sraminterf_read_n	        : out    std_logic;
-        avm_sraminterf_readdata         : in   std_logic_vector (31 downto 0);
-        avm_sraminterf_address          : out    std_logic_vector (3 downto 0);
-        --byteenable? --NO, only writing word-aligned words.
-        avm_sraminterf_write_n          : out    std_logic;
-        avm_sraminterf_writedata        : out    std_logic_vector (31 downto 0);
-        --avm_sraminterf_reset_n          : in    std_logic;
-        ------------------------------------------------------------------------
         -- Avalon Streaming Sink                                        --------
         -- (FIFO plugs into this)                                       --------
         ----- Interface Prefix: asi                                     --------
@@ -79,23 +68,22 @@ entity colour_space_converter is
 		aso_vgaout_data          : out   std_logic_vector(VGA_OUTPUT_STREAM_WIDTH-1 downto 0);
 		aso_vgaout_startofpacket : out   std_logic;
 		aso_vgaout_endofpacket   : out   std_logic;
-		aso_vgaout_valid         : out   std_logic;
+		aso_vgaout_valid         : buffer   std_logic;
         --aso_vgaout_reset_n         : in    std_logic;
         ------------------------------------------------------------------------
         -- Avalon Memory-mapped slave                                   --------
-        -- (For accessing read/write registers)                         --------
+        -- (For accessing palette ram)                                  --------
         ----- Interface Prefix: avs                                     --------
-        avs_registers_read_n	        : in    std_logic;
-        avs_registers_readdata          : out    std_logic_vector (31 downto 0);
-        avs_registers_address           : in    std_logic_vector (3 downto 0);
+        avs_paletteram_read_n	         : in    std_logic;
+        avs_paletteram_readdata          : out    std_logic_vector (31 downto 0);
+        avs_paletteram_address           : in    std_logic_vector (3 downto 0);
         --byteenable?
-        avs_registers_write_n           : in    std_logic;
-        avs_registers_writedata         : in   std_logic_vector (31 downto 0)
+        avs_paletteram_write_n           : in    std_logic;
+        avs_paletteram_writedata         : in   std_logic_vector (31 downto 0)
         --avs_registers_reset_n             : in    std_logic
         --Response Code
         -- Described on page 18: 
-        --      https://www.altera.com/content/dam/altera-www/global/en_US/pdfs/
-        --      literature/manual/mnl_avalon_spec.pdf
+        --      https://www.altera.com/content/dam/altera-www/global/en_US/pdfs/literature/manual/mnl_avalon_spec.pdf
         -- We will use this to respond a 00:Okay if the palette switch was
         -- Successful.
         -- If the palette switch (involving reading a palette from SRAM) is
@@ -189,17 +177,14 @@ component altsyncram
 end component;
 
     -- Signals are needed here to wire everything together. 
-    signal sram_registers_address :   std_logic_vector(8 downto 0);
-    signal sram_registers_datain  :   std_logic_vector(16 downto 0);
-    signal sram_registers_dataout :   std_logic_vector(16 downto 0);
 
     signal sram_palette_store_portA_address :   std_logic_vector(8 downto 0);
     signal sram_palette_store_portA_datain  :   std_logic_vector(16 downto 0);
-    signal sram_palette_store_portA_datout  :   std_logic_vector(16 downto 0);
+    signal sram_palette_store_portA_dataout  :   std_logic_vector(16 downto 0);
 
     signal sram_palette_store_portB_address :   std_logic_vector(8 downto 0);
     signal sram_palette_store_portB_datain  :   std_logic_vector(16 downto 0);
-    signal sram_palette_store_portB_datout  :   std_logic_vector(16 downto 0);
+    signal sram_palette_store_portB_dataout  :   std_logic_vector(16 downto 0);
 
     -- Colour Conversion Signals
     signal colour_index : std_logic_vector(8 downto 0); --Number from sram
@@ -207,17 +192,6 @@ end component;
     signal colour_converted : std_logic_vector(16 downto 0); 
 
 begin
-
-    --Actually need something in here, can't just have a blank section.
-    
-
-    avs_registers_readdata <= (others => '0');
-
-
-    -- Syntax for generic maps on instantiating a component.
-    -- http://www.ics.uci.edu/~jmoorkan/vhdlref/compinst.html
-
-
     -- This ram stores the palette data needed for the conversion.
     -- This ram is set up as a dual port ram so that it can be written
     -- to and read from at the same time. (This can cause some race conditions
@@ -226,8 +200,31 @@ begin
     -- be fixed by the time the next frame is drawn. The programmer can work
     -- around this.)
 
-    -- Port A: To signals that hold lines for sram data fetching wtfery.
+    -- Port A: To signals that hold lines for Avalon bus.
     -- Port B: To video output / colour conversion logic. 
+
+
+	process(clk, avs_paletteram_read_n) is
+	begin
+		if (avs_paletteram_read_n = '0' ) then 
+            --Reading all the things
+            sram_palette_store_portA_address <= avs_paletteram_address;
+            avs_paletteram_readdata <= sram_palette_store_portA_datain;
+        elsif (avs_paletteram_write_n = '0') then
+            --Writing all the things
+            sram_palette_store_portA_address <= avs_paletteram_address;
+            sram_palette_store_portA_datain  <= sram_palette_store_portA_datain;
+		else
+            -- Put everything to high impedance.
+            sram_palette_store_portA_address <= (others => 'Z');
+            sram_palette_store_portA_datain <= (others => 'Z');
+            sram_palette_store_portA_dataout <= (others => 'Z');
+		end if;
+	end process;
+
+
+    -- Syntax for generic maps on instantiating a component.
+    -- http://www.ics.uci.edu/~jmoorkan/vhdlref/compinst.html
 
     palette_ram: altsyncram 
             generic map (
@@ -361,172 +358,21 @@ begin
             )
             port map (
                 -- Inputs
-		        clock0			=> clk, -- Should have the same clock domain
+                clock0			=> clk, -- Should have the same clock domain
                 clock1          => clk, -- for each clock input?????????????
 
-		        address_a		=>,     -- Address bus for port A.
-	            address_b		=>,     -- Address bus for port B.
+		        address_a		=> sram_palette_store_portA_address,     -- Address bus for port A.
+	            address_b		=> sram_palette_store_portB_address,     -- Address bus for port B.
 
-                data_a          =>,     --Data input for port A.
-                data_b          =>,     --Data input for port B.
-
+                data_a          => sram_palette_store_portA_datain,     --Data input for port A.
+                data_b          => sram_palette_store_portB_datain,     --Data input for port B.
         		-- Outputs
-TODO		        q_a				=>,     --Data output port from memory
-TODO                q_b             =>      --Data output port from memory
+                q_a				=> sram_palette_store_portA_dataout,     --Data output port from memory
+                q_b             => sram_palette_store_portB_dataout     --Data output port from memory
 
             )
     ;
-
-
-    -- This ram stores the registers as described in the spec document for
-    -- this block.
-    -- The idea is that the register itself is updated, but a process listens
-    --  on the avalon mm-slave data + address lines, and also fires of an 
-    --  sram fetch for the palette_ram.
-    register_ram: altsyncram 
-            generic map (
-                intended_device_family  => "Cyclone II",  
-                ----------------------------------------------------------------
-                -- Register RAM doesn't need to be large.                     --
-                --                                                            --
-                numwords_a              => 16,                                --
-                ----------------------------------------------------------------
-                ----------------------------------------------------------------
-                --              Error Checking and Correcting                 --
-                enable_ecc              => "FALSE", -- Don't need ECC.
-                ----------------------------------------------------------------
-                -- Where to build (whether as on-chip ram or logical blocks).
-                implement_in_les        => "OFF",
-                ----------------------------------------------------------------
-                ----------------------------------------------------------------
-                --                      Operation Mode                        --
-                operation_mode          => "SINGLE_PORT",                     --
-                ----------------------------------------------------------------
-                ----------------------------------------------------------------
-                --                  Clocks for output ports                   --
-                --                                                            --
-                outdata_aclr_a          => "NONE",   --Async clear clock.     --
-                outdata_reg_a           => "CLOCK0", --Output data clock.     --
-                ----------------------------------------------------------------
-                ----------------------------------------------------------------
-                --                      Ram Block Type                        --
-                --                                                            --
-                ram_block_type          => "M4K", 
-                --                       -- Only valid choice on Cyclone II   --
-                ----------------------------------------------------------------
-                ----------------------------------------------------------------
-                --                  Reads During Writes                       --
-                --                                                            --
-                --                                                            --
-                -- https://www.altera.com/content/dam/altera-www/             --
-                --             global/en_US/pdfs/literature/ug/ug_ram_rom.pdf --
-                -- Page 21.                                                   --
-                -- WITH_NBE_READ -> means you get the old data if you're      --
-                -- contending. May not be supported on older cyclones.        --
-                -- NO_NBE_READ -> means you get an X if you're contending     --
-                read_during_write_mode_port_a       => "NEW_DATA_WITH_NBE_READ",
-                --                                                            --
-                ----------------------------------------------------------------
-                ----------------------------------------------------------------
-                --                         Bus Widths                         --
-                --                                                            --
-                width_a                 => 16, -- Width of RGB565             --
-                widthad_a               => 8,  -- Address bus width           --
-                ----------------------------------------------------------------
-                ----------------------------------------------------------------
-                -- No idea what this is, as Altera doesn't document it.
-                -- Currently set to default values.
-                -- as used in video_test_pattern......?
-                lpm_hint                => "ENABLE_RUNTIME_MOD=NO",     
-                lpm_type                => "altsyncram", 
-                ----------------------------------------------------------------
-                -- Ram initialization stuff. 
-                init_file               => "cspace_registers_default.mif", 
-                init_file_layout        => "PORT_A",
-                power_up_uninitialized  => "FALSE" 
-                                            -- According to altera docs, can 
-                                            -- power up to constant. Put in an 
-                                            -- EGA palette in here. 
-                ----------------------------------------------------------------
-            )
-            port map (
-                -- Inputs
-		        clock0			=> clk, -- Should have the same clock domain
-                clock1          => clk, -- for each clock input.
-    		    address_a   => sram_registers_address,-- Address bus for port A.  
-                data_a      => sram_registers_datain, --Data input for port A.
-        		-- Outputs
-    		    q_a				=> sram_registers_dataout --Data output port
-            )
-    ;
-
-
-    -- Process to listen on the input lines from the mm-slave.
-    -- Behavior for the registers accessable on the avalon bus by the NIOS/II.
-    cspace_registers:
-		process(clk, avs_registers_read_n) is
-		begin
---TODO Stephen: There may need to be a wait statement here??
-            if clk'EVENT AND clk = '1' then
-                if (reset_n = '0') then
-                    -- Reset contents of all registers
-                    
-                    -- Also, take the preloaded ram contents from the .mif 
-                    -- files and actually do the necessary setup work.
-
-                elsif (avs_registers_read_n = '0') then
-                    if (avs_registers_address = B"00") then
-                        -- Register 0
-                        -- CIUP (Current In-Use Palette)
-                        -- Read only register. Returns the current palette
-                        -- number being displayed. 
-                    elsif (avs_registers_address = B"01") then
-                        -- Register 1
-                        -- PSBA (Palette Storage Base Address)
-                        -- Read/Write Register
-                        -- If read, return the address used for palette
-                        -- base storage.
-                    else
-                        -- The user is a moron. Return some random
-                        -- garbage for easy debugging.
-                        avs_registers_readdata <= X"DEADBEEF" ;
-                    end if;     
-                elsif (avs_registers_write_n = '0') then 
-                    if (avs_registers_address = B"01") then
-                        -- Register 1
-                        -- PSBA (Palette Storage Base Address)
-                        -- Read/Write Register    
-
-                        -- Not supported for this capstone. 
-                        -- Later on, however, someone could change this.
-
-                    elsif (avs_registers_address = B"10") then
-                        -- Register 2
-                        -- SWP (Switch Palette Register)
-                        -- Write only register. When writing into this, the hardware
-                        -- changes the palette. Loads palette from SRAM, puts 
-                        -- into ram instantiated above.
-
-                        -- Calculate address for memcpy
-                        -- Perform memcpy???
-
-                            --TODO
-                    elsif (avs_registers_address = B"01") then
-                        -- Register 3
-                        -- DBUG (Enable Human-Friendly debugging)
-
-                        -- Write-only register. If enabled, enable fancy blinky
-                        -- debugging.
-
-                        -- Set a register! Set all the dbug register flags!
-
-                        -- TODO: lol, not implemented yet.
-
-                    end if;
-                end if;
-            end if;    
-        end process;
-
+  
     -- Avalon Streaming Example Code
 --https://github.com/jterweeme/mediacenter/blob/master/ip/University_Program/Audio_Video/Video/altera_up_avalon_video_rgb_resampler/hdl/altera_up_avalon_video_rgb_resampler.vhd
 
@@ -534,19 +380,29 @@ TODO                q_b             =>      --Data output port from memory
 -- Need to wait a clock for the memory to respond to request
 -- Can't assume things are instantaneous.
 
+    -- Output Registers
+    process (clk)
+        begin
+            if clk'EVENT and clk = '1' then
+                if (reset_n = '1') then
+                    aso_vgaout_data             <= (others => '0');
+                    aso_vgaout_startofpacket    <= '0';
+                    aso_vgaout_endofpacket      <= '0';
+                    --aso_vgaout_empty            <= (others => '0');
+                    aso_vgaout_valid            <= '0';
+                elsif ((aso_vgaout_ready = '1') or (aso_vgaout_valid = '0')) then
+                    --aso_vgaout_data             <= converted_data;
+                    aso_vgaout_data             <= asi_fifoin_data;
+                    aso_vgaout_startofpacket    <= asi_fifoin_startofpacket;
+                    aso_vgaout_endofpacket      <= asi_fifoin_endofpacket;
+                    --aso_vgaout_empty				<= asi_fifoin_empty;
+                    --aso_vgaout_empty            <= (others => '0');
+                    aso_vgaout_valid            <= asi_fifoin_valid;
+                end if;
+        end if;
+    end process;
 
-
-
-
-    -- Probably need some processes on the st_source and st_sink to shuffle
-    -- the data around.
---    cspace_gfx_stream:
---        process()? is wtf
---
---        end process;
-
--- 
-
+-- Right now this is just a dumb streaming forwarder.
 
 
 
