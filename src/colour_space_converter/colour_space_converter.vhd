@@ -39,8 +39,9 @@ entity colour_space_converter is
 
 
         -- Width of Avalon Streaming Source to VGA Output.
-        VGA_OUTPUT_STREAM_WIDTH       : integer                       := 16;
-        VGA_INPUT_STREAM_WIDTH       : integer                       := 16
+        VGA_INPUT_STREAM_WIDTH       : integer               := 8;
+        VGA_OUTPUT_STREAM_WIDTH       : integer              := 16
+
 
 	);
     port (
@@ -178,13 +179,13 @@ end component;
 
     -- Signals are needed here to wire everything together. 
 
-    signal sram_palette_store_portA_address :   std_logic_vector(8 downto 0);
-    signal sram_palette_store_portA_datain  :   std_logic_vector(16 downto 0);
-    signal sram_palette_store_portA_dataout  :   std_logic_vector(16 downto 0);
+    signal sram_palette_store_portA_address :   std_logic_vector(8-1 downto 0) := (others => 'Z');
+    signal sram_palette_store_portA_datain  :   std_logic_vector(16-1 downto 0) := (others => 'Z');
+    signal sram_palette_store_portA_dataout  :   std_logic_vector(16-1 downto 0);
 
-    signal sram_palette_store_portB_address :   std_logic_vector(8 downto 0);
-    signal sram_palette_store_portB_datain  :   std_logic_vector(16 downto 0);
-    signal sram_palette_store_portB_dataout  :   std_logic_vector(16 downto 0);
+    signal sram_palette_store_portB_address :   std_logic_vector(8-1 downto 0) := (others => 'Z');
+    signal sram_palette_store_portB_datain  :   std_logic_vector(16-1 downto 0) := (others => 'Z');
+    signal sram_palette_store_portB_dataout  :   std_logic_vector(16-1 downto 0);
 
     -- Colour Conversion Signals
     signal colour_index : std_logic_vector(8 downto 0); --Number from sram
@@ -204,15 +205,18 @@ begin
     -- Port B: To video output / colour conversion logic. 
 
 
-	process(clk, avs_paletteram_read_n) is
+	process(clk, 
+            avs_paletteram_read_n, 
+            avs_paletteram_address, 
+            avs_paletteram_write_n) is
 	begin
 		if (avs_paletteram_read_n = '0' ) then 
             --Reading all the things
-            sram_palette_store_portA_address <= avs_paletteram_address;
-            avs_paletteram_readdata <= sram_palette_store_portA_datain;
+            sram_palette_store_portA_address <= "00000000" or avs_paletteram_address;
+            avs_paletteram_readdata <= x"00000000" or sram_palette_store_portA_datain;
         elsif (avs_paletteram_write_n = '0') then
             --Writing all the things
-            sram_palette_store_portA_address <= avs_paletteram_address;
+            sram_palette_store_portA_address <= "00000000" or avs_paletteram_address;
             sram_palette_store_portA_datain  <= sram_palette_store_portA_datain;
 		else
             -- Put everything to high impedance.
@@ -312,9 +316,11 @@ begin
                 read_during_write_mode_mixed_ports      => "OLD_DATA",        --
                 -- WITH_NBE_READ -> means you get the old data if you're      --
                 -- contending. May not be supported on older cyclones.        --
+                -- Feb 13: Can confirm WITH_NBE_READ not supported on Cyclone --
+                -- II.                                                        --
                 -- NO_NBE_READ -> means you get an X if you're contending     --
-                read_during_write_mode_port_a       => "NEW_DATA_WITH_NBE_READ",
-                read_during_write_mode_port_b       => "NEW_DATA_WITH_NBE_READ",
+                read_during_write_mode_port_b       => "NEW_DATA_NO_NBE_READ",
+                read_during_write_mode_port_a       => "NEW_DATA_NO_NBE_READ",
                 --                                                            --
                 ----------------------------------------------------------------
 
@@ -392,7 +398,7 @@ begin
                     aso_vgaout_valid            <= '0';
                 elsif ((aso_vgaout_ready = '1') or (aso_vgaout_valid = '0')) then
                     --aso_vgaout_data             <= converted_data;
-                    aso_vgaout_data             <= asi_fifoin_data;
+                    aso_vgaout_data             <= X"0000" or asi_fifoin_data;
                     aso_vgaout_startofpacket    <= asi_fifoin_startofpacket;
                     aso_vgaout_endofpacket      <= asi_fifoin_endofpacket;
                     --aso_vgaout_empty				<= asi_fifoin_empty;
