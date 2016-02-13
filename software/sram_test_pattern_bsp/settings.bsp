@@ -2,10 +2,10 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>hal</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>Feb 6, 2016 5:40:13 PM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1454805613538</BspGeneratedUnixTimeStamp>
-        <BspGeneratedLocation>/home/stephen/school/ECE492/de2-video-processor/software/sram_test_pattern_bsp</BspGeneratedLocation>
-        <BspSettingsFile>./settings.bsp</BspSettingsFile>
+        <BspGeneratedTimeStamp>Feb 13, 2016 1:48:19 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1455396499770</BspGeneratedUnixTimeStamp>
+        <BspGeneratedLocation>/home/stefan/CapstoneWork/de2-video-processor/software/sram_test_pattern_bsp</BspGeneratedLocation>
+        <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>../../de2_video_processor_system.sopcinfo</SopcDesignFile>
         <JdiFile>default</JdiFile>
         <Cpu>nios2_qsys_0</Cpu>
@@ -863,26 +863,32 @@
                 <attributes>memory</attributes>
         </MemoryMap>
         <MemoryMap>
+                <slaveDescriptor>colour_palette_shifter_0</slaveDescriptor>
+                <addressRange>0x00409000 - 0x0040903F</addressRange>
+                <addressSpan>64</addressSpan>
+                <attributes/>
+        </MemoryMap>
+        <MemoryMap>
                 <slaveDescriptor>timer_0</slaveDescriptor>
-                <addressRange>0x00409000 - 0x0040901F</addressRange>
+                <addressRange>0x00409040 - 0x0040905F</addressRange>
                 <addressSpan>32</addressSpan>
                 <attributes>timer</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>altpll_0</slaveDescriptor>
-                <addressRange>0x00409020 - 0x0040902F</addressRange>
+                <addressRange>0x00409060 - 0x0040906F</addressRange>
                 <addressSpan>16</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>sysid_qsys_0</slaveDescriptor>
-                <addressRange>0x00409030 - 0x00409037</addressRange>
+                <addressRange>0x00409070 - 0x00409077</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>jtag_uart_0</slaveDescriptor>
-                <addressRange>0x00409038 - 0x0040903F</addressRange>
+                <addressRange>0x00409078 - 0x0040907F</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes>printable</attributes>
         </MemoryMap>
