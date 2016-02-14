@@ -76,7 +76,7 @@ architecture avalon of genesis_controller_interface is
 		process(vsync, clk, reset_n)
 			--This may need to be set up 
 			begin
-				if(reset_n = '1') then
+				if(reset_n = '0') then
 					current_state <= s0;
 				elsif(rising_edge(clk)) then
 					current_state <= next_state;
