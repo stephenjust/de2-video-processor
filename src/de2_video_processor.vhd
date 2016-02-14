@@ -50,12 +50,17 @@ entity de2_video_processor is
 		VGA_CLK      : out      std_logic;
 		VGA_BLANK    : out      std_logic;
 		VGA_HS       : out      std_logic;
-		VGA_VS       : out      std_logic;
+		VGA_VS       : buffer      std_logic;
 		VGA_SYNC     : out      std_logic;
 
 		-- Input switches and buttons
 		SW           : in       std_logic_vector (17 downto 0);
-		KEY          : in       std_logic_vector (3 downto 0)
+		KEY          : in       std_logic_vector (3 downto 0);
+		
+		-- GPIO Port 0 
+		GPIO_0 : inout std_logic_vector (35 downto 0);
+		-- GPIO Port 1
+		GPIO_1 : inout std_logic_vector (35 downto 0)
 	);
 end de2_video_processor;
 
@@ -91,6 +96,21 @@ architecture structure of de2_video_processor is
 		video_vga_controller_0_external_interface_R     : out   std_logic_vector(9 downto 0);                     -- R
 		video_vga_controller_0_external_interface_G     : out   std_logic_vector(9 downto 0);                     -- G
 		video_vga_controller_0_external_interface_B     : out   std_logic_vector(9 downto 0);                     -- B
+		genesis_0_conduit_end_vsync                     : in    std_logic                     := 'X';             -- vsync
+      genesis_0_conduit_end_dpad_up_input1            : in    std_logic                     := 'X';             -- dpad_up_input1
+      genesis_0_conduit_end_dpad_down_input1          : in    std_logic                     := 'X';             -- dpad_down_input1
+      genesis_0_conduit_end_dpad_left_input1          : in    std_logic                     := 'X';             -- dpad_left_input1
+      genesis_0_conduit_end_dpad_right_input1         : in    std_logic                     := 'X';             -- dpad_right_input1
+      genesis_0_conduit_end_select_input1             : out   std_logic;                                        -- select_input1
+      genesis_0_conduit_end_start_c_input1            : in    std_logic                     := 'X';             -- start_c_input1
+      genesis_0_conduit_end_ab_input1                 : in    std_logic                     := 'X';             -- ab_input1
+      genesis_0_conduit_end_dpad_up_input2            : in    std_logic                     := 'X';             -- dpad_up_input2
+      genesis_0_conduit_end_dpad_down_input2          : in    std_logic                     := 'X';             -- dpad_down_input2
+      genesis_0_conduit_end_dpad_left_input2          : in    std_logic                     := 'X';             -- dpad_left_input2
+      genesis_0_conduit_end_dpad_right_input2         : in    std_logic                     := 'X';             -- dpad_right_input2
+      genesis_0_conduit_end_select_input2             : out   std_logic;                                        -- select_input2
+      genesis_0_conduit_end_start_c_input2            : in    std_logic                     := 'X';             -- start_c_input2
+      genesis_0_conduit_end_ab_input2                 : in    std_logic                     := 'X';             -- ab_input2
 		tristate_conduit_bridge_0_out_generic_tristate_controller_0_tcm_read_n_out       : out   std_logic_vector(0 downto 0);
 		tristate_conduit_bridge_0_out_generic_tristate_controller_0_tcm_data_out         : inout std_logic_vector(7 downto 0) := (others => 'X');
 		tristate_conduit_bridge_0_out_generic_tristate_controller_0_tcm_chipselect_n_out : out   std_logic_vector(0 downto 0);
@@ -141,6 +161,21 @@ begin
 		video_vga_controller_0_external_interface_R     => VGA_R,     --                                          .R
 		video_vga_controller_0_external_interface_G     => VGA_G,     --                                          .G
 		video_vga_controller_0_external_interface_B     => VGA_B,     --                                          .B
+		genesis_0_conduit_end_vsync                     => VGA_VS, -- Might want to do VGA_CLK instead, 
+      genesis_0_conduit_end_dpad_up_input1            => GPIO_1(10),            --                                          .dpad_up_input1
+      genesis_0_conduit_end_dpad_down_input1          => GPIO_1(16),            --                                          .dpad_down_input1
+      genesis_0_conduit_end_dpad_left_input1          => GPIO_1(20),            --                                          .dpad_left_input1
+      genesis_0_conduit_end_dpad_right_input1         => GPIO_1(22),            --                                          .dpad_right_input1
+      genesis_0_conduit_end_select_input1             => GPIO_1(18),            --                                          .select_input1
+      genesis_0_conduit_end_start_c_input1            => GPIO_1(24),            --                                          .start_c_input1
+      genesis_0_conduit_end_ab_input1                 => GPIO_1(14),            --                                          .ab_input1
+      genesis_0_conduit_end_dpad_up_input2            => GPIO_1(26),            --                                          .dpad_up_input2
+      genesis_0_conduit_end_dpad_down_input2          => GPIO_1(32),            --                                          .dpad_down_input2
+      genesis_0_conduit_end_dpad_left_input2          => GPIO_1(31),            --  This might not be available..(36)           .dpad_left_input2
+      genesis_0_conduit_end_dpad_right_input2         => GPIO_1(33),            --  This might not be available..(38)           .dpad_right_input2
+      genesis_0_conduit_end_select_input2             => GPIO_1(34),            --                                          .select_input2
+      genesis_0_conduit_end_start_c_input2            => GPIO_1(35),            --  This might not be available..(40)           .start_c_input2
+      genesis_0_conduit_end_ab_input2                 => GPIO_1(28),            -- 	
 		tristate_conduit_bridge_0_out_generic_tristate_controller_0_tcm_read_n_out       => FL_OE_N,
 		tristate_conduit_bridge_0_out_generic_tristate_controller_0_tcm_data_out         => FL_DQ,
 		tristate_conduit_bridge_0_out_generic_tristate_controller_0_tcm_chipselect_n_out => FL_CE_N,
