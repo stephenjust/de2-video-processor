@@ -2,9 +2,9 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>hal</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>Feb 14, 2016 1:48:31 PM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1455482911427</BspGeneratedUnixTimeStamp>
-        <BspGeneratedLocation>/afs/ualberta.ca/home/m/s/mstrong/de2-video-processor/software/de2_video_processor_bsp</BspGeneratedLocation>
+        <BspGeneratedTimeStamp>Feb 14, 2016 4:17:37 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1455491857303</BspGeneratedUnixTimeStamp>
+        <BspGeneratedLocation>/home/stephen/school/ECE492/de2-video-processor/software/de2_video_processor_bsp</BspGeneratedLocation>
         <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>../../de2_video_processor_system.sopcinfo</SopcDesignFile>
         <JdiFile>default</JdiFile>
@@ -863,38 +863,32 @@
                 <attributes>memory</attributes>
         </MemoryMap>
         <MemoryMap>
-                <slaveDescriptor>colour_palette_shifter_0</slaveDescriptor>
-                <addressRange>0x00409000 - 0x0040903F</addressRange>
-                <addressSpan>64</addressSpan>
-                <attributes/>
-        </MemoryMap>
-        <MemoryMap>
                 <slaveDescriptor>timer_0</slaveDescriptor>
-                <addressRange>0x00409040 - 0x0040905F</addressRange>
+                <addressRange>0x00409000 - 0x0040901F</addressRange>
                 <addressSpan>32</addressSpan>
                 <attributes>timer</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>altpll_0</slaveDescriptor>
-                <addressRange>0x00409060 - 0x0040906F</addressRange>
+                <addressRange>0x00409020 - 0x0040902F</addressRange>
                 <addressSpan>16</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>sysid_qsys_0</slaveDescriptor>
-                <addressRange>0x00409070 - 0x00409077</addressRange>
+                <addressRange>0x00409030 - 0x00409037</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>jtag_uart_0</slaveDescriptor>
-                <addressRange>0x00409078 - 0x0040907F</addressRange>
+                <addressRange>0x00409038 - 0x0040903F</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes>printable</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>genesis_0</slaveDescriptor>
-                <addressRange>0x00409084 - 0x00409087</addressRange>
+                <addressRange>0x00409040 - 0x00409043</addressRange>
                 <addressSpan>4</addressSpan>
                 <attributes/>
         </MemoryMap>

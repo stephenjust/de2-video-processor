@@ -17,42 +17,42 @@
 #include <stdio.h>
 #include <system.h>
 #include <io.h>
-#include <sys/alt_stdio.h>
 
 int main()
 {
-  alt_printf("Hello from Nios II!\n");
+  printf("Hello from Nios II!\n");
 
   int genesis_value;
   while(1){
-	  genesis_value = IORD(GENESIS_0_BASE, 0);
+	  genesis_value = IORD_32DIRECT(GENESIS_0_BASE, 0);
 	  /*Write some printf's to test if &'nd values correspond with button presses
 	   * stuff like 1=up, 2=down, 4 = left, 8=right, 16=a, 32=b, 64=c, 128=start
 	   */
 
+	  printf("%08X\n", genesis_value);
 	  if (genesis_value&0x1){
-		  alt_printf("Up was pressed\n");
+		  printf("Up was pressed\n");
 	  }
 	  if (genesis_value&0x2){
-		  alt_printf("Down was pressed\n");
+		  printf("Down was pressed\n");
 	  }
 	  if (genesis_value&0x3){
-		  alt_printf("Left was pressed\n");
+		  printf("Left was pressed\n");
 	  }
 	  if (genesis_value&0x4){
-		  alt_printf("Right was pressed\n");
+		  printf("Right was pressed\n");
 	  }
 	  if (genesis_value&0x5){
-		  alt_printf("A was pressed\n");
+		  printf("A was pressed\n");
 	  }
 	  if (genesis_value&0x6){
-		  alt_printf("B was pressed\n");
+		  printf("B was pressed\n");
 	  }
 	  if (genesis_value&0x7){
-		  alt_printf("C was pressed\n");
+		  printf("C was pressed\n");
 	  }
 	  if (genesis_value&0x8){
-		  alt_printf("Start was pressed\n");
+		  printf("Start was pressed\n");
 	  }
   }
   return 0;

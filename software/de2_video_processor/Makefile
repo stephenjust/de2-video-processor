@@ -142,9 +142,7 @@ ACDS_VERSION := 12.1sp1
 ELF := de2_video_processor.elf
 
 # Paths to C, C++, and assembly source files.
-C_SRCS += hello_world.c
-C_SRCS += .metadata/.plugins/org.eclipse.cdt.make.core/specs.c
-CXX_SRCS := .metadata/.plugins/org.eclipse.cdt.make.core/specs.cpp
+C_SRCS := hello_world.c
 ASM_SRCS :=
 
 
