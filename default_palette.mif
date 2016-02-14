@@ -1,0 +1,48 @@
+%
+    
+    Colour Space Converter
+    Default colour palette RAM
+   
+    ECE 492, Group 6
+    Stefan Martynkiw, Stephen Just, Mason Strong
+
+
+	/* 16-bit colour output */
+
+%
+
+
+-- http://quartushelp.altera.com/15.0/mergedProjects/reference/glossary/def_mif.htm
+-- http://www.mil.ufl.edu/4712/docs/mif_help.pdf
+
+DEPTH = 256;                  -- The size of memory in words
+WIDTH = 16;                   -- The size of data in bits
+ADDRESS_RADIX = UNS;          -- The radix for address values (unsigned DEC)
+DATA_RADIX = HEX;             -- The radix for data values
+CONTENT                       -- start of (address : data pairs)
+BEGIN
+
+-- memory address : data
+-- Colour ordering follows the EGA default palette.
+-- Colours chosen from here: http://www.barth-dev.de/online/rgb565-color-picker/
+
+00 : 0000;    -- Black            
+01 : 0015;    -- Blue
+02 : 2704;    -- Green
+03 : 1E79;    -- Cyan
+04 : A800;    -- Red
+05 : A815;    -- Magenta
+06 : E3C1;    -- Brown
+07 : AD55;    -- Light Grey
+08 : 52AA;    -- Dark Grey
+09 : 52BF;    -- Bright Blue
+10 : 57EA;    -- Bright Green
+11 : 57FF;    -- Bright Cyan
+12 : FAAA;    -- Bright red
+13 : FABF;    -- Bright magenta
+14 : FFEA;    -- Bright Yellow
+15 : FFFF;    -- Bright white
+[16..254] : 0000;
+255: FFFF;
+
+END;
