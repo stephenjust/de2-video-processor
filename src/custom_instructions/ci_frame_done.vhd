@@ -13,8 +13,8 @@ USE ieee.std_logic_1164.all;
 
 ENTITY ci_frame_done IS
 	PORT (
-		clk              : in     std_logic;
-		reset            : in     std_logic;
+		clk              : in     std_logic; -- Only keeping QSYS happy - use ncs_ci_clk
+		reset            : in     std_logic; -- Only keeping QSYS happy - use ncs_ci_reset
 
 		-- Custom instruction ports
 		ncs_ci_clk       : in     std_logic;
@@ -32,11 +32,7 @@ END ENTITY;
 ARCHITECTURE Behavioral OF ci_frame_done IS
 BEGIN
 
-	PROCESS (ncs_ci_clk)
-	BEGIN
-		IF rising_edge(ncs_ci_clk) AND ncs_ci_clk_en = '1' THEN
-			-- Do instruction stuff
-		END IF;
-	END PROCESS;
+	coe_ext_trigger <= ncs_ci_start;
+	ncs_ci_done <= coe_ext_done;
 
 END ARCHITECTURE;

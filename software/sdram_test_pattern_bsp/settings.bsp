@@ -2,8 +2,8 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>hal</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>Feb 12, 2016 3:11:37 PM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1455315097265</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>Feb 14, 2016 3:26:56 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1455488816126</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>/home/stephen/school/ECE492/de2-video-processor/software/sdram_test_pattern_bsp</BspGeneratedLocation>
         <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>../../de2_video_processor_system.sopcinfo</SopcDesignFile>
@@ -933,6 +933,12 @@
                 <addressRange>0x00409038 - 0x0040903F</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes>printable</attributes>
+        </MemoryMap>
+        <MemoryMap>
+                <slaveDescriptor>genesis_0</slaveDescriptor>
+                <addressRange>0x00409040 - 0x00409043</addressRange>
+                <addressSpan>4</addressSpan>
+                <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>sdram_0</slaveDescriptor>

@@ -150,6 +150,14 @@ ARCHITECTURE Behaviour OF video_fb_streamer IS
 	SIGNAL sram_written              : integer := 0;
 BEGIN
 
+	PROCESS (clk)
+	BEGIN
+		IF rising_edge(clk) THEN
+			-- Placeholder for now
+			coe_ext_done <= coe_ext_trigger;
+		END IF;
+	END PROCESS;
+
 	aso_source_valid           <= not fifo_output_empty;
 
 	-- Instantiate Components
