@@ -122,6 +122,14 @@
          type = "boolean";
       }
    }
+   element genesis_0
+   {
+      datum _sortIndex
+      {
+         value = "19";
+         type = "int";
+      }
+   }
    element nios2_qsys_0.jtag_debug_module
    {
       datum baseAddress
@@ -180,11 +188,11 @@
          type = "String";
       }
    }
-   element timer_0.s1
+   element genesis_0.s0
    {
       datum baseAddress
       {
-         value = "4231232";
+         value = "4231300";
          type = "String";
       }
    }
@@ -198,6 +206,14 @@
       datum baseAddress
       {
          value = "8388608";
+         type = "String";
+      }
+   }
+   element timer_0.s1
+   {
+      datum baseAddress
+      {
+         value = "4231232";
          type = "String";
       }
    }
@@ -334,7 +350,7 @@
  <parameter name="projectName" value="" />
  <parameter name="sopcBorderPoints" value="false" />
  <parameter name="systemHash" value="1" />
- <parameter name="timeStamp" value="1455400078777" />
+ <parameter name="timeStamp" value="1455482309919" />
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
  <interface name="clk" internal="clk_0.clk_in" type="clock" dir="end" />
@@ -356,6 +372,11 @@
  <interface
    name="video_vga_controller_0_external_interface"
    internal="video_vga_controller_0.external_interface"
+   type="conduit"
+   dir="end" />
+ <interface
+   name="genesis_0_conduit_end"
+   internal="genesis_0.conduit_end"
    type="conduit"
    dir="end" />
  <module kind="clock_source" version="12.1" enabled="1" name="clk_0">
@@ -463,8 +484,8 @@
   <parameter name="tightlyCoupledInstructionMaster1AddrWidth" value="1" />
   <parameter name="tightlyCoupledInstructionMaster2AddrWidth" value="1" />
   <parameter name="tightlyCoupledInstructionMaster3AddrWidth" value="1" />
-  <parameter name="instSlaveMapParam"><![CDATA[<address-map><slave name='onchip_memory2_0.s1' start='0x404000' end='0x408000' /><slave name='nios2_qsys_0.jtag_debug_module' start='0x408800' end='0x409000' /><slave name='sdram_0.s1' start='0x800000' end='0x1000000' /><slave name='sram_0.avalon_sram_slave' start='0x1080000' end='0x1100000' /></address-map>]]></parameter>
-  <parameter name="dataSlaveMapParam"><![CDATA[<address-map><slave name='generic_tristate_controller_0.uas' start='0x0' end='0x400000' /><slave name='onchip_memory2_0.s1' start='0x404000' end='0x408000' /><slave name='nios2_qsys_0.jtag_debug_module' start='0x408800' end='0x409000' /><slave name='colour_palette_shifter_0.paletteram' start='0x409000' end='0x409040' /><slave name='timer_0.s1' start='0x409040' end='0x409060' /><slave name='altpll_0.pll_slave' start='0x409060' end='0x409070' /><slave name='sysid_qsys_0.control_slave' start='0x409070' end='0x409078' /><slave name='jtag_uart_0.avalon_jtag_slave' start='0x409078' end='0x409080' /><slave name='sdram_0.s1' start='0x800000' end='0x1000000' /><slave name='sram_0.avalon_sram_slave' start='0x1080000' end='0x1100000' /></address-map>]]></parameter>
+  <parameter name="instSlaveMapParam"><![CDATA[<address-map><slave name='onchip_memory2_0.s1' start='0x404000' end='0x408000' /><slave name='nios2_qsys_0.jtag_debug_module' start='0x408800' end='0x409000' /><slave name='genesis_0.s0' start='0x409084' end='0x409088' /><slave name='sdram_0.s1' start='0x800000' end='0x1000000' /><slave name='sram_0.avalon_sram_slave' start='0x1080000' end='0x1100000' /></address-map>]]></parameter>
+  <parameter name="dataSlaveMapParam"><![CDATA[<address-map><slave name='generic_tristate_controller_0.uas' start='0x0' end='0x400000' /><slave name='onchip_memory2_0.s1' start='0x404000' end='0x408000' /><slave name='nios2_qsys_0.jtag_debug_module' start='0x408800' end='0x409000' /><slave name='colour_palette_shifter_0.paletteram' start='0x409000' end='0x409040' /><slave name='timer_0.s1' start='0x409040' end='0x409060' /><slave name='altpll_0.pll_slave' start='0x409060' end='0x409070' /><slave name='sysid_qsys_0.control_slave' start='0x409070' end='0x409078' /><slave name='jtag_uart_0.avalon_jtag_slave' start='0x409078' end='0x409080' /><slave name='genesis_0.s0' start='0x409084' end='0x409088' /><slave name='sdram_0.s1' start='0x800000' end='0x1000000' /><slave name='sram_0.avalon_sram_slave' start='0x1080000' end='0x1100000' /></address-map>]]></parameter>
   <parameter name="clockFrequency" value="50000000" />
   <parameter name="deviceFamilyName" value="Cyclone II" />
   <parameter name="internalIrqMaskSystemInfo" value="3" />
@@ -1053,6 +1074,9 @@
   <parameter name="AUTO_CLOCK_CLOCK_RATE" value="50000000" />
   <parameter name="AUTO_CLOCK_VIDEO_CLOCK_RATE" value="25174999" />
  </module>
+ <module kind="genesis" version="1.0" enabled="1" name="genesis_0">
+  <parameter name="AUTO_CLOCK_CLOCK_RATE" value="50000000" />
+ </module>
  <connection
    kind="avalon"
    version="12.1"
@@ -1483,4 +1507,31 @@
    version="12.1"
    start="altpll_0.c1"
    end="colour_palette_shifter_0.clock" />
+ <connection kind="clock" version="12.1" start="altpll_0.c1" end="genesis_0.clock" />
+ <connection
+   kind="reset"
+   version="12.1"
+   start="nios2_qsys_0.jtag_debug_module_reset"
+   end="genesis_0.reset" />
+ <connection
+   kind="reset"
+   version="12.1"
+   start="clk_0.clk_reset"
+   end="genesis_0.reset" />
+ <connection
+   kind="avalon"
+   version="12.1"
+   start="nios2_qsys_0.data_master"
+   end="genesis_0.s0">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00409084" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="12.1"
+   start="nios2_qsys_0.instruction_master"
+   end="genesis_0.s0">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00409084" />
+ </connection>
 </system>

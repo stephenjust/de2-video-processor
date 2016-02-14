@@ -145,9 +145,9 @@ architecture avalon of genesis_controller_interface is
 							next_state <= s2;
 						
 						when s2 =>
-							---Drive Select Line low
-							select_input1 <= '0';
-							select_input2 <= '0';
+							---Drive Select Line High
+							select_input1 <= '1';
+							select_input2 <= '1';
 							next_state <= s3;
 						
 						when s3 =>
