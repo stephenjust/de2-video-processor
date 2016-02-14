@@ -205,6 +205,9 @@ end component;
     signal sram_palette_store_portB_wren_b  : std_logic;
 
 
+    -- Signal to store the pixel clogged in the pixel pipeline.
+    signal clogged_pixel                    : std_logic_vector(16-1 downto 0);
+
 begin
     -- This ram stores the palette data needed for the conversion.
     -- This ram is set up as a dual port ram so that it can be written
@@ -379,7 +382,7 @@ begin
             )
             port map (
                 -- Inputs
-                clock0			=> clk_cpu, -- PortA, talks to CPU.
+                clock0			=> clk_video, -- PortA, talks to CPU.
                 clock1          => clk_video, -- Port B, timed to video.
 
 		        address_a		=> sram_palette_store_portA_address,     -- Address bus for port A.
@@ -388,7 +391,7 @@ begin
                 data_a          => sram_palette_store_portA_datain,     --Data input for port A.
                 data_b          => sram_palette_store_portB_datain,     --Data input for port B.
         		-- Outputs
-                q_a				=> sram_palette_store_portA_dataout,     --Data output port from memory
+                q_a             => sram_palette_store_portA_dataout,     --Data output port from memory
                 q_b             => sram_palette_store_portB_dataout,     --Data output port from memory
 
                 -- Read/Write enable control signals
@@ -430,7 +433,7 @@ sram_palette_store_portB_rden_b <= asi_fifoin_valid;
 
 --Set to zero for now. Typically tie it to write signal on avalon bus.
 -- Since using write_n, need to negate. 
-sram_palette_store_portA_wren_a <= not avs_paletteram_write_n;
+sram_palette_store_portA_wren_a <= '0'; --not avs_paletteram_write_n;
 
 
 

@@ -2,8 +2,8 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>hal</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>Feb 13, 2016 1:48:19 PM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1455396499770</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>Feb 13, 2016 5:46:25 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1455410785870</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>/home/stefan/CapstoneWork/de2-video-processor/software/sram_test_pattern_bsp</BspGeneratedLocation>
         <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>../../de2_video_processor_system.sopcinfo</SopcDesignFile>

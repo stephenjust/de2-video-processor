@@ -490,6 +490,219 @@ set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_RO
 
 set_global_assignment -name EDA_TEST_BENCH_ENABLE_STATUS NOT_USED -section_id eda_simulation
 
+set_global_assignment -name ENABLE_SIGNALTAP ON
+set_global_assignment -name USE_SIGNALTAP_FILE output_files/stp1.stp
+set_global_assignment -name SLD_NODE_CREATOR_ID 110 -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_ENTITY_NAME sld_signaltap -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_clk -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|clk_video" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_NODE_INFO=805334528" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_POWER_UP_TRIGGER=0" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_INVERSION_MASK_LENGTH=0" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ATTRIBUTE_MEM_MODE=OFF" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STATE_FLOW_USE_GENERATED=0" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STATE_BITS=11" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_BUFFER_FULL_STOP=1" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_CURRENT_RESOURCE_WIDTH=1" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_LEVEL=1" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_IN_ENABLED=0" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ADVANCED_TRIGGER_ENTITY=basic,1," -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_LEVEL_PIPELINE=1" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ENABLE_ADVANCED_TRIGGER=0" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SEGMENT_SIZE=2048" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SAMPLE_DEPTH=2048" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[0] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|address_b[0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[1] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|address_b[1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[2] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|address_b[2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[3] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|address_b[3]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[4] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|address_b[4]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[5] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|address_b[5]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[6] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|address_b[6]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[7] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|address_b[7]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[8] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|q_b[0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[9] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|q_b[10]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[10] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|q_b[11]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[11] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|q_b[12]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[12] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|q_b[13]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[13] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|q_b[14]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[14] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|q_b[15]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[15] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|q_b[1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[16] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|q_b[2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[17] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|q_b[3]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[18] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|q_b[4]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[19] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|q_b[5]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[20] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|q_b[6]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[21] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|q_b[7]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[22] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|q_b[8]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[23] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|q_b[9]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[24] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|rden_a" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[25] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|rden_b" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[26] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|wren_a" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[27] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|wren_b" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[28] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|asi_fifoin_data[0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[29] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|asi_fifoin_data[1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[30] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|asi_fifoin_data[2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[31] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|asi_fifoin_data[3]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[32] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|asi_fifoin_data[4]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[33] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|asi_fifoin_data[5]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[34] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|asi_fifoin_data[6]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[35] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|asi_fifoin_data[7]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[36] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|asi_fifoin_endofpacket" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[37] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|asi_fifoin_ready" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[38] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|asi_fifoin_startofpacket" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[39] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|asi_fifoin_valid" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[40] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|aso_vgaout_data[0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[41] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|aso_vgaout_data[10]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[42] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|aso_vgaout_data[11]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[43] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|aso_vgaout_data[12]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[44] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|aso_vgaout_data[13]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[45] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|aso_vgaout_data[14]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[46] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|aso_vgaout_data[15]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[47] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|aso_vgaout_data[1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[48] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|aso_vgaout_data[2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[49] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|aso_vgaout_data[3]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[50] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|aso_vgaout_data[4]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[51] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|aso_vgaout_data[5]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[52] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|aso_vgaout_data[6]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[53] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|aso_vgaout_data[7]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[54] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|aso_vgaout_data[8]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[55] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|aso_vgaout_data[9]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[56] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_address[0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[57] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_address[1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[58] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_address[2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[59] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_address[3]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[60] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_read_n" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[61] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[62] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[10]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[63] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[11]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[64] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[12]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[65] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[13]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[66] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[14]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[67] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[15]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[68] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[16]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[69] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[17]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[70] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[18]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[71] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[19]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[72] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[73] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[20]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[74] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[21]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[75] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[22]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[76] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[23]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[77] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[24]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[78] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[25]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[79] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[26]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[80] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[27]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[81] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[28]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[82] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[29]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[83] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[84] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[30]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[85] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[31]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[86] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[3]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[87] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[4]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[88] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[5]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[89] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[6]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[90] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[7]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[91] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[8]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[92] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[9]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[0] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|address_b[0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[1] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|address_b[1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[2] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|address_b[2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[3] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|address_b[3]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[4] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|address_b[4]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[5] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|address_b[5]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[6] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|address_b[6]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[7] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|address_b[7]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[8] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|q_b[0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[9] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|q_b[10]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[10] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|q_b[11]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[11] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|q_b[12]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[12] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|q_b[13]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[13] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|q_b[14]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[14] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|q_b[15]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[15] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|q_b[1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[16] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|q_b[2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[17] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|q_b[3]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[18] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|q_b[4]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[19] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|q_b[5]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[20] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|q_b[6]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[21] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|q_b[7]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[22] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|q_b[8]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[23] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|q_b[9]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[24] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|rden_a" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[25] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|rden_b" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[26] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|wren_a" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[27] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram|wren_b" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[28] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|asi_fifoin_data[0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[29] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|asi_fifoin_data[1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[30] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|asi_fifoin_data[2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[31] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|asi_fifoin_data[3]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[32] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|asi_fifoin_data[4]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[33] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|asi_fifoin_data[5]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[34] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|asi_fifoin_data[6]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[35] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|asi_fifoin_data[7]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[36] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|asi_fifoin_endofpacket" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[37] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|asi_fifoin_ready" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[38] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|asi_fifoin_startofpacket" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[39] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|asi_fifoin_valid" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[40] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|aso_vgaout_data[0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[41] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|aso_vgaout_data[10]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[42] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|aso_vgaout_data[11]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[43] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|aso_vgaout_data[12]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[44] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|aso_vgaout_data[13]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[45] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|aso_vgaout_data[14]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[46] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|aso_vgaout_data[15]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[47] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|aso_vgaout_data[1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[48] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|aso_vgaout_data[2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[49] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|aso_vgaout_data[3]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[50] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|aso_vgaout_data[4]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[51] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|aso_vgaout_data[5]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[52] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|aso_vgaout_data[6]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[53] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|aso_vgaout_data[7]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[54] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|aso_vgaout_data[8]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[55] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|aso_vgaout_data[9]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[56] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_address[0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[57] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_address[1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[58] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_address[2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[59] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_address[3]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[60] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_read_n" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[61] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[62] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[10]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[63] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[11]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[64] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[12]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[65] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[13]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[66] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[14]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[67] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[15]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[68] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[16]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[69] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[17]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[70] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[18]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[71] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[19]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[72] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[73] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[20]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[74] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[21]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[75] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[22]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[76] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[23]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[77] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[24]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[78] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[25]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[79] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[26]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[80] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[27]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[81] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[28]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[82] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[29]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[83] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[84] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[30]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[85] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[31]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[86] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[3]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[87] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[4]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[88] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[5]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[89] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[6]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[90] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[7]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[91] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[8]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[92] -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|avs_paletteram_readdata[9]" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_DATA_BITS=93" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_BITS=93" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK=0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK_LENGTH=304" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_NODE_CRC_LOWORD=41115" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_NODE_CRC_HIWORD=2341" -section_id auto_signaltap_0
+set_global_assignment -name MIF_FILE src/colour_space_converter/default_palette.mif
 set_global_assignment -name VHDL_FILE src/de2_video_processor.vhd
 set_global_assignment -name QSYS_FILE src/de2_video_processor_system.qsys
 set_global_assignment -name VHDL_FILE src/video_fb_streamer/video_fb_streamer.vhd
@@ -497,4 +710,7 @@ set_global_assignment -name VHDL_FILE src/video_fb_streamer/video_fb_fifo.vhd
 set_global_assignment -name VHDL_FILE src/video_fb_streamer/video_fb_dma_manager.vhd
 set_global_assignment -name VHDL_FILE src/controller.vhd
 set_global_assignment -name VHDL_FILE src/custom_instructions/ci_frame_done.vhd
+set_global_assignment -name SIGNALTAP_FILE output_files/stp1.stp
+set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
+set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

@@ -24,6 +24,9 @@ int main()
 		for (col = 0; col < 640; col = col + 4)
 		{
 			color = ((row + col) % 256) << 0 | ((row + col) % 256) << 8 | ((row + col) % 256) << 16 | ((row + col) % 256) << 24;
+			//color = 3;
+
+			IOWR_32DIRECT(SRAM_0_BASE, row * 640 + col, color << 24 | color << 16 | color << 8 | color << 0);
 			if (row == 0 || row == 479)
 			{
 				IOWR_32DIRECT(SRAM_0_BASE, row * 640 + col, 0xFFFFFFFF);
