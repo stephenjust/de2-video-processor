@@ -33,7 +33,8 @@ ENTITY video_fb_dma_manager IS
 		reset                : in     std_logic;
 
 		-- Control Signals
-		swap_next_frame      : in     std_logic;
+		swap_trigger         : in     std_logic;
+		swap_done            : buffer std_logic;
 
 		-- FIFO source
 		fifo_startofpacket   : buffer std_logic;
@@ -72,7 +73,26 @@ ARCHITECTURE Behaviour OF video_fb_dma_manager IS
 	SIGNAL sram_busy        : std_logic := '0';
 	SIGNAL sram_ack         : std_logic := '0';
 
+	SIGNAL sdram_copy_waiting : std_logic := '0';
+
 BEGIN
+
+	-- Process to handle the SDRAM to SRAM copy
+	sdram_dma : PROCESS (clk)
+	BEGIN
+		IF rising_edge(clk) THEN
+			IF swap_trigger = '1' THEN
+				sdram_copy_waiting <= '1';
+			END IF;
+			-- Placeholder for now
+			IF sdram_copy_waiting = '1' THEN
+				sdram_copy_waiting <= '0';
+				swap_done <= '1';
+			ELSE
+				swap_done <= '0';
+			END IF;
+		END IF;
+	END PROCESS sdram_dma;
 
 	-- Process to handle all communication with the SRAM
 	sram_dma : PROCESS (clk)
@@ -122,12 +142,6 @@ BEGIN
 			END IF;
 		END IF;
 	END PROCESS sram_dma;
-
-	-- TODO: SDRAM logic
-	sdram_dma : PROCESS (clk)
-	BEGIN
-	
-	END PROCESS sdram_dma;
 
 	-- Output of SRAM read is always input to FIFO so we can glue them
 	-- directly together without any additional logic.
