@@ -97,6 +97,9 @@ ARCHITECTURE Behaviour OF video_fb_dma_manager IS
 		);
 	END COMPONENT video_fb_sdram_reader;
 
+	-- Type definitions
+	TYPE state IS (IDLE, READ_SRAM, WRITE_SRAM);
+
 	-- Constants
 	CONSTANT sram_burst_size : std_logic_vector(7 downto 0) := x"20"; -- 32
 	CONSTANT sdram_burst_size : std_logic_vector(7 downto 0) := x"40"; -- 64
@@ -105,14 +108,13 @@ ARCHITECTURE Behaviour OF video_fb_dma_manager IS
 	-- Signals
 	SIGNAL sram_read_offset : std_logic_vector(31 downto 0) := (others => '0');
 	SIGNAL sram_read_count  : std_logic_vector(7 downto 0) := (others => '0');
-	SIGNAL sram_busy        : std_logic := '0';
-	SIGNAL sram_ack         : std_logic := '0';
 
 	SIGNAL sdram_read_waiting : std_logic := '0';
 	SIGNAL sdram_read_active  : std_logic := '0';
 	SIGNAL sdram_read_offset  : std_logic_vector(31 downto 0) := (others => '0');
 	SIGNAL sdram_read_count   : std_logic_vector(7 downto 0) := (others => '0');
 
+	SIGNAL current_state : state := IDLE;
 BEGIN
 
 	-- Process to handle the SDRAM to SRAM copy
@@ -139,49 +141,60 @@ BEGIN
 
 	-- Process to handle all communication with the SRAM
 	sram_dma : PROCESS (clk)
+		VARIABLE next_state : state;
 	BEGIN
 		IF rising_edge(clk) THEN
-			-- TODO: Frame swap logic
 			IF reset = '1' THEN
-				sram_ack <= '0';
-				sram_busy <= '0';
 				sram_read_offset <= (others => '0');
 				sram_read_count <= (others => '0');
 				dma0_read <= '0';
-			ELSIF sram_busy = '0' AND fifo_ready = '1' THEN
-				-- Start the process to read from SRAM
-				sram_busy <= '1';
-				sram_ack <= '0';
-				sram_read_count <= (others => '0');
-				dma0_address <= SRAM_BUF_START_ADDRESS + sram_read_offset;
-				dma0_burstcount <= sram_burst_size;
-				dma0_read <= '1';
-			ELSIF sram_busy = '1' THEN
-				-- We need to hold our read request until the SRAM de-asserts waitrequest
-				IF sram_ack = '0' AND dma0_waitrequest = '0' THEN
-					dma0_read <= '0';
-					dma0_address <= (others => '0');
-					dma0_burstcount <= (others => '0');
-					sram_ack <= '1';
-				END IF;
-				-- Handle the completion of a burst. The strange burst size math is a sloppy attempt
-				-- to account for byte-wise addressing when we receive two bytes at a time.
-				IF sram_read_count >= sram_burst_size THEN
-					sram_busy <= '0';
-					-- Our pixel count is a multiple of the burst size, so we can get away with only
-					-- checking that we have reached the end of a frame when the burst is over.
-					IF (sram_read_offset + (sram_burst_size & '0') < frame_size) THEN
-						sram_read_offset <= sram_read_offset + (sram_burst_size & '0');
-					ELSE
-						sram_read_offset <= (others => '0');
-					END IF;
-				END IF;
-				-- Count the incoming data packets. Combinational logic below will actually
-				-- pass the data to the FIFO.
-				IF dma0_readdatavalid = '1' THEN
-					sram_read_count <= sram_read_count + '1';
-				END IF;
+			ELSE
+				CASE current_state IS
+					WHEN IDLE =>
+						IF fifo_ready = '1' THEN
+							-- Start the process to read from SRAM
+							sram_read_count <= (others => '0');
+							dma0_address <= SRAM_BUF_START_ADDRESS + sram_read_offset;
+							dma0_burstcount <= sram_burst_size;
+							dma0_read <= '1';
+							next_state := READ_SRAM;
+						ELSE
+							next_state := IDLE;
+						END IF;
+
+					WHEN READ_SRAM =>
+						-- We need to hold our read request until the SRAM de-asserts waitrequest
+						IF dma0_waitrequest = '0' THEN
+							dma0_read <= '0';
+							dma0_address <= (others => '0');
+							dma0_burstcount <= (others => '0');
+						END IF;
+
+						-- Handle the completion of a burst. The strange burst size math is a sloppy attempt
+						-- to account for byte-wise addressing when we receive two bytes at a time.
+						IF sram_read_count >= sram_burst_size THEN
+							next_state := IDLE;
+							-- Our pixel count is a multiple of the burst size, so we can get away with only
+							-- checking that we have reached the end of a frame when the burst is over.
+							IF (sram_read_offset + (sram_burst_size & '0') < frame_size) THEN
+								sram_read_offset <= sram_read_offset + (sram_burst_size & '0');
+							ELSE
+								sram_read_offset <= (others => '0');
+							END IF;
+						ELSE
+							next_state := READ_SRAM;
+						END IF;
+						-- Count the incoming data packets. Combinational logic below will actually
+						-- pass the data to the FIFO.
+						IF dma0_readdatavalid = '1' THEN
+							sram_read_count <= sram_read_count + '1';
+						END IF;
+
+					WHEN OTHERS =>
+						next_state := IDLE;
+				END CASE;
 			END IF;
+			current_state <= next_state;
 		END IF;
 	END PROCESS sram_dma;
 
