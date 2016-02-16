@@ -42,7 +42,7 @@
    {
       datum baseAddress
       {
-         value = "4231288";
+         value = "4231736";
          type = "String";
       }
    }
@@ -105,7 +105,7 @@
    {
       datum baseAddress
       {
-         value = "4231280";
+         value = "4231728";
          type = "String";
       }
    }
@@ -176,15 +176,15 @@
    {
       datum baseAddress
       {
-         value = "4231264";
+         value = "4231712";
          type = "String";
       }
    }
-   element timer_0.s1
+   element onchip_memory2_0.s1
    {
       datum baseAddress
       {
-         value = "4231232";
+         value = "4210688";
          type = "String";
       }
    }
@@ -201,11 +201,11 @@
          type = "String";
       }
    }
-   element onchip_memory2_0.s1
+   element timer_0.s1
    {
       datum baseAddress
       {
-         value = "4210688";
+         value = "4231680";
          type = "String";
       }
    }
@@ -334,7 +334,7 @@
  <parameter name="projectName" value="" />
  <parameter name="sopcBorderPoints" value="false" />
  <parameter name="systemHash" value="1" />
- <parameter name="timeStamp" value="1455400078777" />
+ <parameter name="timeStamp" value="1455572369141" />
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
  <interface name="clk" internal="clk_0.clk_in" type="clock" dir="end" />
@@ -464,7 +464,7 @@
   <parameter name="tightlyCoupledInstructionMaster2AddrWidth" value="1" />
   <parameter name="tightlyCoupledInstructionMaster3AddrWidth" value="1" />
   <parameter name="instSlaveMapParam"><![CDATA[<address-map><slave name='onchip_memory2_0.s1' start='0x404000' end='0x408000' /><slave name='nios2_qsys_0.jtag_debug_module' start='0x408800' end='0x409000' /><slave name='sdram_0.s1' start='0x800000' end='0x1000000' /><slave name='sram_0.avalon_sram_slave' start='0x1080000' end='0x1100000' /></address-map>]]></parameter>
-  <parameter name="dataSlaveMapParam"><![CDATA[<address-map><slave name='generic_tristate_controller_0.uas' start='0x0' end='0x400000' /><slave name='onchip_memory2_0.s1' start='0x404000' end='0x408000' /><slave name='nios2_qsys_0.jtag_debug_module' start='0x408800' end='0x409000' /><slave name='colour_palette_shifter_0.paletteram' start='0x409000' end='0x409040' /><slave name='timer_0.s1' start='0x409040' end='0x409060' /><slave name='altpll_0.pll_slave' start='0x409060' end='0x409070' /><slave name='sysid_qsys_0.control_slave' start='0x409070' end='0x409078' /><slave name='jtag_uart_0.avalon_jtag_slave' start='0x409078' end='0x409080' /><slave name='sdram_0.s1' start='0x800000' end='0x1000000' /><slave name='sram_0.avalon_sram_slave' start='0x1080000' end='0x1100000' /></address-map>]]></parameter>
+  <parameter name="dataSlaveMapParam"><![CDATA[<address-map><slave name='generic_tristate_controller_0.uas' start='0x0' end='0x400000' /><slave name='onchip_memory2_0.s1' start='0x404000' end='0x408000' /><slave name='nios2_qsys_0.jtag_debug_module' start='0x408800' end='0x409000' /><slave name='colour_palette_shifter_0.paletteram' start='0x409000' end='0x409200' /><slave name='timer_0.s1' start='0x409200' end='0x409220' /><slave name='altpll_0.pll_slave' start='0x409220' end='0x409230' /><slave name='sysid_qsys_0.control_slave' start='0x409230' end='0x409238' /><slave name='jtag_uart_0.avalon_jtag_slave' start='0x409238' end='0x409240' /><slave name='sdram_0.s1' start='0x800000' end='0x1000000' /><slave name='sram_0.avalon_sram_slave' start='0x1080000' end='0x1100000' /></address-map>]]></parameter>
   <parameter name="clockFrequency" value="50000000" />
   <parameter name="deviceFamilyName" value="Cyclone II" />
   <parameter name="internalIrqMaskSystemInfo" value="3" />
@@ -1105,7 +1105,7 @@
    start="nios2_qsys_0.data_master"
    end="altpll_0.pll_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00409060" />
+  <parameter name="baseAddress" value="0x00409220" />
  </connection>
  <connection
    kind="clock"
@@ -1144,7 +1144,7 @@
    start="nios2_qsys_0.data_master"
    end="timer_0.s1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00409040" />
+  <parameter name="baseAddress" value="0x00409200" />
  </connection>
  <connection
    kind="avalon"
@@ -1203,7 +1203,7 @@
    start="nios2_qsys_0.data_master"
    end="jtag_uart_0.avalon_jtag_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00409078" />
+  <parameter name="baseAddress" value="0x00409238" />
  </connection>
  <connection
    kind="avalon"
@@ -1249,7 +1249,7 @@
    start="nios2_qsys_0.data_master"
    end="sysid_qsys_0.control_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00409070" />
+  <parameter name="baseAddress" value="0x00409230" />
  </connection>
  <connection
    kind="reset"
