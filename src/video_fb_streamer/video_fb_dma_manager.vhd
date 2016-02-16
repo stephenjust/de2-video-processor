@@ -67,6 +67,8 @@ END video_fb_dma_manager;
 ARCHITECTURE Behaviour OF video_fb_dma_manager IS
 
 	CONSTANT sram_burst_size : std_logic_vector(7 downto 0) := x"20"; -- 32
+	CONSTANT sdram_burst_size : std_logic_vector(7 downto 0) := x"40"; -- 64
+	CONSTANT frame_size : std_logic_vector(31 downto 0) := std_logic_vector(to_unsigned(FRAME_WIDTH * FRAME_HEIGHT, 32));
 
 	SIGNAL sram_read_offset : std_logic_vector(31 downto 0) := (others => '0');
 	SIGNAL sram_read_count  : std_logic_vector(7 downto 0) := (others => '0');
@@ -127,8 +129,7 @@ BEGIN
 					sram_busy <= '0';
 					-- Our pixel count is a multiple of the burst size, so we can get away with only
 					-- checking that we have reached the end of a frame when the burst is over.
-					IF (sram_read_offset + (sram_burst_size & '0') <
-							std_logic_vector(to_unsigned(FRAME_WIDTH * FRAME_HEIGHT, sram_read_offset'length))) THEN
+					IF (sram_read_offset + (sram_burst_size & '0') < frame_size) THEN
 						sram_read_offset <= sram_read_offset + (sram_burst_size & '0');
 					ELSE
 						sram_read_offset <= (others => '0');
@@ -148,7 +149,6 @@ BEGIN
 	fifo_pixdata       <= dma0_readdata;
 	fifo_write         <= dma0_readdatavalid;
 	fifo_startofpacket <= '1' WHEN OR_REDUCE(sram_read_offset + sram_read_count) = '0' ELSE '0';
-	fifo_endofpacket   <= '1' WHEN sram_read_offset + sram_read_count >=
-			std_logic_vector(to_unsigned(FRAME_WIDTH * FRAME_HEIGHT - 2, sram_read_offset'length)) ELSE '0';
+	fifo_endofpacket   <= '1' WHEN sram_read_offset + sram_read_count >= (frame_size - x"2") ELSE '0';
 
 END Behaviour;
