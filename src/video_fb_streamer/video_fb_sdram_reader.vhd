@@ -42,6 +42,7 @@ ENTITY video_fb_sdram_reader IS
 		out_ready           : buffer std_logic;
 		out_data            : buffer std_logic_vector(15 downto 0);
 		out_read            : in     std_logic;
+		out_usedw           : buffer std_logic_vector(6 downto 0);
 
 		-- Control signals
 		copy_trigger        : in     std_logic;
@@ -57,29 +58,21 @@ ARCHITECTURE Behaviour OF video_fb_sdram_reader IS
 	CONSTANT dram_burst_size : std_logic_vector(7 downto 0) := std_logic_vector(to_unsigned(READ_BURST_SIZE, 8));
 
 	SIGNAL current_state, next_state : state := IDLE;
-	SIGNAL dram_read_count : std_logic_vector(7 downto 0);
-	SIGNAL dram_read_offset : std_logic_vector(31 downto 0);
+	SIGNAL dram_read_count   : std_logic_vector(7 downto 0);
+	SIGNAL dram_read_offset  : std_logic_vector(31 downto 0);
+	SIGNAL full              : std_logic;
 
 BEGIN
 
 	PROCESS (clk)
-	BEGIN
-		IF rising_edge(clk) THEN
-			IF reset = '1' THEN
-				current_state <= IDLE;
-			ELSE
-				current_state <= next_state;
-			END IF;
-		END IF;
-	END PROCESS;
-
-	PROCESS (clk)
+		VARIABLE next_state : state;
 	BEGIN
 		IF rising_edge(clk) THEN
 			IF reset = '1' THEN
 				dma_address    <= (others => '0');
 				dma_burstcount <= (others => '0');
 				dma_read       <= '0';
+				current_state  <= IDLE;
 			ELSE
 				CASE current_state IS
 					WHEN IDLE =>
@@ -89,10 +82,10 @@ BEGIN
 							dma_address <= SDRAM_BUF_START_ADDRESS;
 							dma_burstcount <= dram_burst_size;
 							dma_read <= '1';
-							next_state <= READ_SDRAM;
+							next_state := READ_SDRAM;
 						ELSE
 							copy_done <= '0';
-							next_state <= IDLE;
+							next_state := IDLE;
 						END IF;
 
 					WHEN READ_SDRAM =>
@@ -105,9 +98,11 @@ BEGIN
 						-- Handle the completion of a burst
 						IF dram_read_count >= dram_burst_size THEN
 							IF (dram_read_offset + dram_burst_size) < std_logic_vector(to_unsigned(DATA_SIZE, 32)) THEN
-								next_state <= WAIT_FIFO;
+								dram_read_offset <= dram_read_offset + dram_burst_size;
+								next_state := WAIT_FIFO;
 							ELSE
-								next_state <= IDLE;
+								dram_read_offset <= (others => '0');
+								next_state := IDLE;
 								copy_done <= '1';
 							END IF;
 						ELSE
@@ -115,19 +110,24 @@ BEGIN
 							IF dma_readdatavalid = '1' THEN
 								dram_read_count <= dram_read_count + '1';
 							END IF;
-							next_state <= READ_SDRAM;
+							next_state := READ_SDRAM;
 						END IF;
 
 					WHEN WAIT_FIFO =>
-						IF out_ready = '1' THEN
-							next_state <= WAIT_FIFO;
+						IF out_ready = '1' OR full = '1' THEN
+							next_state := WAIT_FIFO;
 						ELSE
-							next_state <= READ_SDRAM;
+							dram_read_count <= (others => '0');
+							dma_address <= SDRAM_BUF_START_ADDRESS + dram_read_offset;
+							dma_burstcount <= dram_burst_size;
+							dma_read <= '1';
+							next_state := READ_SDRAM;
 						END IF;
 
 					WHEN OTHERS =>
-						next_state <= IDLE;
+						next_state := IDLE;
 				END CASE;
+				current_state <= next_state;
 			END IF;
 		END IF;
 	END PROCESS;
@@ -137,17 +137,17 @@ BEGIN
 	GENERIC MAP(
 		lpm_width              => 16,
 		lpm_widthu             => 7,
-		lpm_numwords           => 96,
-		lpm_showahead          => "OFF",
+		lpm_numwords           => 128,
+		lpm_showahead          => "ON",
 		lpm_type               => "SCFIFO",
 		overflow_checking      => "OFF",
 		underflow_checking     => "OFF",
-		almost_full_value      => 32,
+		almost_full_value      => READY_THRESHOLD,
 		intended_device_family => "Cyclone II"
 	)
 	PORT MAP(
 		clock       => clk,
-		sclr        => reset,
+		aclr        => reset,
 
 		wrreq       => dma_readdatavalid,
 		data        => dma_readdata,
@@ -155,6 +155,8 @@ BEGIN
 		rdreq       => out_read,
 		q           => out_data,
 
+		usedw       => out_usedw,
+		full        => full,
 		almost_full => out_ready
 	);
 

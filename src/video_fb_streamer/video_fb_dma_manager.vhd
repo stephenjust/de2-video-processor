@@ -90,6 +90,7 @@ ARCHITECTURE Behaviour OF video_fb_dma_manager IS
 			out_ready           : buffer std_logic;
 			out_data            : buffer std_logic_vector(15 downto 0);
 			out_read            : in     std_logic;
+			out_usedw           : buffer std_logic_vector(6 downto 0);
 
 			-- Control signals
 			copy_trigger        : in     std_logic;
@@ -224,12 +225,13 @@ BEGIN
 		dma_address           => dma1_address,
 		dma_burstcount        => dma1_burstcount,
 
-		out_ready             => open,
-		out_data              => open,
-		out_read              => '0',
+		out_ready             => swap_copy_ready,
+		out_data              => swap_copy_data,
+		out_read              => swap_copy_read,
+		out_usedw             => open,
 
-		copy_trigger          => '0',
-		copy_done             => open
+		copy_trigger          => swap_trigger,
+		copy_done             => swap_sdram_done
 	);
 
 END Behaviour;
