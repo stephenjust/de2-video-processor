@@ -78,11 +78,11 @@ entity colour_space_converter is
         -- (For accessing palette ram)                                  --------
         ----- Interface Prefix: avs                                     --------
         avs_paletteram_read_n	         : in    std_logic;
-        avs_paletteram_readdata          : out    std_logic_vector (31 downto 0);
-        avs_paletteram_address           : in    std_logic_vector (3 downto 0);
+        avs_paletteram_readdata          : out    std_logic_vector (15 downto 0);
+        avs_paletteram_address           : in    std_logic_vector (7 downto 0);
         --byteenable?
         avs_paletteram_write_n           : in    std_logic;
-        avs_paletteram_writedata         : in   std_logic_vector (31 downto 0)
+        avs_paletteram_writedata         : in   std_logic_vector (15 downto 0)
         --avs_registers_reset_n             : in    std_logic
         --Response Code
         -- Described on page 18: 
@@ -206,7 +206,22 @@ end component;
 
 
     -- Signal to store the pixel clogged in the pixel pipeline.
-    signal clogged_pixel                    : std_logic_vector(16-1 downto 0);
+    signal buffer_aso_vgaout_startofpacket : std_logic;
+    signal buffer_aso_vgaout_endofpacket   : std_logic;
+    signal buffer_aso_vgaout_data : std_logic_vector(VGA_OUTPUT_STREAM_WIDTH-1 downto 0);
+
+    -- Need to delay the aso_start and aso_end by one cycle.
+    signal buffer2_aso_vgaout_startofpacket : std_logic;
+    signal buffer2_aso_vgaout_endofpacket   : std_logic;
+    signal buffer2_aso_vgaout_data : std_logic_vector(VGA_OUTPUT_STREAM_WIDTH-1 downto 0);
+
+    signal buffer3_aso_vgaout_startofpacket : std_logic;
+    signal buffer3_aso_vgaout_endofpacket   : std_logic;
+    signal buffer3_aso_vgaout_data : std_logic_vector(VGA_OUTPUT_STREAM_WIDTH-1 downto 0);
+
+    signal buffer4_aso_vgaout_startofpacket : std_logic;
+    signal buffer4_aso_vgaout_endofpacket   : std_logic;
+    signal buffer4_aso_vgaout_data : std_logic_vector(VGA_OUTPUT_STREAM_WIDTH-1 downto 0);
 
 begin
     -- This ram stores the palette data needed for the conversion.
@@ -221,28 +236,38 @@ begin
     -- Port B: To video output / colour conversion logic. 
 
 
-	process(clk_cpu) is
-	begin
+--	process(clk_cpu) is
+--	begin
+--
+  ---      if Rising_edge(clk_cpu) then
+--
+  --          if (reset_n = '1') then
+    --            avs_paletteram_readdata  <= x"0000";
+     --       end if;
+--
+--		    if (avs_paletteram_read_n = '0' and reset_n = '1' ) then 
+ --               --Reading all the things
+---
+  --              avs_paletteram_readdata <= x"0000" or sram_palette_store_portA_dataout;
+   --             
+    --        elsif (avs_paletteram_write_n = '0' and reset_n = '1') then
+     --           --Writing all the things
+      ---          sram_palette_store_portA_datain  <= avs_paletteram_writedata;
+		 -- --  else
+        --        -- Put everything to high impedance.
+     ---           sram_palette_store_portA_address <= (others => 'Z');
+   --             sram_palette_store_portA_datain <= (others => 'Z');
+ --               sram_palette_store_portA_dataout <= (others => 'Z');
+--		    end if;
+--        end if;
+--	end process;
 
-        if Rising_edge(clk_cpu) then
-		    if (avs_paletteram_read_n = '0' ) then 
-                --Reading all the things
-                sram_palette_store_portA_address <= "00000000" or avs_paletteram_address;
-                avs_paletteram_readdata <= x"00000000" or sram_palette_store_portA_datain;
-            elsif (avs_paletteram_write_n = '0') then
-                --Writing all the things
-                sram_palette_store_portA_address <= "00000000" or avs_paletteram_address;
-                sram_palette_store_portA_datain  <= sram_palette_store_portA_datain;
-		    else
-                -- Put everything to high impedance.
-                sram_palette_store_portA_address <= (others => 'Z');
-                sram_palette_store_portA_datain <= (others => 'Z');
-                sram_palette_store_portA_dataout <= (others => 'Z');
-		    end if;
-        end if;
-	end process;
-
-
+-- Combinational logic.
+sram_palette_store_portA_rden_a <= not avs_paletteram_read_n;
+sram_palette_store_portA_wren_a  <= not avs_paletteram_write_n; --turns out wren_a is active low as well. ??
+sram_palette_store_portA_address <= avs_paletteram_address;
+sram_palette_store_portA_datain  <= avs_paletteram_writedata;
+avs_paletteram_readdata <=  sram_palette_store_portA_dataout;
 
 
     -- Syntax for generic maps on instantiating a component.
@@ -382,7 +407,7 @@ begin
             )
             port map (
                 -- Inputs
-                clock0			=> clk_video, -- PortA, talks to CPU.
+                clock0			=> clk_cpu, -- PortA, talks to CPU.
                 clock1          => clk_video, -- Port B, timed to video.
 
 		        address_a		=> sram_palette_store_portA_address,     -- Address bus for port A.
@@ -395,9 +420,9 @@ begin
                 q_b             => sram_palette_store_portB_dataout,     --Data output port from memory
 
                 -- Read/Write enable control signals
-                --rden_a => sram_palette_store_portA_rden_a,
+                rden_a => sram_palette_store_portA_rden_a,
                 rden_b => sram_palette_store_portB_rden_b,
-                --wren_a => sram_palette_store_portA_wren_a,
+                wren_a => sram_palette_store_portA_wren_a,
                 wren_b => sram_palette_store_portB_wren_b
 
 
@@ -429,11 +454,11 @@ sram_palette_store_portB_address <= asi_fifoin_data;
 
 
 --Sink valid signal. We have a valid address. So read from it.
-sram_palette_store_portB_rden_b <= asi_fifoin_valid;
+sram_palette_store_portB_rden_b <= '1' when asi_fifoin_valid = '1' and aso_vgaout_ready = '1' else '0';
 
 --Set to zero for now. Typically tie it to write signal on avalon bus.
 -- Since using write_n, need to negate. 
-sram_palette_store_portA_wren_a <= '0'; --not avs_paletteram_write_n;
+--sram_palette_store_portA_wren_a <= not avs_paletteram_write_n;
 
 
 
@@ -442,28 +467,48 @@ sram_palette_store_portA_wren_a <= '0'; --not avs_paletteram_write_n;
         begin
             if Rising_edge(clk_video) then
                 if (reset_n = '0') then
-                    aso_vgaout_data             <= (others => '0');
-                    aso_vgaout_startofpacket    <= '0';
-                    aso_vgaout_endofpacket      <= '0';
+                    buffer_aso_vgaout_data             <= (others => '0');
+                    buffer_aso_vgaout_startofpacket    <= '0';
+                    buffer_aso_vgaout_endofpacket      <= '0';
                     --aso_vgaout_empty            <= (others => '0');
                     aso_vgaout_valid            <= '0';
-                elsif ((aso_vgaout_ready = '1') or (aso_vgaout_valid = '0')) then
+                elsif ((aso_vgaout_ready = '1') and (asi_fifoin_valid = '1')) then
                     --aso_vgaout_data             <= converted_data;
-                    aso_vgaout_data             <= sram_palette_store_portB_dataout;
-                    aso_vgaout_startofpacket    <= asi_fifoin_startofpacket;
-                    aso_vgaout_endofpacket      <= asi_fifoin_endofpacket;
+                    buffer_aso_vgaout_data             <= sram_palette_store_portB_dataout;
+                    buffer2_aso_vgaout_data             <= buffer_aso_vgaout_data;
+                    buffer3_aso_vgaout_data             <= buffer2_aso_vgaout_data;
+                    buffer4_aso_vgaout_data             <= buffer3_aso_vgaout_data;
+
+                    buffer_aso_vgaout_startofpacket    <= asi_fifoin_startofpacket;
+                    buffer2_aso_vgaout_startofpacket    <= buffer_aso_vgaout_startofpacket;
+                    buffer3_aso_vgaout_startofpacket    <= buffer2_aso_vgaout_startofpacket;
+                    buffer4_aso_vgaout_startofpacket    <= buffer3_aso_vgaout_startofpacket;
+
+                    buffer_aso_vgaout_endofpacket      <= asi_fifoin_endofpacket;
+                    buffer2_aso_vgaout_endofpacket      <= buffer_aso_vgaout_endofpacket;
+                    buffer3_aso_vgaout_endofpacket      <= buffer2_aso_vgaout_endofpacket;
+                    buffer4_aso_vgaout_endofpacket      <= buffer3_aso_vgaout_endofpacket;
                     --aso_vgaout_empty				<= asi_fifoin_empty;
                     --aso_vgaout_empty            <= (others => '0');
                     aso_vgaout_valid            <= asi_fifoin_valid;
                 end if;
         end if;
     end process;
-
--- Right now this is just a dumb streaming forwarder.
-
-
-
+-- Stephen comments for the delays needed to make this work:
+-- I thought about it for a while, and I think all you need to do is keep 
+-- delaying aso_start, end and data by one pixel at a time until there's no 
+-- longer any duplicate pixels.
+-- Once you verify that this works, you can swap the mess with a fifo
+-- No idea why this works. Stephen knows.
+-- Combinational logic.
+aso_vgaout_data <= buffer2_aso_vgaout_data when aso_vgaout_ready = '1' else (others => '0');
+aso_vgaout_startofpacket <= buffer4_aso_vgaout_startofpacket when aso_vgaout_ready = '1' else '0';
+aso_vgaout_endofpacket <= buffer4_aso_vgaout_endofpacket when aso_vgaout_ready = '1' else '0';
    
+
+
+
+
 
 end avalon;
 
