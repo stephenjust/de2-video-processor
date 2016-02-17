@@ -20,8 +20,8 @@ USE altera_mf.altera_mf_components.all;
 
 ENTITY video_fb_sdram_reader IS 
 	GENERIC(
-		READ_BURST_SIZE : integer := 64;           -- Read from SDRAM in bursts of 128
-		DATA_SIZE       : integer := 640 * 480 / 2; -- Read this number of 16-bit words
+		READ_BURST_SIZE : integer := 64;            -- Read from SDRAM in bursts of 128
+		DATA_SIZE       : integer := 640 * 480;     -- Read this number of bytes
 		READY_THRESHOLD : integer := 32;            -- Assert a flag when the FIFO has this much data
 		SDRAM_BUF_START_ADDRESS : std_logic_vector(31 downto 0) := (others => '0')
 	);
@@ -97,8 +97,8 @@ BEGIN
 						END IF;
 						-- Handle the completion of a burst
 						IF dram_read_count >= dram_burst_size THEN
-							IF (dram_read_offset + dram_burst_size) < std_logic_vector(to_unsigned(DATA_SIZE, 32)) THEN
-								dram_read_offset <= dram_read_offset + dram_burst_size;
+							IF (dram_read_offset + (dram_burst_size & '0')) < std_logic_vector(to_unsigned(DATA_SIZE, 32)) THEN
+								dram_read_offset <= dram_read_offset + (dram_burst_size & '0');
 								next_state := WAIT_FIFO;
 							ELSE
 								dram_read_offset <= (others => '0');

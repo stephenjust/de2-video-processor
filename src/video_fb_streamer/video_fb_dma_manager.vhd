@@ -119,6 +119,7 @@ ARCHITECTURE Behaviour OF video_fb_dma_manager IS
 	SIGNAL swap_copy_data     : std_logic_vector(15 downto 0);
 
 	SIGNAL copy_on_next_frame : std_logic := '0';
+	SIGNAL copy_started       : std_logic := '0';
 
 	SIGNAL current_state : state := IDLE;
 BEGIN
@@ -138,6 +139,7 @@ BEGIN
 				dma0_burstcount   <= (others => '0');
 				swap_read_count   <= (others => '0');
 				copy_on_next_frame<= '0';
+				copy_started      <= '0';
 				current_state     <= IDLE;
 			ELSE
 				IF swap_trigger = '1' THEN
@@ -148,8 +150,10 @@ BEGIN
 				CASE current_state IS
 					WHEN IDLE =>
 						swap_done <= '0';
-						IF swap_copy_ready = '1' AND fifo_ready <= '0' THEN
+						IF (copy_started = '0' AND copy_on_next_frame = '1' AND OR_REDUCE(sram_read_offset) = '0' AND swap_copy_ready = '1')
+						OR (copy_started = '1' AND swap_copy_ready = '1' AND fifo_ready <= '0') THEN
 							-- Start the process to write to SRAM
+							copy_started      <= '1';
 							sram_write_count  <= (others => '0');
 							dma0_address      <= SRAM_BUF_START_ADDRESS + sram_write_offset;
 							dma0_burstcount   <= sram_burst_size;
@@ -185,9 +189,10 @@ BEGIN
 								dma0_write        <= '0';
 								next_state        := IDLE;
 								IF sram_write_offset + (sram_burst_size & '0') >= frame_size THEN
-									sram_write_offset <= (others => '0');
+									sram_write_offset  <= (others => '0');
 									copy_on_next_frame <= '0';
-									swap_done <= '1';
+									copy_started       <= '0';
+									swap_done          <= '1';
 								ELSE
 									sram_write_offset <= sram_write_offset + (sram_burst_size & '0');
 								END IF;
@@ -245,7 +250,7 @@ BEGIN
 	r0 : video_fb_sdram_reader
 	GENERIC MAP(
 		READ_BURST_SIZE => 64,
-		DATA_SIZE       => FRAME_WIDTH * FRAME_HEIGHT / 2,
+		DATA_SIZE       => FRAME_WIDTH * FRAME_HEIGHT,
 		READY_THRESHOLD => 32,
 		SDRAM_BUF_START_ADDRESS => SDRAM_BUF_START_ADDRESS
 	)
