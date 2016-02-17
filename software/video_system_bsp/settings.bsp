@@ -2,9 +2,9 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>hal</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>Feb 14, 2016 4:17:37 PM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1455491857303</BspGeneratedUnixTimeStamp>
-        <BspGeneratedLocation>/home/stephen/school/ECE492/de2-video-processor/software/de2_video_processor_bsp</BspGeneratedLocation>
+        <BspGeneratedTimeStamp>Feb 17, 2016 1:28:05 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1455740885575</BspGeneratedUnixTimeStamp>
+        <BspGeneratedLocation>/home/stephen/school/ECE492/de2-video-processor/software/video_system_bsp</BspGeneratedLocation>
         <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>../../de2_video_processor_system.sopcinfo</SopcDesignFile>
         <JdiFile>default</JdiFile>
@@ -146,7 +146,7 @@
                 <SettingName>hal.linker.exception_stack_memory_region_name</SettingName>
                 <Identifier>NONE</Identifier>
                 <Type>UnquotedString</Type>
-                <Value>sdram_0</Value>
+                <Value>none</Value>
                 <DefaultValue>none</DefaultValue>
                 <DestinationFile>none</DestinationFile>
                 <Description>Name of the existing memory region that will be divided up to create the 'exception_stack' memory region. The selected region name will be adjusted automatically when the BSP is generated to create the 'exception_stack' memory region.</Description>
@@ -182,7 +182,7 @@
                 <SettingName>hal.linker.interrupt_stack_memory_region_name</SettingName>
                 <Identifier>NONE</Identifier>
                 <Type>UnquotedString</Type>
-                <Value>sdram_0</Value>
+                <Value>none</Value>
                 <DefaultValue>none</DefaultValue>
                 <DestinationFile>none</DestinationFile>
                 <Description>Name of the existing memory region that will be divided up to create the 'interrupt_stack' memory region. The selected region name will be adjusted automatically when the BSP is generated to create the 'interrupt_stack' memory region.</Description>
@@ -850,6 +850,54 @@
                 <Enabled>false</Enabled>
                 <Group xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
         </Setting>
+        <LinkerRegion>
+                <regionName>generic_tristate_controller_0</regionName>
+                <memoryName>generic_tristate_controller_0</memoryName>
+                <offset>0</offset>
+                <size>4194304</size>
+                <baseAddress>0x0</baseAddress>
+                <addressRange>0x00000000 - 0x003FFFFF</addressRange>
+        </LinkerRegion>
+        <LinkerRegion>
+                <regionName>reset</regionName>
+                <memoryName>onchip_memory2_0</memoryName>
+                <offset>0</offset>
+                <size>32</size>
+                <baseAddress>0x404000</baseAddress>
+                <addressRange>0x00404000 - 0x0040401F</addressRange>
+        </LinkerRegion>
+        <LinkerRegion>
+                <regionName>onchip_memory2_0</regionName>
+                <memoryName>onchip_memory2_0</memoryName>
+                <offset>32</offset>
+                <size>16352</size>
+                <baseAddress>0x404020</baseAddress>
+                <addressRange>0x00404020 - 0x00407FFF</addressRange>
+        </LinkerRegion>
+        <LinkerRegion>
+                <regionName>sdram_sys_0</regionName>
+                <memoryName>sdram_0</memoryName>
+                <offset>0</offset>
+                <size>3145728</size>
+                <baseAddress>0x800000</baseAddress>
+                <addressRange>0x00800000 - 0x00AFFFFF</addressRange>
+        </LinkerRegion>
+        <LinkerRegion>
+                <regionName>sdram_video_0</regionName>
+                <memoryName>sdram_0</memoryName>
+                <offset>3145728</offset>
+                <size>5242880</size>
+                <baseAddress>0xb00000</baseAddress>
+                <addressRange>0x00B00000 - 0x00FFFFFF</addressRange>
+        </LinkerRegion>
+        <LinkerRegion>
+                <regionName>sram_0</regionName>
+                <memoryName>sram_0</memoryName>
+                <offset>0</offset>
+                <size>524288</size>
+                <baseAddress>0x1080000</baseAddress>
+                <addressRange>0x01080000 - 0x010FFFFF</addressRange>
+        </LinkerRegion>
         <MemoryMap>
                 <slaveDescriptor>generic_tristate_controller_0</slaveDescriptor>
                 <addressRange>0x00000000 - 0x003FFFFF</addressRange>
@@ -863,32 +911,38 @@
                 <attributes>memory</attributes>
         </MemoryMap>
         <MemoryMap>
+                <slaveDescriptor>colour_palette_shifter_0</slaveDescriptor>
+                <addressRange>0x00409000 - 0x004091FF</addressRange>
+                <addressSpan>512</addressSpan>
+                <attributes/>
+        </MemoryMap>
+        <MemoryMap>
                 <slaveDescriptor>timer_0</slaveDescriptor>
-                <addressRange>0x00409000 - 0x0040901F</addressRange>
+                <addressRange>0x00409200 - 0x0040921F</addressRange>
                 <addressSpan>32</addressSpan>
                 <attributes>timer</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>altpll_0</slaveDescriptor>
-                <addressRange>0x00409020 - 0x0040902F</addressRange>
+                <addressRange>0x00409220 - 0x0040922F</addressRange>
                 <addressSpan>16</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>sysid_qsys_0</slaveDescriptor>
-                <addressRange>0x00409030 - 0x00409037</addressRange>
+                <addressRange>0x00409230 - 0x00409237</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>jtag_uart_0</slaveDescriptor>
-                <addressRange>0x00409038 - 0x0040903F</addressRange>
+                <addressRange>0x00409238 - 0x0040923F</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes>printable</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>genesis_0</slaveDescriptor>
-                <addressRange>0x00409040 - 0x00409043</addressRange>
+                <addressRange>0x00409240 - 0x00409243</addressRange>
                 <addressSpan>4</addressSpan>
                 <attributes/>
         </MemoryMap>
@@ -906,26 +960,26 @@
         </MemoryMap>
         <LinkerSection>
                 <sectionName>.text</sectionName>
-                <regionName>sdram_0</regionName>
+                <regionName>sdram_sys_0</regionName>
         </LinkerSection>
         <LinkerSection>
                 <sectionName>.rodata</sectionName>
-                <regionName>sdram_0</regionName>
+                <regionName>sdram_sys_0</regionName>
         </LinkerSection>
         <LinkerSection>
                 <sectionName>.rwdata</sectionName>
-                <regionName>sdram_0</regionName>
+                <regionName>sdram_sys_0</regionName>
         </LinkerSection>
         <LinkerSection>
                 <sectionName>.bss</sectionName>
-                <regionName>sdram_0</regionName>
+                <regionName>sdram_sys_0</regionName>
         </LinkerSection>
         <LinkerSection>
                 <sectionName>.heap</sectionName>
-                <regionName>sdram_0</regionName>
+                <regionName>sdram_sys_0</regionName>
         </LinkerSection>
         <LinkerSection>
                 <sectionName>.stack</sectionName>
-                <regionName>sdram_0</regionName>
+                <regionName>sdram_sys_0</regionName>
         </LinkerSection>
 </sch:Settings>

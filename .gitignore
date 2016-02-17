@@ -21,36 +21,15 @@ output_files/
 # Temporary files
 *.bak
 *.flock
+*.orig
 *~
 \#*\#
 
 # Rules for eclipse projects
-software/*/*
+software/*_bsp/*
+!software/*/.cproject
+!software/*/.project
 !software/*_bsp/*.bsp
-
-!software/de2_video_processor*/.cproject
-!software/de2_video_processor*/.project
-!software/de2_video_processor/Makefile
-!software/de2_video_processor/*.c
-!software/de2_video_processor/*.h
-
-!software/sram_test_pattern*/.cproject
-!software/sram_test_pattern*/.project
-!software/sram_test_pattern/Makefile
-!software/sram_test_pattern/*.c
-!software/sram_test_pattern/*.h
-
-!software/sram_test_pattern_palette_switch*/.cproject
-!software/sram_test_pattern_palette_switch*/.project
-!software/sram_test_pattern_palette_switch/Makefile
-!software/sram_test_pattern_palette_switch/*.c
-!software/sram_test_pattern_palette_switch/*.h
-
-!software/sdram_test_pattern*/.cproject
-!software/sdram_test_pattern*/.project
-!software/sdram_test_pattern/Makefile
-!software/sdram_test_pattern/*.c
-!software/sdram_test_pattern/*.h
 
 # Scripts to use in the lab at school
 scripts/

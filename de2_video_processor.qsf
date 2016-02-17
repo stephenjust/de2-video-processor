@@ -497,6 +497,7 @@ set_global_assignment -name VHDL_FILE src/custom_controller.vhd
 set_global_assignment -name VHDL_FILE src/video_fb_streamer/video_fb_streamer.vhd
 set_global_assignment -name VHDL_FILE src/video_fb_streamer/video_fb_fifo.vhd
 set_global_assignment -name VHDL_FILE src/video_fb_streamer/video_fb_dma_manager.vhd
+set_global_assignment -name VHDL_FILE src/video_fb_streamer/video_fb_sdram_reader.vhd
 set_global_assignment -name VHDL_FILE src/custom_instructions/ci_frame_done.vhd
 
 set_parameter -name CYCLONEII_SAFE_WRITE "\"RESTRUCTURE\"" -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram"
