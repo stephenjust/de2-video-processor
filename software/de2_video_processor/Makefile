@@ -176,7 +176,7 @@ CRT0 :=
 SYS_LIB :=
 
 # Define path to the root of the BSP.
-BSP_ROOT_DIR := ../de2_video_processor_bsp/
+BSP_ROOT_DIR := ../video_system_bsp/
 
 # List of application specific include directories, library directories and library names
 APP_INCLUDE_DIRS :=

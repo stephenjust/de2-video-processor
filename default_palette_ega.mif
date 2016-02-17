@@ -1,7 +1,7 @@
 %
     
     Colour Space Converter
-    Default colour palette RAM
+    Default colour palette RAM -- EGA Colour Palette.
    
     ECE 492, Group 6
     Stefan Martynkiw, Stephen Just, Mason Strong
@@ -42,6 +42,7 @@ BEGIN
 13 : FABF;    -- Bright magenta
 14 : FFEA;    -- Bright Yellow
 15 : FFFF;    -- Bright white
-[16..255] : 0000;
+[16..254] : 0000;
+255: FFFF;
 
 END;

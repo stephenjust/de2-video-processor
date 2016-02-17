@@ -29,7 +29,7 @@
    {
       datum _sortIndex
       {
-         value = "10";
+         value = "11";
          type = "int";
       }
       datum sopceditor_expanded
@@ -42,7 +42,7 @@
    {
       datum baseAddress
       {
-         value = "4231224";
+         value = "4231736";
          type = "String";
       }
    }
@@ -84,7 +84,7 @@
    {
       datum _sortIndex
       {
-         value = "9";
+         value = "10";
          type = "int";
       }
       datum sopceditor_expanded
@@ -93,11 +93,19 @@
          type = "boolean";
       }
    }
+   element colour_palette_shifter_0
+   {
+      datum _sortIndex
+      {
+         value = "13";
+         type = "int";
+      }
+   }
    element sysid_qsys_0.control_slave
    {
       datum baseAddress
       {
-         value = "4231216";
+         value = "4231728";
          type = "String";
       }
    }
@@ -105,7 +113,7 @@
    {
       datum _sortIndex
       {
-         value = "15";
+         value = "17";
          type = "int";
       }
       datum sopceditor_expanded
@@ -118,7 +126,7 @@
    {
       datum _sortIndex
       {
-         value = "18";
+         value = "8";
          type = "int";
       }
    }
@@ -134,7 +142,7 @@
    {
       datum _sortIndex
       {
-         value = "8";
+         value = "9";
          type = "int";
       }
       datum sopceditor_expanded
@@ -164,11 +172,19 @@
          type = "boolean";
       }
    }
+   element colour_palette_shifter_0.paletteram
+   {
+      datum baseAddress
+      {
+         value = "4231168";
+         type = "String";
+      }
+   }
    element altpll_0.pll_slave
    {
       datum baseAddress
       {
-         value = "4231200";
+         value = "4231712";
          type = "String";
       }
    }
@@ -176,7 +192,23 @@
    {
       datum baseAddress
       {
-         value = "4231232";
+         value = "4231744";
+         type = "String";
+      }
+   }
+   element timer_0.s1
+   {
+      datum baseAddress
+      {
+         value = "4231680";
+         type = "String";
+      }
+   }
+   element onchip_memory2_0.s1
+   {
+      datum baseAddress
+      {
+         value = "4210688";
          type = "String";
       }
    }
@@ -190,22 +222,6 @@
       datum baseAddress
       {
          value = "8388608";
-         type = "String";
-      }
-   }
-   element timer_0.s1
-   {
-      datum baseAddress
-      {
-         value = "4231168";
-         type = "String";
-      }
-   }
-   element onchip_memory2_0.s1
-   {
-      datum baseAddress
-      {
-         value = "4210688";
          type = "String";
       }
    }
@@ -234,7 +250,7 @@
    {
       datum _sortIndex
       {
-         value = "14";
+         value = "16";
          type = "int";
       }
       datum sopceditor_expanded
@@ -260,7 +276,7 @@
    {
       datum _sortIndex
       {
-         value = "16";
+         value = "18";
          type = "int";
       }
       datum sopceditor_expanded
@@ -273,7 +289,7 @@
    {
       datum _sortIndex
       {
-         value = "17";
+         value = "19";
          type = "int";
       }
       datum sopceditor_expanded
@@ -299,7 +315,7 @@
    {
       datum _sortIndex
       {
-         value = "11";
+         value = "12";
          type = "int";
       }
    }
@@ -307,7 +323,7 @@
    {
       datum _sortIndex
       {
-         value = "12";
+         value = "14";
          type = "int";
       }
    }
@@ -315,7 +331,7 @@
    {
       datum _sortIndex
       {
-         value = "13";
+         value = "15";
          type = "int";
       }
    }
@@ -334,7 +350,7 @@
  <parameter name="projectName" value="" />
  <parameter name="sopcBorderPoints" value="false" />
  <parameter name="systemHash" value="1" />
- <parameter name="timeStamp" value="1455484025757" />
+ <parameter name="timeStamp" value="1455737440462" />
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
  <interface name="clk" internal="clk_0.clk_in" type="clock" dir="end" />
@@ -469,7 +485,7 @@
   <parameter name="tightlyCoupledInstructionMaster2AddrWidth" value="1" />
   <parameter name="tightlyCoupledInstructionMaster3AddrWidth" value="1" />
   <parameter name="instSlaveMapParam"><![CDATA[<address-map><slave name='onchip_memory2_0.s1' start='0x404000' end='0x408000' /><slave name='nios2_qsys_0.jtag_debug_module' start='0x408800' end='0x409000' /><slave name='sdram_0.s1' start='0x800000' end='0x1000000' /><slave name='sram_0.avalon_sram_slave' start='0x1080000' end='0x1100000' /></address-map>]]></parameter>
-  <parameter name="dataSlaveMapParam"><![CDATA[<address-map><slave name='generic_tristate_controller_0.uas' start='0x0' end='0x400000' /><slave name='onchip_memory2_0.s1' start='0x404000' end='0x408000' /><slave name='nios2_qsys_0.jtag_debug_module' start='0x408800' end='0x409000' /><slave name='timer_0.s1' start='0x409000' end='0x409020' /><slave name='altpll_0.pll_slave' start='0x409020' end='0x409030' /><slave name='sysid_qsys_0.control_slave' start='0x409030' end='0x409038' /><slave name='jtag_uart_0.avalon_jtag_slave' start='0x409038' end='0x409040' /><slave name='genesis_0.s0' start='0x409040' end='0x409044' /><slave name='sdram_0.s1' start='0x800000' end='0x1000000' /><slave name='sram_0.avalon_sram_slave' start='0x1080000' end='0x1100000' /></address-map>]]></parameter>
+  <parameter name="dataSlaveMapParam"><![CDATA[<address-map><slave name='generic_tristate_controller_0.uas' start='0x0' end='0x400000' /><slave name='onchip_memory2_0.s1' start='0x404000' end='0x408000' /><slave name='nios2_qsys_0.jtag_debug_module' start='0x408800' end='0x409000' /><slave name='colour_palette_shifter_0.paletteram' start='0x409000' end='0x409200' /><slave name='timer_0.s1' start='0x409200' end='0x409220' /><slave name='altpll_0.pll_slave' start='0x409220' end='0x409230' /><slave name='sysid_qsys_0.control_slave' start='0x409230' end='0x409238' /><slave name='jtag_uart_0.avalon_jtag_slave' start='0x409238' end='0x409240' /><slave name='genesis_0.s0' start='0x409240' end='0x409244' /><slave name='sdram_0.s1' start='0x800000' end='0x1000000' /><slave name='sram_0.avalon_sram_slave' start='0x1080000' end='0x1100000' /></address-map>]]></parameter>
   <parameter name="clockFrequency" value="50000000" />
   <parameter name="deviceFamilyName" value="Cyclone II" />
   <parameter name="internalIrqMaskSystemInfo" value="3" />
@@ -766,7 +782,7 @@
    version="12.0"
    enabled="1"
    name="video_rgb_resampler_0">
-  <parameter name="input_type" value="8-bit RGB" />
+  <parameter name="input_type" value="16-bit RGB" />
   <parameter name="output_type" value="30-bit RGB" />
   <parameter name="alpha" value="1023" />
   <parameter name="AUTO_CLOCK_RESET_CLOCK_RATE" value="25174999" />
@@ -778,7 +794,7 @@
    enabled="1"
    name="video_fb_streamer_0">
   <parameter name="SRAM_BUF_START_ADDRESS" value="17301504" />
-  <parameter name="SDRAM_BUF_START_ADDRESS" value="9961472" />
+  <parameter name="SDRAM_BUF_START_ADDRESS" value="11534336" />
   <parameter name="BITS_PER_PIXEL" value="8" />
   <parameter name="FRAME_WIDTH" value="640" />
   <parameter name="FRAME_HEIGHT" value="480" />
@@ -1044,6 +1060,20 @@
  <module kind="ci_frame_done" version="1.0" enabled="1" name="ci_frame_done_0">
   <parameter name="AUTO_CLOCK_CLOCK_RATE" value="50000000" />
  </module>
+ <module
+   kind="colour_palette_shifter"
+   version="1.0"
+   enabled="1"
+   name="colour_palette_shifter_0">
+  <parameter name="BUFFER_START_ADDRESS" value="0" />
+  <parameter name="BITS_PER_PIXEL" value="8" />
+  <parameter name="FRAME_WIDTH" value="640" />
+  <parameter name="FRAME_HEIGHT" value="480" />
+  <parameter name="VGA_INPUT_STREAM_WIDTH" value="8" />
+  <parameter name="VGA_OUTPUT_STREAM_WIDTH" value="16" />
+  <parameter name="AUTO_CLOCK_CLOCK_RATE" value="50000000" />
+  <parameter name="AUTO_CLOCK_VIDEO_CLOCK_RATE" value="25174999" />
+ </module>
  <module kind="genesis" version="1.0" enabled="1" name="genesis_0">
   <parameter name="AUTO_CLOCK_CLOCK_RATE" value="50000000" />
  </module>
@@ -1099,7 +1129,7 @@
    start="nios2_qsys_0.data_master"
    end="altpll_0.pll_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00409020" />
+  <parameter name="baseAddress" value="0x00409220" />
  </connection>
  <connection
    kind="clock"
@@ -1138,7 +1168,7 @@
    start="nios2_qsys_0.data_master"
    end="timer_0.s1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00409000" />
+  <parameter name="baseAddress" value="0x00409200" />
  </connection>
  <connection
    kind="avalon"
@@ -1197,7 +1227,7 @@
    start="nios2_qsys_0.data_master"
    end="jtag_uart_0.avalon_jtag_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00409038" />
+  <parameter name="baseAddress" value="0x00409238" />
  </connection>
  <connection
    kind="avalon"
@@ -1243,7 +1273,7 @@
    start="nios2_qsys_0.data_master"
    end="sysid_qsys_0.control_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00409030" />
+  <parameter name="baseAddress" value="0x00409230" />
  </connection>
  <connection
    kind="reset"
@@ -1290,11 +1320,6 @@
    version="12.1"
    start="video_rgb_resampler_0.avalon_rgb_source"
    end="video_vga_controller_0.avalon_vga_sink" />
- <connection
-   kind="avalon_streaming"
-   version="12.1"
-   start="video_fb_streamer_0.source"
-   end="video_rgb_resampler_0.avalon_rgb_sink" />
  <connection
    kind="avalon"
    version="12.1"
@@ -1444,23 +1469,61 @@
   <parameter name="startPortLSB" value="0" />
   <parameter name="width" value="0" />
  </connection>
- <connection kind="clock" version="12.1" start="altpll_0.c1" end="genesis_0.clock" />
+ <connection
+   kind="reset"
+   version="12.1"
+   start="nios2_qsys_0.jtag_debug_module_reset"
+   end="colour_palette_shifter_0.reset" />
  <connection
    kind="reset"
    version="12.1"
    start="clk_0.clk_reset"
-   end="genesis_0.reset" />
+   end="colour_palette_shifter_0.reset" />
+ <connection
+   kind="avalon_streaming"
+   version="12.1"
+   start="video_fb_streamer_0.source"
+   end="colour_palette_shifter_0.fifoin" />
+ <connection
+   kind="avalon_streaming"
+   version="12.1"
+   start="colour_palette_shifter_0.vgaout"
+   end="video_rgb_resampler_0.avalon_rgb_sink" />
+ <connection
+   kind="avalon"
+   version="12.1"
+   start="nios2_qsys_0.data_master"
+   end="colour_palette_shifter_0.paletteram">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00409000" />
+ </connection>
+ <connection
+   kind="clock"
+   version="12.1"
+   start="altpll_1.c0"
+   end="colour_palette_shifter_0.clock_video" />
+ <connection
+   kind="clock"
+   version="12.1"
+   start="altpll_0.c1"
+   end="colour_palette_shifter_0.clock" />
  <connection
    kind="reset"
    version="12.1"
    start="nios2_qsys_0.jtag_debug_module_reset"
    end="genesis_0.reset" />
  <connection
+   kind="reset"
+   version="12.1"
+   start="clk_0.clk_reset"
+   end="genesis_0.reset" />
+ <connection kind="clock" version="12.1" start="altpll_0.c1" end="genesis_0.clock" />
+ <connection
    kind="avalon"
    version="12.1"
    start="nios2_qsys_0.data_master"
    end="genesis_0.s0">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00409040" />
+  <parameter name="baseAddress" value="0x00409240" />
  </connection>
 </system>

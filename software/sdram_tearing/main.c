@@ -1,11 +1,8 @@
-/* This test program generates a simple video pattern in the device's SRAM.
- * 
- * The video pattern consists of a white box along the edges of the screen,
- * along with blocks of colour forming diagonal stripes across the screen.
- * 
- * The purpose of this program is to verify frame alignment on the video
- * output signal, i.e. to verify that the frame is not translated in some
- * direction, and that it is stationary.
+/* This test program generates a simple pattern to test for tearing.
+ *
+ * The video pattern consists of a white vertical line that will move
+ * from side to side along the frame. If there is tearing, the line will
+ * appear broken at some points in time.
  */
 
 #include <io.h>
@@ -14,9 +11,10 @@
 #include <string.h>
 
 #define PALETTE_SIZE 256
+#define SDRAM_VIDEO_OFFSET 0x300000
 
 int main()
-{ 
+{
 	int row = 0;
 	int col = 0;
 	int color;
@@ -65,32 +63,32 @@ int main()
 	}
 
 
-	alt_putstr("Starting write\n");
-
+	alt_putstr("Clear screen\n");
 	for (row = 0; row < 480; row++)
 	{
-
 		for (col = 0; col < 640; col = col + 4)
 		{
-			color = ((row + col) % 256) << 0 | ((row + col) % 256) << 8 | ((row + col) % 256) << 16 | ((row + col) % 256) << 24;
-
-			if (row == 0 || row == 479)
-			{
-				IOWR_32DIRECT(SRAM_0_BASE, row * 640 + col, 0xFFFFFFFF);
-			}
-			else if (col == 0)
-			{
-				IOWR_32DIRECT(SRAM_0_BASE, row * 640 + col, 0x000000FF | color);
-			}
-			else if (col == 636)
-			{
-				IOWR_32DIRECT(SRAM_0_BASE, row * 640 + col, 0xFF000000 | color);
-			}
-			else
-			{
-				IOWR_32DIRECT(SRAM_0_BASE, row * 640 + col, color);
-			}
+			IOWR_32DIRECT(SDRAM_0_BASE, SDRAM_VIDEO_OFFSET + row * 640 + col, 0);
 		}
+	}
+	ALT_CI_CI_FRAME_DONE_0;
+
+	alt_putstr("Drawing pattern\n");
+	unsigned int position = 0;
+	while (1)
+	{
+		for (row = 0; row < 480; row++)
+		{
+			if (position == 0) {
+				IOWR_8DIRECT(SDRAM_0_BASE, SDRAM_VIDEO_OFFSET + row * 640 + 640 - 8, 0x00);
+			} else {
+				IOWR_8DIRECT(SDRAM_0_BASE, SDRAM_VIDEO_OFFSET + row * 640 + position - 8, 0x00);
+			}
+			IOWR_8DIRECT(SDRAM_0_BASE, SDRAM_VIDEO_OFFSET + row * 640 + position, 0xFF);
+		}
+
+		position = (position + 8) % 640;
+		ALT_CI_CI_FRAME_DONE_0;
 	}
 
 	alt_putstr("Done.\n");

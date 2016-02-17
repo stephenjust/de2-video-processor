@@ -32,7 +32,7 @@ END ENTITY;
 ARCHITECTURE Behavioral OF ci_frame_done IS
 BEGIN
 
-	coe_ext_trigger <= ncs_ci_start;
-	ncs_ci_done <= coe_ext_done;
+	coe_ext_trigger <= ncs_ci_start WHEN ncs_ci_reset = '0' ELSE '0';
+	ncs_ci_done <= coe_ext_done WHEN ncs_ci_reset = '0' ELSE '0';
 
 END ARCHITECTURE;

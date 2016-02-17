@@ -1,11 +1,7 @@
 /* This test program generates a simple video pattern in the device's SRAM.
  * 
- * The video pattern consists of a white box along the edges of the screen,
- * along with blocks of colour forming diagonal stripes across the screen.
- * 
- * The purpose of this program is to verify frame alignment on the video
- * output signal, i.e. to verify that the frame is not translated in some
- * direction, and that it is stationary.
+ * The video pattern consists of a white line extenting diagonally from each
+ * corner of the screen, on a black background.
  */
 
 #include <io.h>
@@ -64,31 +60,33 @@ int main()
 		IOWR_16DIRECT(COLOUR_PALETTE_SHIFTER_0_BASE, 2*i, palette_default[i]);
 	}
 
+	alt_putstr("Clearing Screen\n");
+	for (row = 0; row < 480; row++)
+	{
+		for (col = 0; col < 640; col = col + 4)
+		{
+			IOWR_32DIRECT(SRAM_0_BASE, row * 640 + col, 0);
+		}
+	}
+
 
 	alt_putstr("Starting write\n");
 
 	for (row = 0; row < 480; row++)
 	{
-
-		for (col = 0; col < 640; col = col + 4)
+		for (col = 0; col < 640; col++)
 		{
-			color = ((row + col) % 256) << 0 | ((row + col) % 256) << 8 | ((row + col) % 256) << 16 | ((row + col) % 256) << 24;
-
-			if (row == 0 || row == 479)
-			{
-				IOWR_32DIRECT(SRAM_0_BASE, row * 640 + col, 0xFFFFFFFF);
+			if (row == col) {
+				IOWR_8DIRECT(SRAM_0_BASE, row * 640 + col, 0xFF);
 			}
-			else if (col == 0)
-			{
-				IOWR_32DIRECT(SRAM_0_BASE, row * 640 + col, 0x000000FF | color);
+			if (row == col - 160) {
+				IOWR_8DIRECT(SRAM_0_BASE, row * 640 + col, 0xFF);
 			}
-			else if (col == 636)
-			{
-				IOWR_32DIRECT(SRAM_0_BASE, row * 640 + col, 0xFF000000 | color);
+			if (480 - row - 1 == col) {
+				IOWR_8DIRECT(SRAM_0_BASE, row * 640 + col, 0xFF);
 			}
-			else
-			{
-				IOWR_32DIRECT(SRAM_0_BASE, row * 640 + col, color);
+			if (480 - row - 1 == col - 160) {
+				IOWR_8DIRECT(SRAM_0_BASE, row * 640 + col, 0xFF);
 			}
 		}
 	}

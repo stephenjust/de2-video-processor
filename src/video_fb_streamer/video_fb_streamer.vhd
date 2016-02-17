@@ -94,7 +94,8 @@ ARCHITECTURE Behaviour OF video_fb_streamer IS
 			reset                : in     std_logic;
 
 			-- Control Signals
-			swap_next_frame      : in     std_logic;
+			swap_trigger         : in     std_logic;
+			swap_done            : buffer std_logic;
 
 			-- FIFO source
 			fifo_startofpacket   : buffer std_logic;
@@ -150,14 +151,6 @@ ARCHITECTURE Behaviour OF video_fb_streamer IS
 	SIGNAL sram_written              : integer := 0;
 BEGIN
 
-	PROCESS (clk)
-	BEGIN
-		IF rising_edge(clk) THEN
-			-- Placeholder for now
-			coe_ext_done <= coe_ext_trigger;
-		END IF;
-	END PROCESS;
-
 	aso_source_valid           <= not fifo_output_empty;
 
 	-- Instantiate Components
@@ -194,7 +187,8 @@ BEGIN
 		reset                => reset,
 
 		-- Control Signals
-		swap_next_frame      => '0',
+		swap_trigger         => coe_ext_trigger,
+		swap_done            => coe_ext_done,
 
 		-- FIFO source
 		fifo_startofpacket   => fifo_input_startofpacket,
