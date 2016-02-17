@@ -9,6 +9,7 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.std_logic_unsigned.all;
 use ieee.numeric_std.all;
 use ieee.VITAL_Primitives.all;
 --use work.DE2_CONSTANTS.all;
@@ -17,12 +18,12 @@ use ieee.VITAL_Primitives.all;
 
 entity genesis_controller_interface is
     port ( 
-        -- Clock interface (to CPU) 
-    clk	:	in std_logic;
-    --Vsync for timing
-    vsync		: in std_logic;
+      -- Clock interface (to CPU) 
+		clk	:	in std_logic;
+		--Vsync for timing
+		vsync		: in std_logic;
 
-		-- reset interface (Magic avalon reset) WTF
+		-- reset interface
 		reset_n		:	in std_logic;
 	
 		--Controller 1
@@ -43,7 +44,7 @@ entity genesis_controller_interface is
 		start_c_input2	:	in std_logic;
 		ab_input2		:	in std_logic;
 		
-        --Reading portion, needs to be 
+      --Reading portion, needs to be 
 		avs_s0_read_n	: in std_logic ;
 		avs_s0_readdata : out std_logic_vector (31 downto 0)     
     );
@@ -51,8 +52,9 @@ end genesis_controller_interface;
 
 architecture avalon of genesis_controller_interface is 
 
-	type state_type is (s0,s1,s2,s3,s4); --for reading/writing appropriately
-	signal current_state, next_state: state_type;
+	type state_type is (s0,s0a,s0b,s0c,s0d,s1,s2,s2a,s2b,s2c,s2d,s3,s4,sIDLE); --for reading/writing appropriately
+	signal current_state: state_type;
+	--current_state <= s0;
 	signal vsync_triggered: std_logic := '0';
 
 	signal up_1	:	std_logic;
@@ -71,33 +73,39 @@ architecture avalon of genesis_controller_interface is
 	signal b_2		:	std_logic;
 	signal c_1		:	std_logic;
 	signal c_2		:	std_logic;
+	signal counter_delay : std_logic_vector (7 downto 0) := (others => '0');
 
-	begin
-		process(vsync, clk, reset_n)
-			--This may need to be set up 
-			begin
-				if(reset_n = '0') then
-					current_state <= s0;
-				elsif(rising_edge(clk)) then
-					current_state <= next_state;
-				end if;
-		
-				if (rising_edge(vsync)) then
-					vsync_triggered <= '1';
-				end if;
-		end process;
-			
-		process(current_state, vsync_triggered, dpad_up_input1, dpad_down_input1, dpad_up_input2, dpad_down_input2, 
-						dpad_left_input1, dpad_right_input1, start_c_input1, ab_input1, 
-						dpad_left_input2, dpad_right_input2, start_c_input2, ab_input2)
-				begin
+	begin		
+		process(clk)
+		begin
+			if rising_edge(clk) then
 					case current_state is
 						when s0 =>
 							---Drive Select Line low
 							select_input1 <= '0';
 							select_input2 <= '0';
-							next_state <= s1;
-					
+							
+							if (vsync = '1') then
+								current_state <= s0a;
+								counter_delay <= (others => '0');
+							else
+								current_state <= s0;
+							end if;
+							
+							
+						when s0a =>
+							---Drive Select Line low
+							select_input1 <= '0';
+							select_input2 <= '0';
+							---Kill time for 4 cycles
+							counter_delay <= counter_delay + '1';
+							if (counter_delay < x"0A") then
+								current_state <= s0a;
+							else
+								counter_delay <= (others => '0');
+								current_state <= s1;
+							end if;
+
 						when s1 =>
 							--Poll for low select values (Up, Down, A, Start)
 							------------------------------------------------------------
@@ -142,14 +150,21 @@ architecture avalon of genesis_controller_interface is
 								start_2 <= '0';
 							end if;
 							----------------------------------------------------------
-							next_state <= s2;
+							counter_delay <= (others => '0');
+							current_state <= s2;
 						
 						when s2 =>
 							---Drive Select Line High
 							select_input1 <= '1';
 							select_input2 <= '1';
-							next_state <= s3;
-						
+							counter_delay <= counter_delay + '1';
+							if (counter_delay < x"0A") then
+								current_state <= s2;
+							else
+								counter_delay <= (others => '0');
+								current_state <= s3;
+							end if;
+
 						when s3 =>
 							--Poll for high select values (Up, Down, Left, Right, B, C)
 							--Could potentially remove up/down polling as its redundant
@@ -215,12 +230,11 @@ architecture avalon of genesis_controller_interface is
 								c_2 <= '0';
 							end if;
 							----------------------------------------------------------
-							next_state <= s4;
+							current_state <= s4;
 						
 						when s4 =>
-							--IDLE
-							--Read on Vsync
-							if (vsync_triggered='1') then
+							--Read
+							--if (vsync_triggered='1') then
 								avs_s0_readdata(0) <= up_1;
 								avs_s0_readdata(1) <= down_1;
 								avs_s0_readdata(2) <= left_1;
@@ -238,9 +252,17 @@ architecture avalon of genesis_controller_interface is
 								avs_s0_readdata(15) <= b_2;
 								avs_s0_readdata(16) <= c_2;
 								avs_s0_readdata(17) <= start_2;
-						
-								next_state <= s0;
-							end if;							
+								current_state <= sIDLE;
+
+							when others =>
+								select_input1 <= '0';
+								select_input2 <= '0';
+								if (vsync = '0') then
+									current_state <= s0;
+								else
+									current_state <= sIDLE;
+								end if;
 					end case;
+			end if;
 		end process;
 end avalon;

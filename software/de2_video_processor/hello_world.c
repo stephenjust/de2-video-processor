@@ -29,29 +29,29 @@ int main()
 	   * stuff like 1=up, 2=down, 4 = left, 8=right, 16=a, 32=b, 64=c, 128=start
 	   */
 
-	  printf("%08X\n", genesis_value);
-	  if (genesis_value&0x1){
+	  //printf("%08X\n", genesis_value);
+	  if ((genesis_value)&1){
 		  printf("Up was pressed\n");
 	  }
-	  if (genesis_value&0x2){
+	  if ((genesis_value)&2){
 		  printf("Down was pressed\n");
 	  }
-	  if (genesis_value&0x3){
+	  if ((genesis_value)&4){
 		  printf("Left was pressed\n");
 	  }
-	  if (genesis_value&0x4){
+	  if ((genesis_value)&8){
 		  printf("Right was pressed\n");
 	  }
-	  if (genesis_value&0x5){
+	  if ((genesis_value)&16){
 		  printf("A was pressed\n");
 	  }
-	  if (genesis_value&0x6){
+	  if ((genesis_value)&32){
 		  printf("B was pressed\n");
 	  }
-	  if (genesis_value&0x7){
+	  if ((genesis_value)&64){
 		  printf("C was pressed\n");
 	  }
-	  if (genesis_value&0x8){
+	  if ((genesis_value)&128){
 		  printf("Start was pressed\n");
 	  }
   }
