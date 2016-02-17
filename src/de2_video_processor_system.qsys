@@ -350,7 +350,7 @@
  <parameter name="projectName" value="" />
  <parameter name="sopcBorderPoints" value="false" />
  <parameter name="systemHash" value="1" />
- <parameter name="timeStamp" value="1455667839284" />
+ <parameter name="timeStamp" value="1455737440462" />
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
  <interface name="clk" internal="clk_0.clk_in" type="clock" dir="end" />
@@ -794,7 +794,7 @@
    enabled="1"
    name="video_fb_streamer_0">
   <parameter name="SRAM_BUF_START_ADDRESS" value="17301504" />
-  <parameter name="SDRAM_BUF_START_ADDRESS" value="9961472" />
+  <parameter name="SDRAM_BUF_START_ADDRESS" value="11534336" />
   <parameter name="BITS_PER_PIXEL" value="8" />
   <parameter name="FRAME_WIDTH" value="640" />
   <parameter name="FRAME_HEIGHT" value="480" />
