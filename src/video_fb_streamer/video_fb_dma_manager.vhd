@@ -109,36 +109,19 @@ ARCHITECTURE Behaviour OF video_fb_dma_manager IS
 	-- Signals
 	SIGNAL sram_read_offset : std_logic_vector(31 downto 0) := (others => '0');
 	SIGNAL sram_read_count  : std_logic_vector(7 downto 0) := (others => '0');
+	SIGNAL sram_write_offset : std_logic_vector(31 downto 0) := (others => '0');
+	SIGNAL sram_write_count : std_logic_vector(7 downto 0) := (others => '0');
 
-	SIGNAL sdram_read_waiting : std_logic := '0';
-	SIGNAL sdram_read_active  : std_logic := '0';
-	SIGNAL sdram_read_offset  : std_logic_vector(31 downto 0) := (others => '0');
-	SIGNAL sdram_read_count   : std_logic_vector(7 downto 0) := (others => '0');
+	SIGNAL swap_sdram_done    : std_logic;
+	SIGNAL swap_read_count    : std_logic_vector(7 downto 0) := (others => '0');
+	SIGNAL swap_copy_ready    : std_logic;
+	SIGNAL swap_copy_read     : std_logic := '0';
+	SIGNAL swap_copy_data     : std_logic_vector(15 downto 0);
+
+	SIGNAL copy_on_next_frame : std_logic := '0';
 
 	SIGNAL current_state : state := IDLE;
 BEGIN
-
-	-- Process to handle the SDRAM to SRAM copy
-	sdram_dma : PROCESS (clk)
-	BEGIN
-		IF rising_edge(clk) THEN
-			IF swap_trigger = '1' THEN
-				sdram_read_waiting <= '1';
-			END IF;
-			-- Placeholder for now
-			IF sdram_read_waiting = '1' AND OR_REDUCE(sram_read_offset) = '0' THEN
-				sdram_read_waiting <= '0';
-				sdram_read_active <= '1';
-				sdram_read_offset <= (others => '0');
-				sdram_read_count <= sdram_burst_size;
-			ELSIF sdram_read_active <= '1' AND sdram_read_offset = frame_size THEN
-				sdram_read_active <= '0';
-				swap_done <= '1';
-			ELSE
-				swap_done <= '0';
-			END IF;
-		END IF;
-	END PROCESS sdram_dma;
 
 	-- Process to handle all communication with the SRAM
 	sram_dma : PROCESS (clk)
@@ -146,28 +129,76 @@ BEGIN
 	BEGIN
 		IF rising_edge(clk) THEN
 			IF reset = '1' THEN
-				sram_read_offset <= (others => '0');
-				sram_read_count <= (others => '0');
-				dma0_read <= '0';
+				sram_read_offset  <= (others => '0');
+				sram_read_count   <= (others => '0');
+				sram_write_offset <= (others => '0');
+				sram_write_count  <= (others => '0');
+				dma0_read         <= '0';
+				dma0_write        <= '0';
+				dma0_burstcount   <= (others => '0');
+				swap_read_count   <= (others => '0');
+				copy_on_next_frame<= '0';
+				current_state     <= IDLE;
 			ELSE
+				IF swap_trigger = '1' THEN
+					copy_on_next_frame <= '1';
+				END IF;
+
+				-- TODO: Make sure we don't get tearing
 				CASE current_state IS
 					WHEN IDLE =>
-						IF fifo_ready = '1' THEN
+						swap_done <= '0';
+						IF swap_copy_ready = '1' AND fifo_ready <= '0' THEN
+							-- Start the process to write to SRAM
+							sram_write_count  <= (others => '0');
+							dma0_address      <= SRAM_BUF_START_ADDRESS + sram_write_offset;
+							dma0_burstcount   <= sram_burst_size;
+							dma0_write        <= '1';
+							next_state        := WRITE_SRAM;
+						ELSIF fifo_ready = '1' THEN
 							-- Start the process to read from SRAM
 							sram_read_count <= (others => '0');
-							dma0_address <= SRAM_BUF_START_ADDRESS + sram_read_offset;
+							dma0_address    <= SRAM_BUF_START_ADDRESS + sram_read_offset;
 							dma0_burstcount <= sram_burst_size;
-							dma0_read <= '1';
-							next_state := READ_SRAM;
+							dma0_read       <= '1';
+							next_state      := READ_SRAM;
 						ELSE
-							next_state := IDLE;
+							dma0_read      <= '0';
+							dma0_write     <= '0';
+							next_state     := IDLE;
 						END IF;
 
-					WHEN READ_SRAM =>
-						-- We need to hold our read request until the SRAM de-asserts waitrequest
+					WHEN WRITE_SRAM =>
+						-- We need to hold the address and burstcount until waitrequest is de-asserted
 						IF dma0_waitrequest = '0' THEN
-							dma0_read <= '0';
-							dma0_address <= (others => '0');
+							dma0_address    <= (others => '0');
+							dma0_burstcount <= (others => '0');
+						END IF;
+
+						-- Write next word
+						IF dma0_waitrequest = '0' THEN
+							IF sram_write_count + '1' < sram_burst_size THEN
+								sram_write_count <= sram_write_count + '1';
+								next_state       := WRITE_SRAM;
+							ELSE
+								sram_write_count  <= (others => '0');
+								dma0_write        <= '0';
+								next_state        := IDLE;
+								IF sram_write_offset + (sram_burst_size & '0') >= frame_size THEN
+									sram_write_offset <= (others => '0');
+									copy_on_next_frame <= '0';
+									swap_done <= '1';
+								ELSE
+									sram_write_offset <= sram_write_offset + (sram_burst_size & '0');
+								END IF;
+							END IF;
+						END IF;
+							
+					WHEN READ_SRAM =>
+						-- We need to hold the address, burstcount and read signal until waitrequest is de-asserted
+						IF dma0_waitrequest = '0' THEN
+							dma0_read       <= '0';
+							dma0_address    <= (others => '0');
 							dma0_burstcount <= (others => '0');
 						END IF;
 
@@ -194,8 +225,8 @@ BEGIN
 					WHEN OTHERS =>
 						next_state := IDLE;
 				END CASE;
+				current_state <= next_state;
 			END IF;
-			current_state <= next_state;
 		END IF;
 	END PROCESS sram_dma;
 
@@ -205,6 +236,10 @@ BEGIN
 	fifo_write         <= dma0_readdatavalid;
 	fifo_startofpacket <= '1' WHEN OR_REDUCE(sram_read_offset + sram_read_count) = '0' ELSE '0';
 	fifo_endofpacket   <= '1' WHEN sram_read_offset + sram_read_count >= (frame_size - x"2") ELSE '0';
+
+	-- Combinational logic for SRAM write
+	swap_copy_read     <= '1' WHEN current_state = WRITE_SRAM AND dma0_waitrequest = '0' ELSE '0';
+	dma0_writedata     <= swap_copy_data;
 
 	-- Initialize a DRAM reader
 	r0 : video_fb_sdram_reader

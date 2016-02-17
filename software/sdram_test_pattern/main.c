@@ -12,7 +12,7 @@
 #include <system.h>
 #include <sys/alt_stdio.h>
 
-#define SDRAM_VIDEO_OFFSET 0x300000
+#define SDRAM_VIDEO_OFFSET 0x180000
 
 int main()
 { 
