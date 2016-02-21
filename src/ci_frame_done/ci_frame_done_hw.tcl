@@ -38,7 +38,7 @@ set_module_property ALLOW_GREYBOX_GENERATION false
 add_fileset QUARTUS_SYNTH QUARTUS_SYNTH "" ""
 set_fileset_property QUARTUS_SYNTH TOP_LEVEL ci_frame_done
 set_fileset_property QUARTUS_SYNTH ENABLE_RELATIVE_INCLUDE_PATHS false
-add_fileset_file ci_frame_done.vhd VHDL PATH custom_instructions/ci_frame_done.vhd
+add_fileset_file ci_frame_done.vhd VHDL PATH HDL/ci_frame_done.vhd
 
 
 # 
