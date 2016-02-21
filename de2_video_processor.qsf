@@ -490,14 +490,15 @@ set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_RO
 
 set_global_assignment -name EDA_TEST_BENCH_ENABLE_STATUS NOT_USED -section_id eda_simulation
 
+
+set_parameter -name CYCLONEII_SAFE_WRITE "\"RESTRUCTURE\"" -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram"
+
 set_global_assignment -name MIF_FILE default_palette.mif
 set_global_assignment -name VHDL_FILE src/de2_video_processor.vhd
-set_global_assignment -name QSYS_FILE src/de2_video_processor_system.qsys
 set_global_assignment -name VHDL_FILE src/custom_controller.vhd
 set_global_assignment -name VHDL_FILE src/video_fb_streamer/video_fb_streamer.vhd
 set_global_assignment -name VHDL_FILE src/video_fb_streamer/video_fb_fifo.vhd
 set_global_assignment -name VHDL_FILE src/video_fb_streamer/video_fb_dma_manager.vhd
 set_global_assignment -name VHDL_FILE src/video_fb_streamer/video_fb_sdram_reader.vhd
-
-set_parameter -name CYCLONEII_SAFE_WRITE "\"RESTRUCTURE\"" -to "de2_video_processor_system:u0|colour_space_converter:colour_palette_shifter_0|altsyncram:palette_ram"
+set_global_assignment -name QIP_FILE src/de2_video_processor_system/synthesis/de2_video_processor_system.qip
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
