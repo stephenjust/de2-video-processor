@@ -61,18 +61,15 @@ BEGIN
 	BEGIN
 		IF rising_edge(out_clk) THEN
 			IF reset = '1' THEN
-				fifo_read <= '0';
 				fifo_word <= '0';
 			ELSIF out_req = '1' THEN
 				fifo_word <= NOT fifo_word;
-				fifo_read <= NOT fifo_word;
-			ELSE
-				fifo_read <= '0';
 			END IF;
 		END IF;
 	END PROCESS;
 
 	-- Combinational logic
+	fifo_read <= '1' WHEN fifo_word = '0' AND out_req = '1' ELSE '0';
 	fifo_data_in <= ('0' & in_endofpacket & in_pixdata(15 downto 8) & in_startofpacket & '0' & in_pixdata(7 downto 0));
 	out_pixdata <= fifo_data_out(7 downto 0) WHEN fifo_read = '0' ELSE
 						fifo_data_out(17 downto 10) WHEN fifo_read = '1' ELSE
@@ -88,7 +85,7 @@ BEGIN
 		intended_device_family  => "Cyclone II",
 		add_ram_output_register => "OFF",
 		lpm_numwords            => 128,
-		lpm_showahead           => "OFF",
+		lpm_showahead           => "ON",
 		lpm_type                => "dcfifo",
 		lpm_width               => PIXEL_BITS_IN+4,
 		lpm_widthu              => 7,
