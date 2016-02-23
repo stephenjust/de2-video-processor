@@ -38,7 +38,7 @@ set_module_property ALLOW_GREYBOX_GENERATION false
 add_fileset QUARTUS_SYNTH QUARTUS_SYNTH "" ""
 set_fileset_property QUARTUS_SYNTH TOP_LEVEL colour_space_converter
 set_fileset_property QUARTUS_SYNTH ENABLE_RELATIVE_INCLUDE_PATHS false
-add_fileset_file colour_space_converter.vhd VHDL PATH colour_space_converter/colour_space_converter.vhd
+add_fileset_file colour_space_converter.vhd VHDL PATH HDL/colour_space_converter.vhd
 
 
 # 

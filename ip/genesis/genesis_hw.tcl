@@ -36,7 +36,7 @@ set_module_property ALLOW_GREYBOX_GENERATION false
 add_fileset QUARTUS_SYNTH QUARTUS_SYNTH "" ""
 set_fileset_property QUARTUS_SYNTH TOP_LEVEL genesis_controller_interface
 set_fileset_property QUARTUS_SYNTH ENABLE_RELATIVE_INCLUDE_PATHS false
-add_fileset_file custom_controller.vhd VHDL PATH custom_controller.vhd
+add_fileset_file custom_controller.vhd VHDL PATH HDL/custom_controller.vhd
 
 
 # 
