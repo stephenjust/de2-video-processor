@@ -204,14 +204,6 @@
          type = "String";
       }
    }
-   element onchip_memory2_0.s1
-   {
-      datum baseAddress
-      {
-         value = "4210688";
-         type = "String";
-      }
-   }
    element sdram_0.s1
    {
       datum _lockedAddress
@@ -222,6 +214,14 @@
       datum baseAddress
       {
          value = "8388608";
+         type = "String";
+      }
+   }
+   element onchip_memory2_0.s1
+   {
+      datum baseAddress
+      {
+         value = "4210688";
          type = "String";
       }
    }
@@ -347,10 +347,10 @@
  <parameter name="globalResetBus" value="false" />
  <parameter name="hdlLanguage" value="VERILOG" />
  <parameter name="maxAdditionalLatency" value="1" />
- <parameter name="projectName" value="" />
+ <parameter name="projectName">de2_video_processor.qpf</parameter>
  <parameter name="sopcBorderPoints" value="false" />
  <parameter name="systemHash" value="1" />
- <parameter name="timeStamp" value="1455737440462" />
+ <parameter name="timeStamp" value="1456606137988" />
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
  <interface name="clk" internal="clk_0.clk_in" type="clock" dir="end" />
@@ -1065,10 +1065,6 @@
    version="1.0"
    enabled="1"
    name="colour_palette_shifter_0">
-  <parameter name="BUFFER_START_ADDRESS" value="0" />
-  <parameter name="BITS_PER_PIXEL" value="8" />
-  <parameter name="FRAME_WIDTH" value="640" />
-  <parameter name="FRAME_HEIGHT" value="480" />
   <parameter name="VGA_INPUT_STREAM_WIDTH" value="8" />
   <parameter name="VGA_OUTPUT_STREAM_WIDTH" value="16" />
   <parameter name="AUTO_CLOCK_CLOCK_RATE" value="50000000" />
@@ -1316,11 +1312,6 @@
    start="clk_0.clk_reset"
    end="video_rgb_resampler_0.clock_reset_reset" />
  <connection
-   kind="avalon_streaming"
-   version="12.1"
-   start="video_rgb_resampler_0.avalon_rgb_source"
-   end="video_vga_controller_0.avalon_vga_sink" />
- <connection
    kind="avalon"
    version="12.1"
    start="video_fb_streamer_0.dma0"
@@ -1485,11 +1476,6 @@
    start="video_fb_streamer_0.source"
    end="colour_palette_shifter_0.fifoin" />
  <connection
-   kind="avalon_streaming"
-   version="12.1"
-   start="colour_palette_shifter_0.vgaout"
-   end="video_rgb_resampler_0.avalon_rgb_sink" />
- <connection
    kind="avalon"
    version="12.1"
    start="nios2_qsys_0.data_master"
@@ -1526,4 +1512,14 @@
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x00409240" />
  </connection>
+ <connection
+   kind="avalon_streaming"
+   version="12.1"
+   start="video_rgb_resampler_0.avalon_rgb_source"
+   end="video_vga_controller_0.avalon_vga_sink" />
+ <connection
+   kind="avalon_streaming"
+   version="12.1"
+   start="colour_palette_shifter_0.vgaout"
+   end="video_rgb_resampler_0.avalon_rgb_sink" />
 </system>

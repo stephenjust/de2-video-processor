@@ -32,17 +32,9 @@ USE altera_mf.altera_mf_components.all;
 entity colour_space_converter is 
 
 	generic(
-		BUFFER_START_ADDRESS : std_logic_vector(31 downto 0) := (others => '0');
-		BITS_PER_PIXEL       : integer                       := 8;
-		FRAME_WIDTH          : integer                       := 640;
-		FRAME_HEIGHT         : integer                       := 480;
-
-
         -- Width of Avalon Streaming Source to VGA Output.
         VGA_INPUT_STREAM_WIDTH       : integer               := 8;
         VGA_OUTPUT_STREAM_WIDTH       : integer              := 16
-
-
 	);
 	port (
 		------------------------------------------------------------------------
@@ -244,19 +236,22 @@ avs_paletteram_readdata <=  sram_palette_store_portA_dataout;
                 ----------------------------------------------------------------
 
                 ----------------------------------------------------------------
-                --                  Clocks for output ports                   --
+                --                  Port settings                             --
                 --                                                            --
-                outdata_aclr_a          => "NONE",   --Async clear clock.     --
-                outdata_aclr_b          => "NONE",   --Async clear clock.     --
-                outdata_reg_a           => "CLOCK0", --Output data clock.     --
-                outdata_reg_b           => "CLOCK1", --Output data clock.     --
+                -- Clocks to use for async clear                              --
+                outdata_aclr_a          => "NONE",                            --
+                outdata_aclr_b          => "NONE",                            --
+                -- Clock to update output registers                           --
+                outdata_reg_a           => "CLOCK0",                          --
+                outdata_reg_b           => "UNREGISTERED",                    --
+                -- Note: If output registers are enabled, this will add an    --
+                --       additional clock cycle of read latency.              --
                 ----------------------------------------------------------------
 
                 ----------------------------------------------------------------
                 --                      Ram Block Type                        --
                 --                                                            --
-                ram_block_type          => "M4K", 
-                --                       -- Only valid choice on Cyclone II   --
+                ram_block_type          => "AUTO",
                 ----------------------------------------------------------------
 
                 ----------------------------------------------------------------
@@ -412,8 +407,8 @@ sram_palette_store_portB_rden_b <= '1' when asi_fifoin_valid = '1' and aso_vgaou
 -- No idea why this works. Stephen knows.
 -- Combinational logic.
 aso_vgaout_data <= buffer2_aso_vgaout_data when aso_vgaout_ready = '1' else (others => '0');
-aso_vgaout_startofpacket <= buffer4_aso_vgaout_startofpacket when aso_vgaout_ready = '1' else '0';
-aso_vgaout_endofpacket <= buffer4_aso_vgaout_endofpacket when aso_vgaout_ready = '1' else '0';
+aso_vgaout_startofpacket <= buffer3_aso_vgaout_startofpacket when aso_vgaout_ready = '1' else '0';
+aso_vgaout_endofpacket <= buffer3_aso_vgaout_endofpacket when aso_vgaout_ready = '1' else '0';
    
 
 
