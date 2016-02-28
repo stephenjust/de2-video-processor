@@ -63,7 +63,7 @@
    {
       datum _sortIndex
       {
-         value = "4";
+         value = "5";
          type = "int";
       }
    }
@@ -171,7 +171,7 @@
    {
       datum _sortIndex
       {
-         value = "5";
+         value = "4";
          type = "int";
       }
       datum sopceditor_expanded
@@ -196,14 +196,6 @@
          type = "String";
       }
    }
-   element genesis_0.s0
-   {
-      datum baseAddress
-      {
-         value = "4231776";
-         type = "String";
-      }
-   }
    element ci_draw_rect_0.s0
    {
       datum baseAddress
@@ -212,11 +204,27 @@
          type = "String";
       }
    }
+   element genesis_0.s0
+   {
+      datum baseAddress
+      {
+         value = "4231776";
+         type = "String";
+      }
+   }
    element timer_0.s1
    {
       datum baseAddress
       {
          value = "4231712";
+         type = "String";
+      }
+   }
+   element onchip_memory2_0.s1
+   {
+      datum baseAddress
+      {
+         value = "4210688";
          type = "String";
       }
    }
@@ -230,14 +238,6 @@
       datum baseAddress
       {
          value = "8388608";
-         type = "String";
-      }
-   }
-   element onchip_memory2_0.s1
-   {
-      datum baseAddress
-      {
-         value = "4210688";
          type = "String";
       }
    }
@@ -366,7 +366,7 @@
  <parameter name="projectName">de2_video_processor.qpf</parameter>
  <parameter name="sopcBorderPoints" value="false" />
  <parameter name="systemHash" value="1" />
- <parameter name="timeStamp" value="1456551305170" />
+ <parameter name="timeStamp" value="1456635571982" />
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
  <interface name="clk" internal="clk_0.clk_in" type="clock" dir="end" />
@@ -1081,10 +1081,6 @@
    version="1.0"
    enabled="1"
    name="colour_palette_shifter_0">
-  <parameter name="BUFFER_START_ADDRESS" value="0" />
-  <parameter name="BITS_PER_PIXEL" value="8" />
-  <parameter name="FRAME_WIDTH" value="640" />
-  <parameter name="FRAME_HEIGHT" value="480" />
   <parameter name="VGA_INPUT_STREAM_WIDTH" value="8" />
   <parameter name="VGA_OUTPUT_STREAM_WIDTH" value="16" />
   <parameter name="AUTO_CLOCK_CLOCK_RATE" value="50000000" />

@@ -32,242 +32,117 @@ USE altera_mf.altera_mf_components.all;
 entity colour_space_converter is 
 
 	generic(
-		BUFFER_START_ADDRESS : std_logic_vector(31 downto 0) := (others => '0');
-		BITS_PER_PIXEL       : integer                       := 8;
-		FRAME_WIDTH          : integer                       := 640;
-		FRAME_HEIGHT         : integer                       := 480;
-
-
         -- Width of Avalon Streaming Source to VGA Output.
         VGA_INPUT_STREAM_WIDTH       : integer               := 8;
         VGA_OUTPUT_STREAM_WIDTH       : integer              := 16
-
-
 	);
-    port (
-        ------------------------------------------------------------------------
-        -- Clock interface (to CPU) 
-        clk_cpu                             : in std_logic;
-        -- Clock interface (to video clock)
-        clk_video                           : in std_logic;
+	port (
+		------------------------------------------------------------------------
+		-- Clock interface (to CPU)
+		clk_cpu                         : in std_logic;
+		-- Clock interface (to video clock)
+		clk_video                       : in std_logic;
 		-- reset interface (Magic avalon reset)
 		reset_n		                    : in std_logic;
-        ------------------------------------------------------------------------
-        ------------------------------------------------------------------------
-        -- Avalon Streaming Sink                                        --------
-        -- (FIFO plugs into this)                                       --------
-        ----- Interface Prefix: asi                                     --------
+		------------------------------------------------------------------------
+		------------------------------------------------------------------------
+		-- Avalon Streaming Sink                                        --------
+		-- (FIFO plugs into this)                                       --------
+		----- Interface Prefix: asi                                     --------
 		asi_fifoin_ready         : out    std_logic;
-		asi_fifoin_data          : in   std_logic_vector(VGA_INPUT_STREAM_WIDTH-1 downto 0);
-		asi_fifoin_startofpacket : in   std_logic;
-		asi_fifoin_endofpacket   : in   std_logic;
-		asi_fifoin_valid         : in   std_logic;        
-        --asi_fifoin_reset_n         : in   std_logic;
-        ------------------------------------------------------------------------
-        -- Avalon Streaming Source                                      --------
-        -- (Outputs into VGA signal generator)                          --------
-        ----- Interface Prefix: aso                                     --------
-		aso_vgaout_ready         : in    std_logic;
-		aso_vgaout_data          : out   std_logic_vector(VGA_OUTPUT_STREAM_WIDTH-1 downto 0);
-		aso_vgaout_startofpacket : out   std_logic;
-		aso_vgaout_endofpacket   : out   std_logic;
-		aso_vgaout_valid         : buffer   std_logic;
-        --aso_vgaout_reset_n         : in    std_logic;
-        ------------------------------------------------------------------------
-        -- Avalon Memory-mapped slave                                   --------
-        -- (For accessing palette ram)                                  --------
-        ----- Interface Prefix: avs                                     --------
-        avs_paletteram_read_n	         : in    std_logic;
-        avs_paletteram_readdata          : out    std_logic_vector (15 downto 0);
-        avs_paletteram_address           : in    std_logic_vector (7 downto 0);
-        --byteenable?
-        avs_paletteram_write_n           : in    std_logic;
-        avs_paletteram_writedata         : in   std_logic_vector (15 downto 0)
-        --avs_registers_reset_n             : in    std_logic
-        --Response Code
-        -- Described on page 18: 
-        --      https://www.altera.com/content/dam/altera-www/global/en_US/pdfs/literature/manual/mnl_avalon_spec.pdf
-        -- We will use this to respond a 00:Okay if the palette switch was
-        -- Successful.
-        -- If the palette switch (involving reading a palette from SRAM) is
-        -- unsucessful, then return a 10:SlaveError.
-        --avs_registers_response          : out   std_logic_vector (1 downto 0)
-        ------------------------------------------------------------------------    
-    );
+		asi_fifoin_data          : in     std_logic_vector(VGA_INPUT_STREAM_WIDTH-1 downto 0);
+		asi_fifoin_startofpacket : in     std_logic;
+		asi_fifoin_endofpacket   : in     std_logic;
+		asi_fifoin_valid         : in     std_logic;       
+		------------------------------------------------------------------------
+		-- Avalon Streaming Source                                      --------
+		-- (Outputs into VGA signal generator)                          --------
+		----- Interface Prefix: aso                                     --------
+		aso_vgaout_ready         : in     std_logic;
+		aso_vgaout_data          : out    std_logic_vector(VGA_OUTPUT_STREAM_WIDTH-1 downto 0);
+		aso_vgaout_startofpacket : out    std_logic;
+		aso_vgaout_endofpacket   : out    std_logic;
+		aso_vgaout_valid         : buffer std_logic;
+		------------------------------------------------------------------------
+		-- Avalon Memory-mapped slave                                   --------
+		-- (For accessing palette ram)                                  --------
+		----- Interface Prefix: avs                                     --------
+		avs_paletteram_read_n	     : in     std_logic;
+		avs_paletteram_readdata      : out    std_logic_vector (15 downto 0);
+		avs_paletteram_address       : in     std_logic_vector (7 downto 0);
+		avs_paletteram_write_n       : in     std_logic;
+		avs_paletteram_writedata     : in     std_logic_vector (15 downto 0)
+		------------------------------------------------------------------------
+	);
 end colour_space_converter;
 
 
 architecture avalon of colour_space_converter is 
-    -- Store the integer locally
-    signal pre_count_val    :   integer;
--- http://quartushelp.altera.com/14.1/mergedProjects/hdl/mega/mega_file_altsynch_ram.htm
-component altsyncram
-        generic (
-                address_aclr_a          :       string := "UNUSED";
-                address_aclr_b          :       string := "NONE";
-                address_reg_b           :       string := "CLOCK1";
-                byte_size               :       natural := 8;
-                byteena_aclr_a          :       string := "UNUSED";
-                byteena_aclr_b          :       string := "NONE";
-                byteena_reg_b           :       string := "CLOCK1";
-                clock_enable_core_a     :       string := "USE_INPUT_CLKEN";
-                clock_enable_core_b     :       string := "USE_INPUT_CLKEN";
-                clock_enable_input_a    :       string := "NORMAL";
-                clock_enable_input_b    :       string := "NORMAL";
-                clock_enable_output_a   :       string := "NORMAL";
-                clock_enable_output_b   :       string := "NORMAL";
-                intended_device_family  :       string := "unused";
-                enable_ecc              :       string := "FALSE";
-                implement_in_les        :       string := "OFF";
-                indata_aclr_a           :       string := "UNUSED";
-                indata_aclr_b           :       string := "NONE";
-                indata_reg_b            :       string := "CLOCK1";
-                init_file               :       string := "UNUSED";
-                init_file_layout        :       string := "PORT_A";
-                maximum_depth           :       natural := 0;
-                numwords_a              :       natural := 0;
-                numwords_b              :       natural := 0;
-                operation_mode          :       string := "BIDIR_DUAL_PORT";
-                outdata_aclr_a          :       string := "NONE";
-                outdata_aclr_b          :       string := "NONE";
-                outdata_reg_a           :       string := "UNREGISTERED";
-                outdata_reg_b           :       string := "UNREGISTERED";
-                power_up_uninitialized  :       string := "FALSE";
-                ram_block_type          :       string := "AUTO";
-                rdcontrol_aclr_b        :       string := "NONE";
-                rdcontrol_reg_b         :       string := "CLOCK1";
-                read_during_write_mode_mixed_ports      :       string := "DONT_CARE";
-                read_during_write_mode_port_a           :       string := "NEW_DATA_NO_NBE_READ";
-                read_during_write_mode_port_b           :       string := "NEW_DATA_NO_NBE_READ";
-                width_a                 :       natural;
-                width_b                 :       natural := 1;
-                width_byteena_a         :       natural := 1;
-                width_byteena_b         :       natural := 1;
-                widthad_a               :       natural;
-                widthad_b               :       natural := 1;
-                wrcontrol_aclr_a        :       string := "UNUSED";
-                wrcontrol_aclr_b        :       string := "NONE";
-                wrcontrol_wraddress_reg_b    :       string := "CLOCK1";
-                lpm_hint                :       string := "UNUSED";
-                lpm_type                :       string := "altsyncram"
-        );
+	-- Store the integer locally
+	signal pre_count_val    :   integer;
 
-        port(
-                aclr0                   :       in std_logic := '0';
-                aclr1                   :       in std_logic := '0';
-                address_a               :       in std_logic_vector(widthad_a-1 downto 0);
-                address_b               :       in std_logic_vector(widthad_b-1 downto 0) := (others => '1');
-                addressstall_a          :       in std_logic := '0';
-                addressstall_b          :       in std_logic := '0';
-                byteena_a               :       in std_logic_vector(width_byteena_a-1 downto 0) := (others => '1');
-                byteena_b               :       in std_logic_vector(width_byteena_b-1 downto 0) := (others => '1');
-                clock0                  :       in std_logic := '1';
-                clock1                  :       in std_logic := '1';
-                clocken0                :       in std_logic := '1';
-                clocken1                :       in std_logic := '1';
-                clocken2                :       in std_logic := '1';
-                clocken3                :       in std_logic := '1';
-                data_a                  :       in std_logic_vector(width_a-1 downto 0) := (others => '1');
-                data_b                  :       in std_logic_vector(width_b-1 downto 0) := (others => '1');
-                eccstatus               :       out std_logic_vector(2 downto 0);
-                q_a                     :       out std_logic_vector(width_a-1 downto 0);
-                q_b                     :       out std_logic_vector(width_b-1 downto 0);
-                rden_a                  :       in std_logic := '1';
-                rden_b                  :       in std_logic := '1';
-                wren_a                  :       in std_logic := '0';
-                wren_b                  :       in std_logic := '0'
-        );
-end component;
+	-- Signals are needed here to wire everything together. 
 
-    -- Signals are needed here to wire everything together. 
+	signal sram_palette_store_portA_address :   std_logic_vector(8-1 downto 0) := (others => 'Z');
+	signal sram_palette_store_portA_datain  :   std_logic_vector(16-1 downto 0) := (others => 'Z');
+	signal sram_palette_store_portA_dataout  :   std_logic_vector(16-1 downto 0);
 
-    signal sram_palette_store_portA_address :   std_logic_vector(8-1 downto 0) := (others => 'Z');
-    signal sram_palette_store_portA_datain  :   std_logic_vector(16-1 downto 0) := (others => 'Z');
-    signal sram_palette_store_portA_dataout  :   std_logic_vector(16-1 downto 0);
+	signal sram_palette_store_portB_address :   std_logic_vector(8-1 downto 0) := (others => 'Z');
+	signal sram_palette_store_portB_datain  :   std_logic_vector(16-1 downto 0) := (others => 'Z');
+	signal sram_palette_store_portB_dataout  :   std_logic_vector(16-1 downto 0);
 
-    signal sram_palette_store_portB_address :   std_logic_vector(8-1 downto 0) := (others => 'Z');
-    signal sram_palette_store_portB_datain  :   std_logic_vector(16-1 downto 0) := (others => 'Z');
-    signal sram_palette_store_portB_dataout  :   std_logic_vector(16-1 downto 0);
+	-- Colour Conversion Signals
+	signal colour_index : std_logic_vector(8 downto 0); --Number from sram
+	-- Converted colour from the SRAM. 
+	signal colour_converted : std_logic_vector(16 downto 0); 
 
-    -- Colour Conversion Signals
-    signal colour_index : std_logic_vector(8 downto 0); --Number from sram
-    -- Converted colour from the SRAM. 
-    signal colour_converted : std_logic_vector(16 downto 0); 
+	-- Expose signals from palette ram for controls.
 
-    -- Expose signals from palette ram for controls.
-
-    -- Write enable on A (avalon side) required. Read optional.
-    signal sram_palette_store_portA_rden_a  : std_logic;
-    signal sram_palette_store_portA_wren_a  : std_logic;
-    -- For port B, only a read enable is required. Write is optional, and
-    -- typically unused.
-    signal sram_palette_store_portB_rden_b  : std_logic;
-    signal sram_palette_store_portB_wren_b  : std_logic;
+	-- Write enable on A (avalon side) required. Read optional.
+	signal sram_palette_store_portA_rden_a  : std_logic;
+	signal sram_palette_store_portA_wren_a  : std_logic;
+	-- For port B, only a read enable is required. Write is optional, and
+	-- typically unused.
+	signal sram_palette_store_portB_rden_b  : std_logic;
+	signal sram_palette_store_portB_wren_b  : std_logic;
 
 
-    -- Signal to store the pixel clogged in the pixel pipeline.
-    signal buffer_aso_vgaout_startofpacket : std_logic;
-    signal buffer_aso_vgaout_endofpacket   : std_logic;
-    signal buffer_aso_vgaout_data : std_logic_vector(VGA_OUTPUT_STREAM_WIDTH-1 downto 0);
+	-- Signal to store the pixel clogged in the pixel pipeline while ready = '0'
+	signal buffer_aso_vgaout_startofpacket : std_logic;
+	signal buffer_aso_vgaout_endofpacket   : std_logic;
+	signal buffer_aso_vgaout_data : std_logic_vector(VGA_OUTPUT_STREAM_WIDTH-1 downto 0);
 
-    -- Need to delay the aso_start and aso_end by one cycle.
-    signal buffer2_aso_vgaout_startofpacket : std_logic;
-    signal buffer2_aso_vgaout_endofpacket   : std_logic;
-    signal buffer2_aso_vgaout_data : std_logic_vector(VGA_OUTPUT_STREAM_WIDTH-1 downto 0);
-
-    signal buffer3_aso_vgaout_startofpacket : std_logic;
-    signal buffer3_aso_vgaout_endofpacket   : std_logic;
-    signal buffer3_aso_vgaout_data : std_logic_vector(VGA_OUTPUT_STREAM_WIDTH-1 downto 0);
-
-    signal buffer4_aso_vgaout_startofpacket : std_logic;
-    signal buffer4_aso_vgaout_endofpacket   : std_logic;
-    signal buffer4_aso_vgaout_data : std_logic_vector(VGA_OUTPUT_STREAM_WIDTH-1 downto 0);
+	signal clk_video_mem : std_logic;
 
 begin
-    -- This ram stores the palette data needed for the conversion.
-    -- This ram is set up as a dual port ram so that it can be written
-    -- to and read from at the same time. (This can cause some race conditions
-    -- and invalid colour palette data during a frame draw, if current palette
-    -- is being updated the same time it's being used to draw, but it should
-    -- be fixed by the time the next frame is drawn. The programmer can work
-    -- around this.)
 
-    -- Port A: To signals that hold lines for Avalon bus.
-    -- Port B: To video output / colour conversion logic. 
+	-- Create a clock that is offset from the video clock by half a cycle.
+	-- This will make sure the altsyncram is read half a clock cycle before
+	-- it is needed by the output interface.
+	-- This only works because we know the input stage will be updated very
+	-- soon after the rising edge of the video clock, so when this memory clock
+	-- hits its rising edge, it can immediately load the pixel data into its
+	-- unregistered output, in time for it to be read by the next stages in the
+	-- video pipeline.
+	clk_video_mem <= not clk_video;
 
+	-- This ram stores the palette data needed for the conversion.
+	-- This ram is set up as a dual port ram so that it can be written
+	-- to and read from at the same time. (This can cause some race conditions
+	-- and invalid colour palette data during a frame draw, if current palette
+	-- is being updated the same time it's being used to draw, but it should
+	-- be fixed by the time the next frame is drawn. The programmer can work
+	-- around this.)
 
---	process(clk_cpu) is
---	begin
---
-  ---      if Rising_edge(clk_cpu) then
---
-  --          if (reset_n = '1') then
-    --            avs_paletteram_readdata  <= x"0000";
-     --       end if;
---
---		    if (avs_paletteram_read_n = '0' and reset_n = '1' ) then 
- --               --Reading all the things
----
-  --              avs_paletteram_readdata <= x"0000" or sram_palette_store_portA_dataout;
-   --             
-    --        elsif (avs_paletteram_write_n = '0' and reset_n = '1') then
-     --           --Writing all the things
-      ---          sram_palette_store_portA_datain  <= avs_paletteram_writedata;
-		 -- --  else
-        --        -- Put everything to high impedance.
-     ---           sram_palette_store_portA_address <= (others => 'Z');
-   --             sram_palette_store_portA_datain <= (others => 'Z');
- --               sram_palette_store_portA_dataout <= (others => 'Z');
---		    end if;
---        end if;
---	end process;
+	-- Port A: To signals that hold lines for Avalon bus.
+	-- Port B: To video output / colour conversion logic. 
 
--- Combinational logic.
-sram_palette_store_portA_rden_a <= not avs_paletteram_read_n;
-sram_palette_store_portA_wren_a  <= not avs_paletteram_write_n; --turns out wren_a is active low as well. ??
-sram_palette_store_portA_address <= avs_paletteram_address;
-sram_palette_store_portA_datain  <= avs_paletteram_writedata;
-avs_paletteram_readdata <=  sram_palette_store_portA_dataout;
+	-- Combinational logic.
+	sram_palette_store_portA_rden_a <= not avs_paletteram_read_n;
+	sram_palette_store_portA_wren_a  <= not avs_paletteram_write_n; --turns out wren_a is active low as well. ??
+	sram_palette_store_portA_address <= avs_paletteram_address;
+	sram_palette_store_portA_datain  <= avs_paletteram_writedata;
+	avs_paletteram_readdata <=  sram_palette_store_portA_dataout;
 
 
     -- Syntax for generic maps on instantiating a component.
@@ -334,19 +209,22 @@ avs_paletteram_readdata <=  sram_palette_store_portA_dataout;
                 ----------------------------------------------------------------
 
                 ----------------------------------------------------------------
-                --                  Clocks for output ports                   --
+                --                  Port settings                             --
                 --                                                            --
-                outdata_aclr_a          => "NONE",   --Async clear clock.     --
-                outdata_aclr_b          => "NONE",   --Async clear clock.     --
-                outdata_reg_a           => "CLOCK0", --Output data clock.     --
-                outdata_reg_b           => "CLOCK1", --Output data clock.     --
+                -- Clocks to use for async clear                              --
+                outdata_aclr_a          => "NONE",                            --
+                outdata_aclr_b          => "NONE",                            --
+                -- Clock to update output registers                           --
+                outdata_reg_a           => "CLOCK0",                          --
+                outdata_reg_b           => "UNREGISTERED",                    --
+                -- Note: If output registers are enabled, this will add an    --
+                --       additional clock cycle of read latency.              --
                 ----------------------------------------------------------------
 
                 ----------------------------------------------------------------
                 --                      Ram Block Type                        --
                 --                                                            --
-                ram_block_type          => "M4K", 
-                --                       -- Only valid choice on Cyclone II   --
+                ram_block_type          => "AUTO",
                 ----------------------------------------------------------------
 
                 ----------------------------------------------------------------
@@ -408,7 +286,7 @@ avs_paletteram_readdata <=  sram_palette_store_portA_dataout;
             port map (
                 -- Inputs
                 clock0			=> clk_cpu, -- PortA, talks to CPU.
-                clock1          => clk_video, -- Port B, timed to video.
+                clock1          => clk_video_mem, -- Port B, timed to video.
 
 		        address_a		=> sram_palette_store_portA_address,     -- Address bus for port A.
 	            address_b		=> sram_palette_store_portB_address,     -- Address bus for port B.
@@ -470,40 +348,18 @@ sram_palette_store_portB_rden_b <= '1' when asi_fifoin_valid = '1' and aso_vgaou
                     buffer_aso_vgaout_data             <= (others => '0');
                     buffer_aso_vgaout_startofpacket    <= '0';
                     buffer_aso_vgaout_endofpacket      <= '0';
-                    --aso_vgaout_empty            <= (others => '0');
                     aso_vgaout_valid            <= '0';
                 elsif ((aso_vgaout_ready = '1') and (asi_fifoin_valid = '1')) then
-                    --aso_vgaout_data             <= converted_data;
                     buffer_aso_vgaout_data             <= sram_palette_store_portB_dataout;
-                    buffer2_aso_vgaout_data             <= buffer_aso_vgaout_data;
-                    buffer3_aso_vgaout_data             <= buffer2_aso_vgaout_data;
-                    buffer4_aso_vgaout_data             <= buffer3_aso_vgaout_data;
-
                     buffer_aso_vgaout_startofpacket    <= asi_fifoin_startofpacket;
-                    buffer2_aso_vgaout_startofpacket    <= buffer_aso_vgaout_startofpacket;
-                    buffer3_aso_vgaout_startofpacket    <= buffer2_aso_vgaout_startofpacket;
-                    buffer4_aso_vgaout_startofpacket    <= buffer3_aso_vgaout_startofpacket;
-
                     buffer_aso_vgaout_endofpacket      <= asi_fifoin_endofpacket;
-                    buffer2_aso_vgaout_endofpacket      <= buffer_aso_vgaout_endofpacket;
-                    buffer3_aso_vgaout_endofpacket      <= buffer2_aso_vgaout_endofpacket;
-                    buffer4_aso_vgaout_endofpacket      <= buffer3_aso_vgaout_endofpacket;
-                    --aso_vgaout_empty				<= asi_fifoin_empty;
-                    --aso_vgaout_empty            <= (others => '0');
                     aso_vgaout_valid            <= asi_fifoin_valid;
                 end if;
         end if;
     end process;
--- Stephen comments for the delays needed to make this work:
--- I thought about it for a while, and I think all you need to do is keep 
--- delaying aso_start, end and data by one pixel at a time until there's no 
--- longer any duplicate pixels.
--- Once you verify that this works, you can swap the mess with a fifo
--- No idea why this works. Stephen knows.
--- Combinational logic.
-aso_vgaout_data <= buffer2_aso_vgaout_data when aso_vgaout_ready = '1' else (others => '0');
-aso_vgaout_startofpacket <= buffer4_aso_vgaout_startofpacket when aso_vgaout_ready = '1' else '0';
-aso_vgaout_endofpacket <= buffer4_aso_vgaout_endofpacket when aso_vgaout_ready = '1' else '0';
+aso_vgaout_data <= buffer_aso_vgaout_data when aso_vgaout_ready = '1' else (others => '0');
+aso_vgaout_startofpacket <= buffer_aso_vgaout_startofpacket when aso_vgaout_ready = '1' else '0';
+aso_vgaout_endofpacket <= buffer_aso_vgaout_endofpacket when aso_vgaout_ready = '1' else '0';
    
 
 

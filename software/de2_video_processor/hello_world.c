@@ -30,29 +30,54 @@ int main()
 	   */
 
 	  //printf("%08X\n", genesis_value);
-	  if ((genesis_value)&1){
-		  printf("Up was pressed\n");
+	  if ((genesis_value)& (1 << 0)){
+		  printf("1 Up was pressed\n");
 	  }
-	  if ((genesis_value)&2){
-		  printf("Down was pressed\n");
+	  if ((genesis_value)& (1 << 1)){
+		  printf("1 Down was pressed\n");
 	  }
-	  if ((genesis_value)&4){
-		  printf("Left was pressed\n");
+	  if ((genesis_value)& (1 << 2)){
+		  printf("1 Left was pressed\n");
 	  }
-	  if ((genesis_value)&8){
-		  printf("Right was pressed\n");
+	  if ((genesis_value)& (1 << 3)){
+		  printf("1 Right was pressed\n");
 	  }
-	  if ((genesis_value)&16){
-		  printf("A was pressed\n");
+	  if ((genesis_value)& (1 << 4)){
+		  printf("1 A was pressed\n");
 	  }
-	  if ((genesis_value)&32){
-		  printf("B was pressed\n");
+	  if ((genesis_value)& (1 << 5)){
+		  printf("1 B was pressed\n");
 	  }
-	  if ((genesis_value)&64){
-		  printf("C was pressed\n");
+	  if ((genesis_value)& (1 << 6)){
+		  printf("1 C was pressed\n");
 	  }
-	  if ((genesis_value)&128){
-		  printf("Start was pressed\n");
+	  if ((genesis_value)& (1 << 7)){
+		  printf("1 Start was pressed\n");
+	  }
+
+	  if ((genesis_value)& (1 << 10)){
+		  printf("2 Up was pressed\n");
+	  }
+	  if ((genesis_value)& (1 << 11)){
+		  printf("2 Down was pressed\n");
+	  }
+	  if ((genesis_value)& (1 << 12)){
+		  printf("2 Left was pressed\n");
+	  }
+	  if ((genesis_value)& (1 << 13)){
+		  printf("2 Right was pressed\n");
+	  }
+	  if ((genesis_value)& (1 << 14)){
+		  printf("2 A was pressed\n");
+	  }
+	  if ((genesis_value)& (1 << 15)){
+		  printf("2 B was pressed\n");
+	  }
+	  if ((genesis_value)& (1 << 16)){
+		  printf("2 C was pressed\n");
+	  }
+	  if ((genesis_value)& (1 << 17)){
+		  printf("2 Start was pressed\n");
 	  }
   }
   return 0;
