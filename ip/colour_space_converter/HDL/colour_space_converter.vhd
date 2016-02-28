@@ -353,13 +353,10 @@ sram_palette_store_portB_rden_b <= '1' when asi_fifoin_valid = '1' and aso_vgaou
                 elsif ((aso_vgaout_ready = '1') and (asi_fifoin_valid = '1')) then
                     --aso_vgaout_data             <= converted_data;
                     buffer_aso_vgaout_data             <= sram_palette_store_portB_dataout;
-                    buffer2_aso_vgaout_data             <= buffer_aso_vgaout_data;
 
                     buffer_aso_vgaout_startofpacket    <= asi_fifoin_startofpacket;
-                    buffer2_aso_vgaout_startofpacket    <= buffer_aso_vgaout_startofpacket;
 
                     buffer_aso_vgaout_endofpacket      <= asi_fifoin_endofpacket;
-                    buffer2_aso_vgaout_endofpacket      <= buffer_aso_vgaout_endofpacket;
                     --aso_vgaout_empty				<= asi_fifoin_empty;
                     --aso_vgaout_empty            <= (others => '0');
                     aso_vgaout_valid            <= asi_fifoin_valid;
