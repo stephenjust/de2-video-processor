@@ -108,6 +108,7 @@ int main()
 				// Do nothing
 			}
 		}
+		//int j;
 
 		clear_screen();
 
@@ -131,8 +132,33 @@ int main()
 			}
 		}
 		ALT_CI_CI_FRAME_DONE_0;
-		for (j = 0; j < 1000000; j++)
+		for ( i = 0; i < 100000; i++)
 		{
+			//wait for a while
+		}
+		clear_screen();
+		int genesis_value;
+		//for (j = 0; j < 1000000; j++)
+		while(1)
+		{
+			genesis_value = IORD_32DIRECT(GENESIS_0_BASE, 0);
+			if ((genesis_value)& (1 << 4)){
+				draw_rectangle(100, 100, 150, 150, 0x1A);
+				  }
+			else
+				draw_rectangle(100, 100, 150, 150, 0x0);
+				  if ((genesis_value)& (1 << 5)){
+					  draw_rectangle(200, 200, 250, 250, 0xE0);
+				  }
+				  else
+					  draw_rectangle(200, 200, 250, 250, 0x0);
+				  if ((genesis_value)& (1 << 6)){
+					  draw_rectangle(300, 300, 350, 350, 0x03);
+				  }
+				  else
+					  draw_rectangle(300, 300, 350, 350, 0x0);
+
+				  ALT_CI_CI_FRAME_DONE_0;
 			// Do nothing
 		}
 //	}
