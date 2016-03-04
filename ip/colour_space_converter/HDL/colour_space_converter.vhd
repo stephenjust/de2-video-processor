@@ -348,28 +348,15 @@ sram_palette_store_portB_rden_b <= '1' when asi_fifoin_valid = '1' and aso_vgaou
                     buffer_aso_vgaout_data             <= (others => '0');
                     buffer_aso_vgaout_startofpacket    <= '0';
                     buffer_aso_vgaout_endofpacket      <= '0';
-                    --aso_vgaout_empty            <= (others => '0');
                     aso_vgaout_valid            <= '0';
                 elsif ((aso_vgaout_ready = '1') and (asi_fifoin_valid = '1')) then
-                    --aso_vgaout_data             <= converted_data;
                     buffer_aso_vgaout_data             <= sram_palette_store_portB_dataout;
-
                     buffer_aso_vgaout_startofpacket    <= asi_fifoin_startofpacket;
-
                     buffer_aso_vgaout_endofpacket      <= asi_fifoin_endofpacket;
-                    --aso_vgaout_empty				<= asi_fifoin_empty;
-                    --aso_vgaout_empty            <= (others => '0');
                     aso_vgaout_valid            <= asi_fifoin_valid;
                 end if;
         end if;
     end process;
--- Stephen comments for the delays needed to make this work:
--- I thought about it for a while, and I think all you need to do is keep 
--- delaying aso_start, end and data by one pixel at a time until there's no 
--- longer any duplicate pixels.
--- Once you verify that this works, you can swap the mess with a fifo
--- No idea why this works. Stephen knows.
--- Combinational logic.
 aso_vgaout_data <= buffer_aso_vgaout_data when aso_vgaout_ready = '1' else (others => '0');
 aso_vgaout_startofpacket <= buffer_aso_vgaout_startofpacket when aso_vgaout_ready = '1' else '0';
 aso_vgaout_endofpacket <= buffer_aso_vgaout_endofpacket when aso_vgaout_ready = '1' else '0';

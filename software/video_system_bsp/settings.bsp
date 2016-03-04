@@ -2,8 +2,8 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>hal</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>Feb 17, 2016 1:28:05 PM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1455740885575</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>Mar 3, 2016 10:18:34 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1457068714622</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>/home/stephen/school/ECE492/de2-video-processor/software/video_system_bsp</BspGeneratedLocation>
         <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>../../de2_video_processor_system.sopcinfo</SopcDesignFile>
@@ -917,32 +917,38 @@
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
-                <slaveDescriptor>timer_0</slaveDescriptor>
+                <slaveDescriptor>ci_draw_rect_0</slaveDescriptor>
                 <addressRange>0x00409200 - 0x0040921F</addressRange>
+                <addressSpan>32</addressSpan>
+                <attributes/>
+        </MemoryMap>
+        <MemoryMap>
+                <slaveDescriptor>timer_0</slaveDescriptor>
+                <addressRange>0x00409220 - 0x0040923F</addressRange>
                 <addressSpan>32</addressSpan>
                 <attributes>timer</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>altpll_0</slaveDescriptor>
-                <addressRange>0x00409220 - 0x0040922F</addressRange>
+                <addressRange>0x00409240 - 0x0040924F</addressRange>
                 <addressSpan>16</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>sysid_qsys_0</slaveDescriptor>
-                <addressRange>0x00409230 - 0x00409237</addressRange>
+                <addressRange>0x00409250 - 0x00409257</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>jtag_uart_0</slaveDescriptor>
-                <addressRange>0x00409238 - 0x0040923F</addressRange>
+                <addressRange>0x00409258 - 0x0040925F</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes>printable</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>genesis_0</slaveDescriptor>
-                <addressRange>0x00409240 - 0x00409243</addressRange>
+                <addressRange>0x00409260 - 0x00409263</addressRange>
                 <addressSpan>4</addressSpan>
                 <attributes/>
         </MemoryMap>
@@ -982,4 +988,8 @@
                 <sectionName>.stack</sectionName>
                 <regionName>sdram_sys_0</regionName>
         </LinkerSection>
+        <DriverPackageInfo>
+                <name>none</name>
+                <moduleName>ci_draw_rect_0</moduleName>
+        </DriverPackageInfo>
 </sch:Settings>
