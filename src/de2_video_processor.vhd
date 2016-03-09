@@ -121,7 +121,11 @@ architecture structure of de2_video_processor is
 		tristate_conduit_bridge_0_out_generic_tristate_controller_0_tcm_data_out         : inout std_logic_vector(7 downto 0) := (others => 'X');
 		tristate_conduit_bridge_0_out_generic_tristate_controller_0_tcm_chipselect_n_out : out   std_logic_vector(0 downto 0);
 		tristate_conduit_bridge_0_out_generic_tristate_controller_0_tcm_write_n_out      : out   std_logic_vector(0 downto 0);
-		tristate_conduit_bridge_0_out_generic_tristate_controller_0_tcm_address_out      : out   std_logic_vector(21 downto 0)
+		tristate_conduit_bridge_0_out_generic_tristate_controller_0_tcm_address_out      : out   std_logic_vector(21 downto 0);
+		altera_up_sd_b_SD_cmd                                                            : inout std_logic                     := 'X';             -- b_SD_cmd
+		altera_up_sd_b_SD_dat                                                            : inout std_logic                     := 'X';             -- b_SD_dat
+		altera_up_sd_b_SD_dat3                                                           : inout std_logic                     := 'X';             -- b_SD_dat3
+		altera_up_sd_o_SD_clock                                                          : out   std_logic                                         -- o_SD_clock
 	);
 end component de2_video_processor_system;
 
@@ -186,7 +190,11 @@ begin
 		tristate_conduit_bridge_0_out_generic_tristate_controller_0_tcm_data_out         => FL_DQ,
 		tristate_conduit_bridge_0_out_generic_tristate_controller_0_tcm_chipselect_n_out => FL_CE_N,
 		tristate_conduit_bridge_0_out_generic_tristate_controller_0_tcm_write_n_out      => FL_WE_N,
-		tristate_conduit_bridge_0_out_generic_tristate_controller_0_tcm_address_out      => FL_ADDR
+		tristate_conduit_bridge_0_out_generic_tristate_controller_0_tcm_address_out      => FL_ADDR,
+		altera_up_sd_b_SD_cmd                                                            => SD_CMD,       --                              altera_up_sd.b_SD_cmd
+		altera_up_sd_b_SD_dat                                                            => SD_DAT,       --                                          .b_SD_dat
+		altera_up_sd_b_SD_dat3                                                           => SD_DAT3,      --                                          .b_SD_dat3
+		altera_up_sd_o_SD_clock                                                          => SD_CLK        --                                          .o_SD_clock
 	);
 
 end structure;

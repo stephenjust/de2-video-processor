@@ -46,6 +46,14 @@
          type = "String";
       }
    }
+   element sd_card_0.avalon_sdcard_slave
+   {
+      datum baseAddress
+      {
+         value = "4232192";
+         type = "String";
+      }
+   }
    element sram_0.avalon_sram_slave
    {
       datum _lockedAddress
@@ -204,6 +212,14 @@
          type = "String";
       }
    }
+   element genesis_0.s0
+   {
+      datum baseAddress
+      {
+         value = "4233856";
+         type = "String";
+      }
+   }
    element ci_draw_rect_0.s0
    {
       datum baseAddress
@@ -217,22 +233,6 @@
       datum baseAddress
       {
          value = "4233728";
-         type = "String";
-      }
-   }
-   element genesis_0.s0
-   {
-      datum baseAddress
-      {
-         value = "4233856";
-         type = "String";
-      }
-   }
-   element onchip_memory2_0.s1
-   {
-      datum baseAddress
-      {
-         value = "4210688";
          type = "String";
       }
    }
@@ -255,6 +255,22 @@
       {
          value = "8388608";
          type = "String";
+      }
+   }
+   element onchip_memory2_0.s1
+   {
+      datum baseAddress
+      {
+         value = "4210688";
+         type = "String";
+      }
+   }
+   element sd_card_0
+   {
+      datum _sortIndex
+      {
+         value = "22";
+         type = "int";
       }
    }
    element sdram_0
@@ -382,7 +398,7 @@
  <parameter name="projectName">de2_video_processor.qpf</parameter>
  <parameter name="sopcBorderPoints" value="false" />
  <parameter name="systemHash" value="1" />
- <parameter name="timeStamp" value="1457477985284" />
+ <parameter name="timeStamp" value="1457481486807" />
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
  <interface name="clk" internal="clk_0.clk_in" type="clock" dir="end" />
@@ -409,6 +425,11 @@
  <interface
    name="genesis_0_conduit_end"
    internal="genesis_0.conduit_end"
+   type="conduit"
+   dir="end" />
+ <interface
+   name="altera_up_sd"
+   internal="sd_card_0.conduit_end"
    type="conduit"
    dir="end" />
  <module kind="clock_source" version="12.1" enabled="1" name="clk_0">
@@ -516,8 +537,8 @@
   <parameter name="tightlyCoupledInstructionMaster1AddrWidth" value="1" />
   <parameter name="tightlyCoupledInstructionMaster2AddrWidth" value="1" />
   <parameter name="tightlyCoupledInstructionMaster3AddrWidth" value="1" />
-  <parameter name="instSlaveMapParam"><![CDATA[<address-map><slave name='onchip_memory2_0.s1' start='0x404000' end='0x408000' /><slave name='nios2_qsys_0.jtag_debug_module' start='0x408800' end='0x409000' /><slave name='sdram_0.s1' start='0x800000' end='0x1000000' /><slave name='sram_0.avalon_sram_slave' start='0x1080000' end='0x1100000' /></address-map>]]></parameter>
-  <parameter name="dataSlaveMapParam"><![CDATA[<address-map><slave name='generic_tristate_controller_0.uas' start='0x0' end='0x400000' /><slave name='onchip_memory2_0.s1' start='0x404000' end='0x408000' /><slave name='nios2_qsys_0.jtag_debug_module' start='0x408800' end='0x409000' /><slave name='colour_palette_shifter_0.paletteram' start='0x409800' end='0x409A00' /><slave name='ci_draw_line_0.s0' start='0x409A00' end='0x409A20' /><slave name='ci_draw_rect_0.s0' start='0x409A20' end='0x409A40' /><slave name='timer_0.s1' start='0x409A40' end='0x409A60' /><slave name='altpll_0.pll_slave' start='0x409A60' end='0x409A70' /><slave name='sysid_qsys_0.control_slave' start='0x409A70' end='0x409A78' /><slave name='jtag_uart_0.avalon_jtag_slave' start='0x409A78' end='0x409A80' /><slave name='genesis_0.s0' start='0x409A80' end='0x409A84' /><slave name='sdram_0.s1' start='0x800000' end='0x1000000' /><slave name='sram_0.avalon_sram_slave' start='0x1080000' end='0x1100000' /></address-map>]]></parameter>
+  <parameter name="instSlaveMapParam"><![CDATA[<address-map><slave name='onchip_memory2_0.s1' start='0x404000' end='0x408000' /><slave name='nios2_qsys_0.jtag_debug_module' start='0x408800' end='0x409000' /><slave name='sd_card_0.avalon_sdcard_slave' start='0x409400' end='0x409800' /><slave name='sdram_0.s1' start='0x800000' end='0x1000000' /><slave name='sram_0.avalon_sram_slave' start='0x1080000' end='0x1100000' /></address-map>]]></parameter>
+  <parameter name="dataSlaveMapParam"><![CDATA[<address-map><slave name='generic_tristate_controller_0.uas' start='0x0' end='0x400000' /><slave name='onchip_memory2_0.s1' start='0x404000' end='0x408000' /><slave name='nios2_qsys_0.jtag_debug_module' start='0x408800' end='0x409000' /><slave name='sd_card_0.avalon_sdcard_slave' start='0x409400' end='0x409800' /><slave name='colour_palette_shifter_0.paletteram' start='0x409800' end='0x409A00' /><slave name='ci_draw_line_0.s0' start='0x409A00' end='0x409A20' /><slave name='ci_draw_rect_0.s0' start='0x409A20' end='0x409A40' /><slave name='timer_0.s1' start='0x409A40' end='0x409A60' /><slave name='altpll_0.pll_slave' start='0x409A60' end='0x409A70' /><slave name='sysid_qsys_0.control_slave' start='0x409A70' end='0x409A78' /><slave name='jtag_uart_0.avalon_jtag_slave' start='0x409A78' end='0x409A80' /><slave name='genesis_0.s0' start='0x409A80' end='0x409A84' /><slave name='sdram_0.s1' start='0x800000' end='0x1000000' /><slave name='sram_0.avalon_sram_slave' start='0x1080000' end='0x1100000' /></address-map>]]></parameter>
   <parameter name="clockFrequency" value="50000000" />
   <parameter name="deviceFamilyName" value="Cyclone II" />
   <parameter name="internalIrqMaskSystemInfo" value="3" />
@@ -1110,6 +1131,14 @@
  </module>
  <module kind="ci_draw_line" version="1.0" enabled="1" name="ci_draw_line_0">
   <parameter name="AUTO_CLOCK_CLOCK_RATE" value="50000000" />
+ </module>
+ <module
+   kind="altera_sd_card_avalon_interface_mod"
+   version="1.0"
+   enabled="1"
+   name="sd_card_0">
+  <parameter name="AUTO_CLOCK_SINK_CLOCK_RATE" value="50000000" />
+  <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone II" />
  </module>
  <connection
    kind="avalon"
@@ -1745,4 +1774,40 @@
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x00800000" />
  </connection>
+ <connection
+   kind="reset"
+   version="12.1"
+   start="clk_0.clk_reset"
+   end="sd_card_0.clock_sink_reset" />
+ <connection
+   kind="clock"
+   version="12.1"
+   start="altpll_0.c1"
+   end="sd_card_0.clock_sink" />
+ <connection
+   kind="avalon"
+   version="12.1"
+   start="nios2_qsys_0.data_master"
+   end="sd_card_0.avalon_sdcard_slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00409400" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="12.1"
+   start="nios2_qsys_0.instruction_master"
+   end="sd_card_0.avalon_sdcard_slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00409400" />
+ </connection>
+ <connection
+   kind="reset"
+   version="12.1"
+   start="nios2_qsys_0.jtag_debug_module_reset"
+   end="sd_card_0.clock_sink_reset" />
+ <connection
+   kind="reset"
+   version="12.1"
+   start="clk_27M.clk_reset"
+   end="sd_card_0.clock_sink_reset" />
 </system>
