@@ -11,7 +11,7 @@ the_palette = quantized.getpalette()
 quantized.save(out_file, "BMP")
 
 #Write 565 colors to palette
-palette_file = open(out_file, "wb")
+palette_file = open("{}.pal".format(out_file), "wb")
 if the_palette is not None:
 	for i in range (0, 256):
 		red = ( the_palette[i*3] >> 3 ) << 11
