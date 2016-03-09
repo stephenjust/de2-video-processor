@@ -21,3 +21,6 @@ the search directory)
 9. Right-click on a `*_bsp` project, select "Nios II", "Generate BSP"
 10. Right click on a project, select "Run As" > "Nios II Hardware"
 
+## Asset Files
+Copy the contents of the `data` directory to the root of a FAT16-formatted
+SD card.
