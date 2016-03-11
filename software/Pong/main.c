@@ -163,7 +163,6 @@ int main()
 
 		/*ball*/
 		/* Test if ball is touching a paddle */
-		//TODO: consider disabling collisions for a number of frames after a collission occurs
 		if (collision_counter != 0){
 			collision_counter--;
 		}
@@ -209,7 +208,7 @@ int main()
 		}
 
 		/*Test if ball is touching top/bottom wall*/
-		if (ball.y <= 10 || ball.y >= 470)
+		if (ball.y <= 15 || ball.y >= 465)
 		{
 			ball.velocity_y *= -1;
 		}
