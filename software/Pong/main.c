@@ -76,13 +76,14 @@ void clear_screen()
 
 int main()
 {
+	int ball_speed = 1;
 	struct Paddle paddle1 = {.y = 240, .x = 20};
 	struct Paddle paddle2 = {.y = 240, .x = 620};
-	struct Ball ball = {.y = 240, .x = 320, .velocity_x = 4, .velocity_y = 4};
-	int ball_speed = 1;
+	struct Ball ball = {.y = 240, .x = 320, .velocity_x = ball_speed, .velocity_y = ball_speed};
 	int paddle_speed = 8;
 	int p1_score = 0;
 	int p2_score = 0;
+	int collision_counter = 0;
 	unsigned int controller_value;
 	unsigned int row, col;
 	unsigned int i = 0;
@@ -162,16 +163,51 @@ int main()
 
 		/*ball*/
 		/* Test if ball is touching a paddle */
-		if (paddle1.x < ball.x && paddle1.x + 5 > ball.x
-				&& paddle1.y + 18 > ball.y && paddle1.y -18 < ball.y)
+		//TODO: consider disabling collisions for a number of frames after a collission occurs
+		if (collision_counter != 0){
+			collision_counter--;
+		}
+		if (paddle1.x -5 < ball.x && paddle1.x + 5 > ball.x && collision_counter==0
+				&& paddle1.y + 6 > ball.y && paddle1.y -6 < ball.y)
 		{
 			ball.velocity_x *= -1;
+			collision_counter = 4;
 		}
-		if (paddle2.x < ball.x && paddle2.x + 5 > ball.x
-				&& paddle2.y + 18 > ball.y && paddle2.y -18 < ball.y)
+		if (paddle1.x -5 < ball.x && paddle1.x + 5 > ball.x && collision_counter==0
+				&& paddle1.y + 18 > ball.y && paddle1.y + 7 < ball.y)
+		{
+			ball.velocity_x = ball.velocity_x*-1 + 1;
+			ball.velocity_y = abs(ball.velocity_y);
+			collision_counter = 4;
+		}
+		if (paddle1.x -5 < ball.x && paddle1.x + 5 > ball.x && collision_counter==0
+				&& paddle1.y -7 > ball.y && paddle1.y -18 < ball.y)
+		{
+			ball.velocity_x = ball.velocity_x*-1 + 1;
+			ball.velocity_y = -abs(ball.velocity_y);
+			collision_counter = 4;
+		}
+		if (paddle2.x + 5 > ball.x && paddle2.x - 5 < ball.x && collision_counter==0
+				&& paddle2.y + 6 > ball.y && paddle2.y -6 < ball.y)
 		{
 			ball.velocity_x *= -1;
+			collision_counter = 4;
 		}
+		if (paddle2.x + 5 > ball.x && paddle2.x - 5 < ball.x && collision_counter==0
+				&& paddle2.y + 18 > ball.y && paddle2.y + 7 < ball.y)
+		{
+			ball.velocity_x = ball.velocity_x*-1 - 1;
+			ball.velocity_y = abs(ball.velocity_y);
+			collision_counter = 4;
+		}
+		if (paddle2.x + 5 > ball.x && paddle2.x - 5 < ball.x && collision_counter==0
+				&& paddle2.y -7 > ball.y && paddle2.y -18 < ball.y)
+		{
+			ball.velocity_x = ball.velocity_x*-1 - 1;
+			ball.velocity_y = -abs(ball.velocity_y);
+			collision_counter = 4;
+		}
+
 		/*Test if ball is touching top/bottom wall*/
 		if (ball.y <= 10 || ball.y >= 470)
 		{
@@ -181,13 +217,15 @@ int main()
 		if (ball.x < 5)
 		{
 			ball.x = 320;
-			ball.velocity_x = -1;
+			ball.velocity_x = -ball_speed;
+			ball.velocity_y = ball_speed;
 			p2_score+=1;
 		}
 		if (ball.x > 635)
 		{
 			ball.x = 320;
-			ball.velocity_x = 1;
+			ball.velocity_x = ball_speed;
+			ball.velocity_y = ball_speed;
 			p1_score+=1;
 		}
 
