@@ -115,6 +115,7 @@ bool alt_up_sd_card_write(short int file_handle, char byte_of_data);
 bool alt_up_sd_card_fclose(short int file_handle);
 // This function closes an opened file and saves data to SD Card if necessary.
 
+void *alt_up_sd_card_read_sector(short int file_handle, short int *length);
 
 //////////////////////////////////////////////////////////////////////////
 // file-like operation functions

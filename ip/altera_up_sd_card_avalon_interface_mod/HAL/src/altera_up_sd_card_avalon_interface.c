@@ -33,7 +33,7 @@
 #include <io.h>
 #include <stdio.h>
 #include <string.h>
-#include "altera_up_sd_card_avalon_interface.h"
+#include "altera_sd_card_avalon_interface_mod.h"
 
 ///////////////////////////////////////////////////////////////////////////
 // Local Define Statements
@@ -1885,3 +1885,79 @@ bool alt_up_sd_card_fclose(short int file_handle)
     return result;
 }
 
+
+void *alt_up_sd_card_read_sector(short int file_handle, short int *length)
+/* Return a pointer to a 512 byte buffer containing file data.
+ * Return NULL if an error occurred. Length will be nonzero if you are
+ * reading the last sector in a file. Do not mix this and the regular read() method. */
+{
+	void *result;
+
+    if ((file_handle >= 0) && (file_handle < MAX_FILES_OPENED))
+    {
+        if (active_files[file_handle].in_use)
+        {
+            if (active_files[file_handle].current_byte_position < active_files[file_handle].file_size_in_bytes)
+            {
+                int data_sector = boot_sector_data.data_sector_offset + (active_files[file_handle].current_cluster_index - 2)*boot_sector_data.sectors_per_cluster +
+                                  active_files[file_handle].current_sector_in_cluster;
+                
+                if (active_files[file_handle].current_byte_position > 0)
+                {
+                    // Read in a new sector of data.
+                    if (active_files[file_handle].current_sector_in_cluster == boot_sector_data.sectors_per_cluster - 1)
+                    {
+                        // Go to the next cluster.
+                        unsigned short int next_cluster;
+                        if (get_cluster_flag(active_files[file_handle].current_cluster_index, &next_cluster))
+                        {
+                            if ((next_cluster & 0x0000fff8) == 0x0000fff8)
+                            {
+                                /* End of file */
+                                return NULL;
+                            }
+                            else
+                            {
+                                active_files[file_handle].current_cluster_index = next_cluster;
+								active_files[file_handle].current_sector_in_cluster = 0;
+                                data_sector = boot_sector_data.data_sector_offset + (active_files[file_handle].current_cluster_index - 2)*boot_sector_data.sectors_per_cluster +
+                                  active_files[file_handle].current_sector_in_cluster;                                
+                            }
+                        }
+                        else
+                        {
+                            return NULL;
+                        }
+                    }
+                    else
+                    {
+                        active_files[file_handle].current_sector_in_cluster = active_files[file_handle].current_sector_in_cluster + 1;
+                        data_sector = data_sector + 1;
+                    }
+                }
+                // Reading the first byte of the file.
+                if (current_sector_index != (data_sector + fat_partition_offset_in_512_byte_sectors))
+                {
+                    if (!Read_Sector_Data(data_sector, fat_partition_offset_in_512_byte_sectors))
+                    {
+						return NULL;
+                    }
+                }
+				// Get the length value if we are reading the last sector
+				if (active_files[file_handle].current_byte_position + 512 > active_files[file_handle].file_size_in_bytes)
+				{
+					*length = active_files[file_handle].file_size_in_bytes - active_files[file_handle].current_byte_position;
+				}
+				else
+				{
+					*length = 0;
+				}
+
+				result = buffer_memory;
+                active_files[file_handle].current_byte_position = active_files[file_handle].current_byte_position + 512;
+            }
+        }
+    }
+    
+    return result;
+}
