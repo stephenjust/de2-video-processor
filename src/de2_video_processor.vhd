@@ -122,10 +122,10 @@ architecture structure of de2_video_processor is
 		tristate_conduit_bridge_0_out_generic_tristate_controller_0_tcm_chipselect_n_out : out   std_logic_vector(0 downto 0);
 		tristate_conduit_bridge_0_out_generic_tristate_controller_0_tcm_write_n_out      : out   std_logic_vector(0 downto 0);
 		tristate_conduit_bridge_0_out_generic_tristate_controller_0_tcm_address_out      : out   std_logic_vector(21 downto 0);
-		altera_up_sd_b_SD_cmd                                                            : inout std_logic                     := 'X';             -- b_SD_cmd
-		altera_up_sd_b_SD_dat                                                            : inout std_logic                     := 'X';             -- b_SD_dat
-		altera_up_sd_b_SD_dat3                                                           : inout std_logic                     := 'X';             -- b_SD_dat3
-		altera_up_sd_o_SD_clock                                                          : out   std_logic                                         -- o_SD_clock
+		spi_0_external_MISO                                                              : in    std_logic                     := 'X';             -- MISO
+		spi_0_external_MOSI                                                              : out   std_logic;                                        -- MOSI
+		spi_0_external_SCLK                                                              : out   std_logic;                                        -- SCLK
+		spi_0_external_SS_n                                                              : out   std_logic                                         -- SS_n
 	);
 end component de2_video_processor_system;
 
@@ -191,10 +191,10 @@ begin
 		tristate_conduit_bridge_0_out_generic_tristate_controller_0_tcm_chipselect_n_out => FL_CE_N,
 		tristate_conduit_bridge_0_out_generic_tristate_controller_0_tcm_write_n_out      => FL_WE_N,
 		tristate_conduit_bridge_0_out_generic_tristate_controller_0_tcm_address_out      => FL_ADDR,
-		altera_up_sd_b_SD_cmd                                                            => SD_CMD,       --                              altera_up_sd.b_SD_cmd
-		altera_up_sd_b_SD_dat                                                            => SD_DAT,       --                                          .b_SD_dat
-		altera_up_sd_b_SD_dat3                                                           => SD_DAT3,      --                                          .b_SD_dat3
-		altera_up_sd_o_SD_clock                                                          => SD_CLK        --                                          .o_SD_clock
+		spi_0_external_MISO                                                              => SD_DAT,            --                            spi_0_external.MISO
+		spi_0_external_MOSI                                                              => SD_CMD,            --                                          .MOSI
+		spi_0_external_SCLK                                                              => SD_CLK,            --                                          .SCLK
+		spi_0_external_SS_n                                                              => SD_DAT3            --                                          .SS_n
 	);
 
 end structure;

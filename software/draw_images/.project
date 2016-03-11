@@ -3,6 +3,7 @@
 	<name>draw_images</name>
 	<comment></comment>
 	<projects>
+		<project>libefsl</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

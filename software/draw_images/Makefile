@@ -180,9 +180,9 @@ SYS_LIB :=
 BSP_ROOT_DIR := ../video_system_bsp/
 
 # List of application specific include directories, library directories and library names
-APP_INCLUDE_DIRS :=
-APP_LIBRARY_DIRS :=
-APP_LIBRARY_NAMES :=
+APP_INCLUDE_DIRS := ../libefsl
+APP_LIBRARY_DIRS := ../libefsl
+APP_LIBRARY_NAMES := libefsl
 
 # Pre- and post- processor settings.
 BUILD_PRE_PROCESS :=
