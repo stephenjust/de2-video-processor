@@ -3,19 +3,19 @@
 
 <cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage">
 	<storageModule moduleId="org.eclipse.cdt.core.settings">
-		<buildSystem id="preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.441525143">
-			<storageModule id="preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.441525143" moduleId="org.eclipse.cdt.core.settings"/>
+		<buildSystem id="preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.251765802">
+			<storageModule id="preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.251765802" moduleId="org.eclipse.cdt.core.settings"/>
 		</buildSystem>
-		<cconfiguration id="preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.441525143">
+		<cconfiguration id="preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.251765802">
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-				<configuration artifactName="draw_images" buildProperties="" description="" id="preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.441525143" name="Nios II" parent="org.eclipse.cdt.build.core.prefbase.cfg">
-					<folderInfo id="preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.441525143." name="/" resourcePath="">
-						<toolChain id="altera.nios2.linux.gcc4.1106940210" name="Linux Nios II GCC4" superClass="altera.nios2.linux.gcc4">
-							<targetPlatform id="altera.nios2.linux.gcc4.1165017508" name="Nios II" superClass="altera.nios2.linux.gcc4"/>
-							<builder buildPath="${workspace_loc://draw_images}" id="cdt.managedbuild.target.gnu.builder.base.651209186" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" superClass="cdt.managedbuild.target.gnu.builder.base"/>
-							<tool id="cdt.managedbuild.tool.gnu.archiver.base.373187608" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
-							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.842670123" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
-								<option id="gnu.cpp.compiler.option.preprocessor.undef.914908570" name="Undefined symbols (-U)" superClass="gnu.cpp.compiler.option.preprocessor.undef" valueType="undefDefinedSymbols">
+				<configuration buildProperties="" description="" id="preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.251765802" name="Nios II" parent="org.eclipse.cdt.build.core.prefbase.cfg">
+					<folderInfo id="preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.251765802." name="/" resourcePath="">
+						<toolChain id="altera.nios2.linux.gcc4.743101517" name="Linux Nios II GCC4" superClass="altera.nios2.linux.gcc4">
+							<targetPlatform id="altera.nios2.linux.gcc4.2046537613" name="Nios II" superClass="altera.nios2.linux.gcc4"/>
+							<builder buildPath="${workspace_loc://libefsl}" id="cdt.managedbuild.target.gnu.builder.base.1018794965" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" superClass="cdt.managedbuild.target.gnu.builder.base"/>
+							<tool id="cdt.managedbuild.tool.gnu.archiver.base.284918037" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
+							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.703617634" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
+								<option id="gnu.cpp.compiler.option.preprocessor.undef.1667423118" superClass="gnu.cpp.compiler.option.preprocessor.undef" valueType="undefDefinedSymbols">
 									<listOptionValue builtIn="false" value="__x86_64"/>
 									<listOptionValue builtIn="false" value="__INT_FAST32_MAX__"/>
 									<listOptionValue builtIn="false" value="__SIG_ATOMIC_MAX__"/>
@@ -274,13 +274,10 @@
 									<listOptionValue builtIn="false" value="__GCC_ATOMIC_CHAR16_T_LOCK_FREE"/>
 									<listOptionValue builtIn="false" value="__CHAR16_TYPE__"/>
 								</option>
-								<option id="gnu.cpp.compiler.option.include.paths.987768862" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="/home/stephen/school/ECE492/de2-video-processor/software/libefsl"/>
-								</option>
-								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1839348223" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
+								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.2066874287" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
-							<tool id="cdt.managedbuild.tool.gnu.c.compiler.base.978056948" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base">
-								<option id="gnu.c.compiler.option.preprocessor.undef.symbol.484412690" name="Undefined symbols (-U)" superClass="gnu.c.compiler.option.preprocessor.undef.symbol" valueType="undefDefinedSymbols">
+							<tool id="cdt.managedbuild.tool.gnu.c.compiler.base.1576013309" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base">
+								<option id="gnu.c.compiler.option.preprocessor.undef.symbol.1090018759" superClass="gnu.c.compiler.option.preprocessor.undef.symbol" valueType="undefDefinedSymbols">
 									<listOptionValue builtIn="false" value="__x86_64"/>
 									<listOptionValue builtIn="false" value="__INT_FAST32_MAX__"/>
 									<listOptionValue builtIn="false" value="__SIG_ATOMIC_MAX__"/>
@@ -529,30 +526,23 @@
 									<listOptionValue builtIn="false" value="__GCC_ATOMIC_CHAR16_T_LOCK_FREE"/>
 									<listOptionValue builtIn="false" value="__CHAR16_TYPE__"/>
 								</option>
-								<option id="gnu.c.compiler.option.include.paths.551805273" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="/home/stephen/school/ECE492/de2-video-processor/software/libefsl"/>
-								</option>
-								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.592787538" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
+								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1435997048" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
-							<tool id="cdt.managedbuild.tool.gnu.c.linker.base.269390208" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
-							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.1153492146" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base">
-								<option id="gnu.cpp.link.option.libs.1945584217" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/libefsl/liblibefsl.a}&quot;"/>
-								</option>
-								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.500647601" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
+							<tool id="cdt.managedbuild.tool.gnu.c.linker.base.519420680" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
+							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.102741947" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base">
+								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1501528636" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
 								</inputType>
 							</tool>
-							<tool id="cdt.managedbuild.tool.gnu.assembler.base.1421807188" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.base">
-								<option id="gnu.both.asm.option.include.paths.2030666419" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath"/>
-								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1565370182" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
+							<tool id="cdt.managedbuild.tool.gnu.assembler.base.54078316" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.base">
+								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1245678710" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
 						</toolChain>
 					</folderInfo>
 				</configuration>
 			</storageModule>
-			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.441525143" moduleId="org.eclipse.cdt.core.settings" name="Nios II">
+			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.251765802" moduleId="org.eclipse.cdt.core.settings" name="Nios II">
 				<externalSettings/>
 				<extensions>
 					<extension id="org.eclipse.cdt.core.GNU_ELF" point="org.eclipse.cdt.core.BinaryParser"/>
@@ -563,17 +553,16 @@
 					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 				</extensions>
 			</storageModule>
-			<storageModule moduleId="org.eclipse.cdt.core.externalSettings">
-				<externalSettings containerId="libefsl;" factoryId="org.eclipse.cdt.core.cfg.export.settings.sipplier"/>
-			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
 		</cconfiguration>
 	</storageModule>
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-		<project id="draw_images.null.177695628" name="draw_images"/>
+		<project id="libefsl.null.2042370381" name="libefsl"/>
 	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
 	<storageModule moduleId="scannerConfiguration">
 		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-		<scannerConfigBuildInfo instanceId="preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.441525143;preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.441525143.;cdt.managedbuild.tool.gnu.cpp.compiler.base.842670123;cdt.managedbuild.tool.gnu.cpp.compiler.input.1839348223">
+		<scannerConfigBuildInfo instanceId="preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.251765802;preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.251765802.;cdt.managedbuild.tool.gnu.cpp.compiler.base.703617634;cdt.managedbuild.tool.gnu.cpp.compiler.input.2066874287">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
 			<profile id="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP">
 				<buildOutputProvider>
@@ -586,7 +575,7 @@
 				</scannerInfoProvider>
 			</profile>
 		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.441525143;preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.441525143.;cdt.managedbuild.tool.gnu.c.compiler.base.978056948;cdt.managedbuild.tool.gnu.c.compiler.input.592787538">
+		<scannerConfigBuildInfo instanceId="preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.251765802;preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.251765802.;cdt.managedbuild.tool.gnu.c.compiler.base.1576013309;cdt.managedbuild.tool.gnu.c.compiler.input.1435997048">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileC"/>
 			<profile id="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileC">
 				<buildOutputProvider>
@@ -600,36 +589,4 @@
 			</profile>
 		</scannerConfigBuildInfo>
 	</storageModule>
-	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
-		<buildTargets>
-			<target name="mem_init_install" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>make</buildCommand>
-				<buildArguments/>
-				<buildTarget>mem_init_install</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>false</useDefaultCommand>
-				<runAllBuilders>false</runAllBuilders>
-			</target>
-			<target name="mem_init_generate" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>make</buildCommand>
-				<buildArguments/>
-				<buildTarget>mem_init_generate</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>false</useDefaultCommand>
-				<runAllBuilders>false</runAllBuilders>
-			</target>
-			<target name="help" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>make</buildCommand>
-				<buildArguments/>
-				<buildTarget>help</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>false</useDefaultCommand>
-				<runAllBuilders>false</runAllBuilders>
-			</target>
-		</buildTargets>
-	</storageModule>
-	<storageModule moduleId="refreshScope" versionNumber="1">
-		<resource resourceType="PROJECT" workspacePath="/draw_images"/>
-	</storageModule>
-	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 </cproject>
