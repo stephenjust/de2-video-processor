@@ -113,8 +113,18 @@ BEGIN
                     -- we are running or not, since this is invariant for the whole draw.
                     dx <= abs(signed(x2) - signed(x1)); --abs(x1 - x0)
                     dy <= abs(signed(y2) - signed(y1)); --abs(y1 - y0)
-                    if signed(x1) < signed(x2) then sx <= to_signed(1, 16); else sx <= to_signed(-1, 16); end if;
-                    if signed(y1) < signed(y2) then sy <= to_signed(1, 16); else sy <= to_signed(-1, 16); end if;
+                    if signed(x1) < signed(x2) then 
+                        sx <= to_signed(1, 16); 
+                    else 
+                        sx <= to_signed(-1, 16); 
+                    end if;
+
+                    if signed(y1) < signed(y2) then 
+                        sy <= to_signed(1, 16); 
+                    else 
+                        sy <= to_signed(-1, 16); 
+                    end if;
+
                     p_error <= dx - dy;
 
 				ELSE
@@ -123,7 +133,7 @@ BEGIN
 			ELSIF current_state = RUNNING THEN  -- This is where we are drawing
                 -- These signals are only assigned once we've finished the process.
 				avm_m0_burstcount <= x"01";
-				avm_m0_writedata <= color; -- Use byteenable to mask even/odd bytes
+				avm_m0_writedata <= color; 
 				avm_m0_write <= '1';
 				next_x := current_x;
 				next_y := current_y;
@@ -144,25 +154,25 @@ BEGIN
                         -- We haven't finished drawing the line yet.
                         -- Bresenham's Line Algorithm goes. here.
 
-                        current_x <= x1; -- Corresponds to setPixel(x0, y0) in the pseudo code.
-                        current_y <= y1;
+
 
                         e2 := err sll 2; --2 is an int, not signed. wtf.
 
-                        if e2 > to_signed(-1, 16) * dy then 
+                        if e2 > (to_signed(-1, 16) * dy) then 
                             err := err - dy;
-                            next_x := std_logic_vector(signed(x1) + signed(sx));
+                            next_x := std_logic_vector(signed(current_x) + signed(sx));
                         end if;
 
                         if e2 < dx then 
                             err := err + dx;
-                            next_y := std_logic_vector(signed(y1) + signed(sy));
+                            next_y := std_logic_vector(signed(current_y) + signed(sy));
                         end if;
                         
                         p_error <= err;
 
                     end if;
 				END IF;
+
 
 
 

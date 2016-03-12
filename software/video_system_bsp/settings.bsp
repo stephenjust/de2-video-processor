@@ -2,9 +2,9 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>hal</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>Mar 8, 2016 5:03:43 PM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1457481823396</BspGeneratedUnixTimeStamp>
-        <BspGeneratedLocation>/home/stephen/school/ECE492/de2-video-processor/software/video_system_bsp</BspGeneratedLocation>
+        <BspGeneratedTimeStamp>Mar 12, 2016 12:05:51 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1457809551270</BspGeneratedUnixTimeStamp>
+        <BspGeneratedLocation>/home/stefan/CapstoneWork/de2-video-processor/software/video_system_bsp</BspGeneratedLocation>
         <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>../../de2_video_processor_system.sopcinfo</SopcDesignFile>
         <JdiFile>default</JdiFile>

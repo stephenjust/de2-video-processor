@@ -501,4 +501,223 @@ set_global_assignment -name QSYS_FILE de2_video_processor_system.qsys
 set_global_assignment -name MIF_FILE default_palette.mif
 set_global_assignment -name VHDL_FILE src/de2_video_processor.vhd
 set_global_assignment -name STRATIX_DEVICE_IO_STANDARD "3.3-V LVTTL"
+set_global_assignment -name ENABLE_SIGNALTAP ON
+set_global_assignment -name USE_SIGNALTAP_FILE output_files/stp1.stp
+set_global_assignment -name SIGNALTAP_FILE output_files/stp1.stp
+set_global_assignment -name SLD_NODE_CREATOR_ID 110 -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_ENTITY_NAME sld_signaltap -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_clk -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|clk" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[0] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_address[0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[1] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_address[10]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[2] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_address[11]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[3] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_address[12]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[4] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_address[13]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[5] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_address[14]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[6] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_address[15]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[7] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_address[16]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[8] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_address[17]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[9] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_address[18]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[10] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_address[19]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[11] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_address[1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[12] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_address[20]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[13] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_address[21]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[14] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_address[22]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[15] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_address[23]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[16] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_address[24]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[17] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_address[25]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[18] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_address[26]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[19] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_address[27]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[20] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_address[28]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[21] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_address[29]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[22] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_address[2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[23] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_address[30]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[24] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_address[31]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[25] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_address[3]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[26] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_address[4]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[27] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_address[5]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[28] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_address[6]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[29] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_address[7]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[30] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_address[8]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[31] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_address[9]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[32] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_write" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[33] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_writedata[0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[34] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_writedata[1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[35] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_writedata[2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[36] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_writedata[3]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[37] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_writedata[4]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[38] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_writedata[5]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[39] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_writedata[6]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[40] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avm_m0_writedata[7]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[41] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avs_s0_address[0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[42] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avs_s0_address[1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[43] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avs_s0_address[2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[44] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avs_s0_write" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[45] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avs_s0_writedata[0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[46] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avs_s0_writedata[10]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[47] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avs_s0_writedata[11]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[48] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avs_s0_writedata[12]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[49] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avs_s0_writedata[13]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[50] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avs_s0_writedata[14]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[51] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avs_s0_writedata[15]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[52] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avs_s0_writedata[16]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[53] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avs_s0_writedata[17]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[54] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avs_s0_writedata[18]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[55] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avs_s0_writedata[19]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[56] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avs_s0_writedata[1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[57] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avs_s0_writedata[20]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[58] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avs_s0_writedata[21]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[59] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avs_s0_writedata[22]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[60] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avs_s0_writedata[23]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[61] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avs_s0_writedata[24]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[62] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avs_s0_writedata[25]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[63] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avs_s0_writedata[26]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[64] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avs_s0_writedata[27]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[65] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avs_s0_writedata[28]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[66] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avs_s0_writedata[29]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[67] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avs_s0_writedata[2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[68] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avs_s0_writedata[30]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[69] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avs_s0_writedata[31]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[70] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avs_s0_writedata[3]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[71] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avs_s0_writedata[4]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[72] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avs_s0_writedata[5]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[73] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avs_s0_writedata[6]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[74] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avs_s0_writedata[7]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[75] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avs_s0_writedata[8]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[76] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|avs_s0_writedata[9]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[77] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|current_state" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[78] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|current_x[0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[79] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|current_x[10]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[80] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|current_x[11]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[81] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|current_x[12]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[82] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|current_x[13]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[83] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|current_x[14]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[84] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|current_x[15]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[85] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|current_x[1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[86] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|current_x[2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[87] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|current_x[3]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[88] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|current_x[4]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[89] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|current_x[5]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[90] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|current_x[6]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[91] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|current_x[7]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[92] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|current_x[8]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[93] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|current_x[9]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[94] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|current_y[0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[95] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|current_y[10]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[96] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|current_y[11]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[97] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|current_y[12]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[98] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|current_y[13]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[99] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|current_y[14]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[100] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|current_y[15]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[101] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|current_y[1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[102] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|current_y[2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[103] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|current_y[3]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[104] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|current_y[4]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[105] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|current_y[5]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[106] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|current_y[6]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[107] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|current_y[7]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[108] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|current_y[8]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[109] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|current_y[9]" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_NODE_INFO=805334528" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_POWER_UP_TRIGGER=0" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_INVERSION_MASK_LENGTH=0" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SEGMENT_SIZE=1024" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ATTRIBUTE_MEM_MODE=OFF" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STATE_FLOW_USE_GENERATED=0" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STATE_BITS=11" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_BUFFER_FULL_STOP=1" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_CURRENT_RESOURCE_WIDTH=1" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_LEVEL=1" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SAMPLE_DEPTH=1024" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_IN_ENABLED=0" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ADVANCED_TRIGGER_ENTITY=basic,1," -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_LEVEL_PIPELINE=1" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ENABLE_ADVANCED_TRIGGER=0" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[0] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|ncs_ci_start" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_BITS=1" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK=000000000000000000000000000" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK_LENGTH=27" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[110] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|ncs_ci_start" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[111] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|p_error[0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[112] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|p_error[10]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[113] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|p_error[11]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[114] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|p_error[12]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[115] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|p_error[13]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[116] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|p_error[14]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[117] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|p_error[15]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[118] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|p_error[1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[119] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|p_error[2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[120] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|p_error[3]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[121] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|p_error[4]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[122] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|p_error[5]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[123] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|p_error[6]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[124] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|p_error[7]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[125] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|p_error[8]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[126] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|p_error[9]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[127] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|sx[0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[128] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|sx[10]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[129] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|sx[11]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[130] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|sx[12]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[131] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|sx[13]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[132] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|sx[14]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[133] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|sx[15]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[134] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|sx[1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[135] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|sx[2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[136] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|sx[3]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[137] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|sx[4]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[138] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|sx[5]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[139] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|sx[6]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[140] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|sx[7]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[141] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|sx[8]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[142] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|sx[9]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[143] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|sy[0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[144] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|sy[10]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[145] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|sy[11]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[146] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|sy[12]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[147] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|sy[13]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[148] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|sy[14]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[149] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|sy[15]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[150] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|sy[1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[151] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|sy[2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[152] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|sy[3]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[153] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|sy[4]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[154] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|sy[5]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[155] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|sy[6]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[156] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|sy[7]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[157] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|sy[8]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[158] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|sy[9]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[159] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|x2[0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[160] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|x2[10]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[161] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|x2[11]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[162] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|x2[12]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[163] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|x2[13]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[164] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|x2[14]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[165] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|x2[15]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[166] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|x2[1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[167] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|x2[2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[168] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|x2[3]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[169] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|x2[4]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[170] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|x2[5]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[171] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|x2[6]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[172] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|x2[7]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[173] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|x2[8]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[174] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|x2[9]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[175] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|y2[0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[176] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|y2[10]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[177] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|y2[11]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[178] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|y2[12]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[179] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|y2[13]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[180] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|y2[14]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[181] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|y2[15]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[182] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|y2[1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[183] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|y2[2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[184] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|y2[3]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[185] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|y2[4]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[186] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|y2[5]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[187] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|y2[6]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[188] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|y2[7]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[189] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|y2[8]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[190] -to "de2_video_processor_system:u0|ci_draw_line:ci_draw_line_0|y2[9]" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_DATA_BITS=191" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_NODE_CRC_LOWORD=6986" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_NODE_CRC_HIWORD=28474" -section_id auto_signaltap_0
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
