@@ -71,7 +71,9 @@ BEGIN
 		VARIABLE next_y : std_logic_vector(15 downto 0);
 	BEGIN
 		IF rising_edge(ncs_ci_clk) THEN
-			IF current_state = IDLE THEN
+			IF reset = '1' OR ncs_ci_reset = '1' THEN
+				current_state <= IDLE;
+			ELSIF current_state = IDLE THEN
 				ncs_ci_done <= '0';
 				avm_m0_write <= '0';
 				IF ncs_ci_start = '1' THEN
