@@ -193,6 +193,20 @@ int main()
 			else
 				paddle1.y = 450;
 		}
+		if ( (controller_value & (1 << 2)) && (controller_value & (1 << 5)) ){
+			if (paddle1.x > 5){
+				paddle1.x -= paddle_speed;
+			}
+			else
+				paddle1.x = 5;
+		}
+		if ( (controller_value & (1 << 3)) && (controller_value & (1 << 5)) ){
+			if (paddle1.x < 635){
+				paddle1.x += paddle_speed;
+			}
+			else
+				paddle1.x = 635;
+		}
 		if ( (controller_value & (1 << 4)) && toggle_counter == 0){
 			toggle_raytracing = !toggle_raytracing;
 			toggle_counter = 30;
@@ -212,6 +226,20 @@ int main()
 			}
 			else
 				paddle2.y = 450;
+		}
+		if ( (controller_value & (1 << 12)) && (controller_value & (1 << 15)) ){
+			if (paddle2.x > 5){
+				paddle2.x -= paddle_speed;
+			}
+			else
+				paddle2.x = 5;
+		}
+		if ( (controller_value & (1 << 13)) && (controller_value & (1 << 15)) ){
+			if (paddle2.x < 635){
+				paddle2.x += paddle_speed;
+			}
+			else
+				paddle2.x = 635;
 		}
 		if ( (controller_value & (1 << 14)) && toggle_counter == 0){
 			toggle_raytracing = !toggle_raytracing;
