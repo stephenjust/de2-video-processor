@@ -121,7 +121,9 @@ int main()
 	struct Paddle paddle1 = {.y = 240, .x = 20};
 	struct Paddle paddle2 = {.y = 240, .x = 620};
 	struct Ball ball = {.y = 240, .x = 320, .velocity_x = ball_speed, .velocity_y = ball_speed};
-	int paddle_speed = 8;
+	int paddle1_speed = 8;
+	int paddle2_speed = 8;
+	int paddle_counter = 0;
 	int p1_score = 0;
 	int p2_score = 0;
 	int collision_counter = 0;
@@ -179,75 +181,102 @@ int main()
 		/* Read From Controllers*/
 		controller_value = IORD_32DIRECT(GENESIS_0_BASE, 0);
 		/*player 1*/
+		/* Move Vertically */
 		if (controller_value & (1 << 0)){
 			if (paddle1.y > 29){
-				paddle1.y -= paddle_speed;
+				paddle1.y -= paddle1_speed;
 			}
 			else
 				paddle1.y = 29;
 		}
 		if (controller_value & (1 << 1)){
 			if (paddle1.y < 450){
-				paddle1.y += paddle_speed;
+				paddle1.y += paddle1_speed;
 			}
 			else
 				paddle1.y = 450;
 		}
+		/* Move Horizontally */
 		if ( (controller_value & (1 << 2)) && (controller_value & (1 << 5)) ){
 			if (paddle1.x > 5){
-				paddle1.x -= paddle_speed;
+				paddle1.x -= paddle1_speed;
 			}
 			else
 				paddle1.x = 5;
 		}
 		if ( (controller_value & (1 << 3)) && (controller_value & (1 << 5)) ){
 			if (paddle1.x < 635){
-				paddle1.x += paddle_speed;
+				paddle1.x += paddle1_speed;
 			}
 			else
 				paddle1.x = 635;
 		}
+
+		/* Slow other player down */
+		if ( (controller_value & (1 << 5)) && (controller_value & (1 << 6)) && paddle_counter == 0){
+			if (paddle2_speed > 1)
+			{
+				paddle_counter = 200;
+				paddle2_speed--;
+			}
+		}
+
+		/*Toggle Raytracing*/
 		if ( (controller_value & (1 << 4)) && toggle_counter == 0){
 			toggle_raytracing = !toggle_raytracing;
 			toggle_counter = 30;
 		}
 
 		/*player 2*/
+		/* Move Vertically */
 		if (controller_value & (1 << 10)){
 			if (paddle2.y > 29){
-				paddle2.y -= paddle_speed;
+				paddle2.y -= paddle2_speed;
 			}
 			else
 				paddle2.y = 29;
 		}
 		if (controller_value & (1 << 11)){
 			if (paddle2.y < 450){
-				paddle2.y += paddle_speed;
+				paddle2.y += paddle2_speed;
 			}
 			else
 				paddle2.y = 450;
 		}
+		/* Move Horizontally */
 		if ( (controller_value & (1 << 12)) && (controller_value & (1 << 15)) ){
 			if (paddle2.x > 5){
-				paddle2.x -= paddle_speed;
+				paddle2.x -= paddle2_speed;
 			}
 			else
 				paddle2.x = 5;
 		}
 		if ( (controller_value & (1 << 13)) && (controller_value & (1 << 15)) ){
 			if (paddle2.x < 635){
-				paddle2.x += paddle_speed;
+				paddle2.x += paddle2_speed;
 			}
 			else
 				paddle2.x = 635;
 		}
+		/* Slow other player down */
+		if ( (controller_value & (1 << 15)) && (controller_value & (1 << 16)) && paddle_counter == 0){
+			if (paddle1_speed > 1)
+			{
+				paddle_counter = 200;
+				paddle1_speed--;
+			}
+		}
+		/* Toggle Raytracing */
 		if ( (controller_value & (1 << 14)) && toggle_counter == 0){
 			toggle_raytracing = !toggle_raytracing;
 			toggle_counter = 30;
 		}
 
+		/* Decrement Counters */
 		if (toggle_counter != 0)
 			toggle_counter--;
+		if (paddle_counter != 0)
+			paddle_counter--;
 
 		/*ball*/
 		/* Test if ball is touching a paddle */
