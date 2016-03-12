@@ -29,6 +29,33 @@ unsigned char color_array[] = {
 		0x73, 0xFB, 0xF1, 0xE2
 };
 
+struct Ball find_end_point(struct Ball my_ball){
+	int y_steps, x_steps, new_x, new_y;
+	if (my_ball.velocity_y < 0)
+		y_steps = (13 - my_ball.y) / my_ball.velocity_y;
+	if (my_ball.velocity_y > 0)
+		y_steps = (466 - my_ball.y) / my_ball.velocity_y;
+	if (my_ball.velocity_x > 0)
+		x_steps = (639 - my_ball.x) / my_ball.velocity_x;
+	if (my_ball.velocity_x < 0)
+		x_steps = (0 - my_ball.x) / my_ball.velocity_x;
+	if (x_steps > y_steps){
+		new_y = y_steps*my_ball.velocity_y + my_ball.y;
+		new_x = y_steps*my_ball.velocity_x + my_ball.x;
+		struct Ball ball = {.y = new_y, .x = new_x,
+				.velocity_x = my_ball.velocity_x, .velocity_y = my_ball.velocity_y*-1};
+		return ball;
+	}
+	else {
+		new_y = x_steps*my_ball.velocity_y + my_ball.y;
+		new_x = x_steps*my_ball.velocity_x + my_ball.x;
+		//technically the ball wouldn't reflect after scoring, but changed for consistency.
+		struct Ball ball = {.y = new_y, .x = new_x,
+				.velocity_x = my_ball.velocity_x*-1, .velocity_y = my_ball.velocity_y};
+		return ball;
+	}
+}
+
 void draw_rectangle(int x1, int y1, int x2, int y2, unsigned char color)
 {
 	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 0, SDRAM_0_BASE + SDRAM_VIDEO_OFFSET); // Frame address
@@ -63,8 +90,8 @@ void draw_field()
 	draw_rectangle(0, 480-11, 640-1, 480-1, 0xFF);
 	//dashed line down center court
 	int i;
-	for (i = 0; i < 20; i++){
-		draw_rectangle(317, i*30 + 18, 321, i*30 + 22, 0xFF);
+	for (i = 0; i < 16; i++){
+		draw_rectangle(317, i*30 + 13, 321, i*30 + 17, 0xFF);
 	}
 }
 
@@ -132,7 +159,7 @@ int main()
 	}
 
 
-	//clear_screen();
+	clear_screen();
 
 	while(1){
 		/* Read From Controllers*/
@@ -166,40 +193,40 @@ int main()
 		if (collision_counter != 0){
 			collision_counter--;
 		}
-		if (paddle1.x -5 < ball.x && paddle1.x + 5 > ball.x && collision_counter==0
+		if (paddle1.x - 8 < ball.x && paddle1.x + 8 > ball.x && collision_counter == 0
 				&& paddle1.y + 6 > ball.y && paddle1.y -6 < ball.y)
 		{
 			ball.velocity_x *= -1;
 			collision_counter = 4;
 		}
-		if (paddle1.x -5 < ball.x && paddle1.x + 5 > ball.x && collision_counter==0
+		if (paddle1.x - 8 < ball.x && paddle1.x + 8 > ball.x && collision_counter == 0
 				&& paddle1.y + 18 > ball.y && paddle1.y + 7 < ball.y)
 		{
 			ball.velocity_x = ball.velocity_x*-1 + 1;
 			ball.velocity_y = abs(ball.velocity_y);
 			collision_counter = 4;
 		}
-		if (paddle1.x -5 < ball.x && paddle1.x + 5 > ball.x && collision_counter==0
+		if (paddle1.x - 8 < ball.x && paddle1.x + 8 > ball.x && collision_counter == 0
 				&& paddle1.y -7 > ball.y && paddle1.y -18 < ball.y)
 		{
 			ball.velocity_x = ball.velocity_x*-1 + 1;
 			ball.velocity_y = -abs(ball.velocity_y);
 			collision_counter = 4;
 		}
-		if (paddle2.x + 5 > ball.x && paddle2.x - 5 < ball.x && collision_counter==0
+		if (paddle2.x + 8 > ball.x && paddle2.x - 8 < ball.x && collision_counter == 0
 				&& paddle2.y + 6 > ball.y && paddle2.y -6 < ball.y)
 		{
 			ball.velocity_x *= -1;
 			collision_counter = 4;
 		}
-		if (paddle2.x + 5 > ball.x && paddle2.x - 5 < ball.x && collision_counter==0
+		if (paddle2.x + 8 > ball.x && paddle2.x - 8 < ball.x && collision_counter == 0
 				&& paddle2.y + 18 > ball.y && paddle2.y + 7 < ball.y)
 		{
 			ball.velocity_x = ball.velocity_x*-1 - 1;
 			ball.velocity_y = abs(ball.velocity_y);
 			collision_counter = 4;
 		}
-		if (paddle2.x + 5 > ball.x && paddle2.x - 5 < ball.x && collision_counter==0
+		if (paddle2.x + 8 > ball.x && paddle2.x - 8 < ball.x && collision_counter == 0
 				&& paddle2.y -7 > ball.y && paddle2.y -18 < ball.y)
 		{
 			ball.velocity_x = ball.velocity_x*-1 - 1;
@@ -232,16 +259,24 @@ int main()
 		ball.x = ball.x + ball_speed*ball.velocity_x;
 		ball.y = ball.y + ball_speed*ball.velocity_y;
 
+		/* Determine next 2 ball locations */
+		struct Ball ball_prime = find_end_point(ball);
+		struct Ball ball_doubleprime = find_end_point(ball_prime);
+
 		/*Draw Everything*/
 		draw_rectangle(0, 0, 640-1, 480-1, 0x00);
 		draw_field();
 		draw_paddle(paddle1.x, paddle1.y);
 		draw_paddle(paddle2.x, paddle2.y);
 		draw_ball(ball.x, ball.y);
+
+		/* Draw markers to determine where ball is going */
+		draw_rectangle(ball_prime.x-2, ball_prime.y-2, ball_prime.x+2, ball_prime.y+2, 0xE0);
+		draw_rectangle(ball_doubleprime.x-2, ball_doubleprime.y-2, ball_doubleprime.x+2, ball_doubleprime.y+2, 0x1A);
+
 		ALT_CI_CI_FRAME_DONE_0;
 
 	}
 
-		while(1){}
 	return 0;
 }
