@@ -98,7 +98,9 @@ BEGIN
 
 
 		IF rising_edge(ncs_ci_clk) THEN
-			IF current_state = IDLE THEN -- Don't do anything. 
+            IF reset = '1' OR ncs_ci_reset = '1' THEN
+                current_state <= IDLE;
+		    ELSIF current_state = IDLE THEN -- Don't do anything. 
 				ncs_ci_done <= '0';
 				avm_m0_write <= '0';
 				IF ncs_ci_start = '1' THEN
@@ -125,8 +127,8 @@ BEGIN
                         sy <= to_signed(-1, 16); 
                     end if;
 
-                    p_error <= dx - dy;
-
+                    --p_error <= dx - dy;
+                      p_error <= abs(signed(x2) - signed(x1)) - abs(signed(y2) - signed(y1));
 				ELSE
 					current_state <= IDLE;
 				END IF;
