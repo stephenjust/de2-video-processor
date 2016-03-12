@@ -29,16 +29,18 @@ unsigned char color_array[] = {
 		0x73, 0xFB, 0xF1, 0xE2
 };
 
-struct Ball find_end_point(struct Ball my_ball){
+struct Ball find_end_point(struct Ball my_ball, struct Paddle p1, struct Paddle p2){
+	int x_endleft = p1.x + 5;
+	int x_endright = p2.x - 5;
 	int y_steps, x_steps, new_x, new_y;
 	if (my_ball.velocity_y < 0)
 		y_steps = (13 - my_ball.y) / my_ball.velocity_y;
 	if (my_ball.velocity_y > 0)
 		y_steps = (466 - my_ball.y) / my_ball.velocity_y;
 	if (my_ball.velocity_x > 0)
-		x_steps = (639 - my_ball.x) / my_ball.velocity_x;
+		x_steps = (x_endright - my_ball.x) / my_ball.velocity_x;
 	if (my_ball.velocity_x < 0)
-		x_steps = (0 - my_ball.x) / my_ball.velocity_x;
+		x_steps = (x_endleft - my_ball.x) / my_ball.velocity_x;
 	if (x_steps > y_steps){
 		new_y = y_steps*my_ball.velocity_y + my_ball.y;
 		new_x = y_steps*my_ball.velocity_x + my_ball.x;
@@ -49,7 +51,6 @@ struct Ball find_end_point(struct Ball my_ball){
 	else {
 		new_y = x_steps*my_ball.velocity_y + my_ball.y;
 		new_x = x_steps*my_ball.velocity_x + my_ball.x;
-		//technically the ball wouldn't reflect after scoring, but changed for consistency.
 		struct Ball ball = {.y = new_y, .x = new_x,
 				.velocity_x = my_ball.velocity_x*-1, .velocity_y = my_ball.velocity_y};
 		return ball;
@@ -65,6 +66,17 @@ void draw_rectangle(int x1, int y1, int x2, int y2, unsigned char color)
 	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 16, y2); // Y2
 	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 20, color); // Color
 	ALT_CI_CI_DRAW_RECT_0;
+}
+
+void draw_line(int x1, int y1, int x2, int y2, unsigned char color)
+{
+	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 0, SDRAM_0_BASE + SDRAM_VIDEO_OFFSET); // Frame address
+	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 4, x1); // X1
+	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 8, y1); // Y1
+	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 12, x2); // X2
+	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 16, y2); // Y2
+	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 20, color); // Color
+	ALT_CI_CI_DRAW_LINE_0;
 }
 
 void draw_ball(int x, int y)
@@ -104,6 +116,8 @@ void clear_screen()
 int main()
 {
 	int ball_speed = 1;
+	int toggle_raytracing = 0;
+	int toggle_counter = 0;
 	struct Paddle paddle1 = {.y = 240, .x = 20};
 	struct Paddle paddle2 = {.y = 240, .x = 620};
 	struct Ball ball = {.y = 240, .x = 320, .velocity_x = ball_speed, .velocity_y = ball_speed};
@@ -166,67 +180,86 @@ int main()
 		controller_value = IORD_32DIRECT(GENESIS_0_BASE, 0);
 		/*player 1*/
 		if (controller_value & (1 << 0)){
-			if (paddle1.y > 28){
+			if (paddle1.y > 29){
 				paddle1.y -= paddle_speed;
 			}
+			else
+				paddle1.y = 29;
 		}
 		if (controller_value & (1 << 1)){
-			if (paddle1.y < 451){
+			if (paddle1.y < 450){
 				paddle1.y += paddle_speed;
 			}
+			else
+				paddle1.y = 450;
+		}
+		if ( (controller_value & (1 << 4)) && toggle_counter == 0){
+			toggle_raytracing = !toggle_raytracing;
+			toggle_counter = 30;
 		}
 
 		/*player 2*/
 		if (controller_value & (1 << 10)){
-			if (paddle2.y > 28){
+			if (paddle2.y > 29){
 				paddle2.y -= paddle_speed;
 			}
+			else
+				paddle2.y = 29;
 		}
 		if (controller_value & (1 << 11)){
-			if (paddle2.y < 451){
+			if (paddle2.y < 450){
 				paddle2.y += paddle_speed;
 			}
+			else
+				paddle2.y = 450;
 		}
+		if ( (controller_value & (1 << 14)) && toggle_counter == 0){
+			toggle_raytracing = !toggle_raytracing;
+			toggle_counter = 30;
+		}
+
+		if (toggle_counter != 0)
+			toggle_counter--;
 
 		/*ball*/
 		/* Test if ball is touching a paddle */
-		if (collision_counter != 0){
+		if (collision_counter != 0)
 			collision_counter--;
-		}
-		if (paddle1.x - 8 < ball.x && paddle1.x + 8 > ball.x && collision_counter == 0
+
+		if (paddle1.x - 10 < ball.x && paddle1.x + 10 > ball.x && collision_counter == 0
 				&& paddle1.y + 6 > ball.y && paddle1.y -6 < ball.y)
 		{
 			ball.velocity_x *= -1;
 			collision_counter = 4;
 		}
-		if (paddle1.x - 8 < ball.x && paddle1.x + 8 > ball.x && collision_counter == 0
+		if (paddle1.x - 10 < ball.x && paddle1.x + 10 > ball.x && collision_counter == 0
 				&& paddle1.y + 18 > ball.y && paddle1.y + 7 < ball.y)
 		{
 			ball.velocity_x = ball.velocity_x*-1 + 1;
 			ball.velocity_y = abs(ball.velocity_y);
 			collision_counter = 4;
 		}
-		if (paddle1.x - 8 < ball.x && paddle1.x + 8 > ball.x && collision_counter == 0
+		if (paddle1.x - 10 < ball.x && paddle1.x + 10 > ball.x && collision_counter == 0
 				&& paddle1.y -7 > ball.y && paddle1.y -18 < ball.y)
 		{
 			ball.velocity_x = ball.velocity_x*-1 + 1;
 			ball.velocity_y = -abs(ball.velocity_y);
 			collision_counter = 4;
 		}
-		if (paddle2.x + 8 > ball.x && paddle2.x - 8 < ball.x && collision_counter == 0
+		if (paddle2.x + 10 > ball.x && paddle2.x - 10 < ball.x && collision_counter == 0
 				&& paddle2.y + 6 > ball.y && paddle2.y -6 < ball.y)
 		{
 			ball.velocity_x *= -1;
 			collision_counter = 4;
 		}
-		if (paddle2.x + 8 > ball.x && paddle2.x - 8 < ball.x && collision_counter == 0
+		if (paddle2.x + 10 > ball.x && paddle2.x - 10 < ball.x && collision_counter == 0
 				&& paddle2.y + 18 > ball.y && paddle2.y + 7 < ball.y)
 		{
 			ball.velocity_x = ball.velocity_x*-1 - 1;
 			ball.velocity_y = abs(ball.velocity_y);
 			collision_counter = 4;
 		}
-		if (paddle2.x + 8 > ball.x && paddle2.x - 8 < ball.x && collision_counter == 0
+		if (paddle2.x + 10 > ball.x && paddle2.x - 10 < ball.x && collision_counter == 0
 				&& paddle2.y -7 > ball.y && paddle2.y -18 < ball.y)
 		{
 			ball.velocity_x = ball.velocity_x*-1 - 1;
@@ -260,19 +293,26 @@ int main()
 		ball.y = ball.y + ball_speed*ball.velocity_y;
 
 		/* Determine next 2 ball locations */
-		struct Ball ball_prime = find_end_point(ball);
-		struct Ball ball_doubleprime = find_end_point(ball_prime);
+		struct Ball ball_prime = find_end_point(ball, paddle1, paddle2);
+		struct Ball ball_doubleprime = find_end_point(ball_prime, paddle1, paddle2);
+		struct Ball ball_tprime = find_end_point(ball_doubleprime, paddle1, paddle2);
 
 		/*Draw Everything*/
 		draw_rectangle(0, 0, 640-1, 480-1, 0x00);
 		draw_field();
+
+		//TODO: Draw Scores
+
 		draw_paddle(paddle1.x, paddle1.y);
 		draw_paddle(paddle2.x, paddle2.y);
 		draw_ball(ball.x, ball.y);
 
 		/* Draw markers to determine where ball is going */
-		draw_rectangle(ball_prime.x-2, ball_prime.y-2, ball_prime.x+2, ball_prime.y+2, 0xE0);
-		draw_rectangle(ball_doubleprime.x-2, ball_doubleprime.y-2, ball_doubleprime.x+2, ball_doubleprime.y+2, 0x1A);
+		if (toggle_raytracing){
+			draw_line(ball.x, ball.y, ball_prime.x, ball_prime.y, 0xE0);
+			draw_line(ball_prime.x, ball_prime.y, ball_doubleprime.x, ball_doubleprime.y, 0x1A);
+			draw_line(ball_doubleprime.x, ball_doubleprime.y, ball_tprime.x, ball_tprime.y, 0xFA);
+		}
 
 		ALT_CI_CI_FRAME_DONE_0;
 
