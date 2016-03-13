@@ -9,8 +9,72 @@
 #include <efsl/efs.h>
 #include <efsl/ls.h>
 
+#include <altera_avalon_sgdma.h>
+#include <altera_avalon_sgdma_descriptor.h>
+#include <altera_avalon_sgdma_regs.h>
+
 #define PALETTE_SIZE 256
 #define SDRAM_VIDEO_OFFSET 0x300000
+#define CHUNK_SIZE 2048
+
+// BMP file offsets
+#define PIXDATA_OFFSET 0x0A
+#define BMP_TYPE_OFFSET 0x0E
+#define WIDTH_OFFSET 0x12
+#define HEIGHT_OFFSET 0x16
+#define BITS_OFFSET 0x1C
+
+short int copy_bmp(EmbeddedFileSystem *efsl, char *file_name, void *dest_addr)
+{
+	File file;
+	unsigned char buffer[CHUNK_SIZE];
+	int pixdata_offset, bmp_width, bmp_height, i, bytes_read, status;
+	alt_sgdma_descriptor descriptor;
+	alt_sgdma_descriptor next_descriptor;
+	alt_sgdma_dev *dev;
+
+	printf("Copying bitmap %s\n", file_name);
+
+	if (file_fopen(&file, &(efsl->myFs), file_name, 'r') != 0)
+		return -1;
+
+	// Read the first block of the file to get metadata
+	file_setpos(&file, 0);
+	file_read(&file, CHUNK_SIZE, buffer);
+
+	// Read bitmap metadata
+	pixdata_offset = *((short *) (buffer + PIXDATA_OFFSET));
+	if (*(buffer + BMP_TYPE_OFFSET) != 40) {
+		alt_putstr("Unsupported BMP type.\n");
+		file_fclose(&file);
+		return -1;
+	}
+	bmp_width = *((short *) (buffer + WIDTH_OFFSET));
+	bmp_height = *((short *) (buffer + HEIGHT_OFFSET));
+	if (*((short *) (buffer + BITS_OFFSET)) != 8) {
+		alt_putstr("BMP must be 8 bits per pixel.\n");
+		file_fclose(&file);
+		return -1;
+	}
+
+	// Advance the file pointer to the beginning of the image
+	file_setpos(&file, pixdata_offset);
+
+	dev = alt_avalon_sgdma_open(SGDMA_0_NAME);
+	for (i = 0; i < bmp_width*bmp_height; i = i + CHUNK_SIZE) {
+		bytes_read = file_read(&file, CHUNK_SIZE, buffer);
+		alt_avalon_sgdma_construct_mem_to_mem_desc(&descriptor, &next_descriptor, (alt_u32 *) buffer, (alt_u32 *) dest_addr, bytes_read, 0, 0);
+		status = alt_avalon_sgdma_do_sync_transfer(dev, &descriptor);
+		dest_addr += CHUNK_SIZE;
+	}
+
+	// Close the file
+	if (file_fclose(&file) != 0)
+		return -1;
+
+	return 0;
+}
+
 
 void draw_rectangle(int x1, int y1, int x2, int y2, unsigned char color)
 {
@@ -32,8 +96,8 @@ void clear_screen()
 int main()
 {
 	EmbeddedFileSystem efsl;
-	File readFile;
-	char *fileName = "fish.bmp";
+
+	clear_screen();
 
 	// Initialises the filesystem on the SD card, if the filesystem does not
 	// init properly then it displays an error message.
@@ -49,85 +113,12 @@ int main()
 	else
 		printf("...success!\n");
 
-	// Open the test file
-	printf("\nAttempting to open file: \"%s\"\n", fileName);
-
-	if (file_fopen(&readFile, &efsl.myFs, fileName, 'r') != 0)
+	while (1)
 	{
-		printf("Error:\tCould not open file\n");
-		return(1);
+		copy_bmp(&efsl, "fish.bmp", (void *) SRAM_0_BASE);
+		copy_bmp(&efsl, "igloo.bmp", (void *) SRAM_0_BASE);
+		copy_bmp(&efsl, "stove.bmp", (void *) SRAM_0_BASE);
 	}
-	else
-	{
-		printf("Reading file...\n");
-	}
-//
-//	alt_up_sd_card_dev *dev;
-//	unsigned int row, col;
-//	unsigned int i = 0;
-//	unsigned int j = 0;
-//	unsigned int delay = 0;
-//	short int fh;
-//	unsigned char data;
-//
-//	clear_screen();
-//
-//	dev = alt_up_sd_card_open_dev(SD_CARD_0_NAME);
-//	if (dev == NULL) {
-//		alt_putstr("Failed to initialize driver.\n");
-//	}
-//
-//	// Wait for SD card
-//	alt_putstr("Waiting for SD card...\n");
-//	while (!alt_up_sd_card_is_Present()) {
-//		// busy-waiting
-//	}
-//
-//	if (!alt_up_sd_card_is_FAT16()) {
-//		alt_putstr("SD Card is not FAT16.\n");
-//	}
-//
-//	// Load images into memory
-//	fh = alt_up_sd_card_fopen("fish.bmp", 0 /*create*/);
-//	if (fh == -1) {
-//		alt_putstr("File not found.\n");
-//	} else {
-//		alt_putstr("File exists.\n");
-//
-//		char *buffer;
-//		short int length;
-//		int block_offset = 0;
-//		int file_len = 0;
-//		int pixdata_offset = 0;
-//		int bmp_width = 0;
-//		int bmp_height = 0;
-//		buffer = alt_up_sd_card_read_sector(fh, &length);
-//		pixdata_offset = *((short *) (buffer + 0x0A));
-//		if (*(buffer + 0x0E) != 40) {
-//			alt_putstr("Unsupported BMP type.\n");
-//		}
-//		bmp_width = *((int *) (buffer + 0x12));
-//		bmp_height = *((int *) (buffer + 0x16));
-//		if (*((short *) (buffer + 0x1C)) != 8) {
-//			alt_putstr("BMP must be 8 bits per pixel.\n");
-//		}
-//
-//		while (block_offset + 512 < pixdata_offset) {
-//			buffer = alt_up_sd_card_read_sector(fh, &length);
-//			block_offset += 512;
-//		}
-//
-//		for (i = 0; i < 480; i++) {
-//			for (j = 0; j < 640; j++) {
-//				if (i * 640 + j >= block_offset - pixdata_offset + 512) {
-//					buffer = alt_up_sd_card_read_sector(fh, &length);
-//					block_offset += 512;
-//				}
-//				IOWR_8DIRECT(SRAM_0_BASE, 640*i + j, *(buffer + ((i * 640 + j + pixdata_offset) % 512)));
-//			}
-//		}
-//		alt_up_sd_card_fclose(fh);
-//	}
 
 	return 0;
 }
