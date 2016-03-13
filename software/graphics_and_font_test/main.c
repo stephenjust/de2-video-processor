@@ -78,8 +78,12 @@ int main()
 		ALT_CI_CI_FRAME_DONE_0;
 		//alt_printf("%d", atoi('F'));
 
+		alt_putstr("Drawing circle \n");
 
 
+		//Do not run as of yet. Currently overwrites palettes.
+		//draw_circle (300, 300, 3, 0, 0);
+		ALT_CI_CI_FRAME_DONE_0;
 
 		alt_putstr("Done \n");
 

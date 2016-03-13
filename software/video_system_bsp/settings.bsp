@@ -2,8 +2,8 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>hal</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>Mar 12, 2016 3:40:45 PM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1457822445309</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>Mar 12, 2016 10:19:40 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1457846380573</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>/home/stefan/CapstoneWork/de2-video-processor/software/video_system_bsp</BspGeneratedLocation>
         <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>../../de2_video_processor_system.sopcinfo</SopcDesignFile>
@@ -917,50 +917,62 @@
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
-                <slaveDescriptor>spi_0</slaveDescriptor>
-                <addressRange>0x00409220 - 0x0040923F</addressRange>
-                <addressSpan>32</addressSpan>
+                <slaveDescriptor>sgdma_0</slaveDescriptor>
+                <addressRange>0x00409200 - 0x0040923F</addressRange>
+                <addressSpan>64</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
-                <slaveDescriptor>ci_draw_line_0</slaveDescriptor>
-                <addressRange>0x00409240 - 0x0040925F</addressRange>
-                <addressSpan>32</addressSpan>
-                <attributes/>
-        </MemoryMap>
-        <MemoryMap>
-                <slaveDescriptor>ci_draw_rect_0</slaveDescriptor>
+                <slaveDescriptor>ci_draw_circ_0</slaveDescriptor>
                 <addressRange>0x00409260 - 0x0040927F</addressRange>
                 <addressSpan>32</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
-                <slaveDescriptor>timer_0</slaveDescriptor>
+                <slaveDescriptor>spi_0</slaveDescriptor>
                 <addressRange>0x00409280 - 0x0040929F</addressRange>
+                <addressSpan>32</addressSpan>
+                <attributes/>
+        </MemoryMap>
+        <MemoryMap>
+                <slaveDescriptor>ci_draw_line_0</slaveDescriptor>
+                <addressRange>0x004092A0 - 0x004092BF</addressRange>
+                <addressSpan>32</addressSpan>
+                <attributes/>
+        </MemoryMap>
+        <MemoryMap>
+                <slaveDescriptor>ci_draw_rect_0</slaveDescriptor>
+                <addressRange>0x004092C0 - 0x004092DF</addressRange>
+                <addressSpan>32</addressSpan>
+                <attributes/>
+        </MemoryMap>
+        <MemoryMap>
+                <slaveDescriptor>timer_0</slaveDescriptor>
+                <addressRange>0x004092E0 - 0x004092FF</addressRange>
                 <addressSpan>32</addressSpan>
                 <attributes>timer</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>altpll_0</slaveDescriptor>
-                <addressRange>0x004092A0 - 0x004092AF</addressRange>
+                <addressRange>0x00409300 - 0x0040930F</addressRange>
                 <addressSpan>16</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>sysid_qsys_0</slaveDescriptor>
-                <addressRange>0x004092B0 - 0x004092B7</addressRange>
+                <addressRange>0x00409310 - 0x00409317</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>jtag_uart_0</slaveDescriptor>
-                <addressRange>0x004092B8 - 0x004092BF</addressRange>
+                <addressRange>0x00409318 - 0x0040931F</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes>printable</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>genesis_0</slaveDescriptor>
-                <addressRange>0x004092C0 - 0x004092C3</addressRange>
+                <addressRange>0x00409320 - 0x00409323</addressRange>
                 <addressSpan>4</addressSpan>
                 <attributes/>
         </MemoryMap>

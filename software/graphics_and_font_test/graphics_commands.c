@@ -395,19 +395,19 @@ void print2screen(int x1, int y1, int color, int pixel_size, char* string){
 
 }
 
-void draw_circle (int cx, int cy, int radius, int color, int pixel_size, int filled){
+void draw_circle (int cx, int cy, int radius, int color, int filled){
 
 	//Filled = 0 only draws the border
 	//Filled = 1 will fill it, but in software.
 
-	if (!filled){
+//	if (!filled){
 		IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 0, SDRAM_0_BASE + SDRAM_VIDEO_OFFSET); // Frame address
 		IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 4, cx); // CX
-		IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 8, cy); // CY
-		IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 12, radius); // Radius
-		IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 16, color); // Color
+		IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 8, cy); // CY
+		IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 12, radius); // Radius
+		IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 16, color); // Color
 		ALT_CI_CI_DRAW_CIRC_0;
-	}
+//	}
 }
 
 

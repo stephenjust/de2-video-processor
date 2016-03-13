@@ -44,7 +44,7 @@ extern char font8x8_basic[][8];
 
 void draw_letter(int y1, int x1, int color, int pixel_size, char* letter);
 void print2screen(int x1, int y1, int color, int pixel_size, char* string);
-void draw_circle (int cx, int cy, int radius, int color, int pixel_size);
+void draw_circle (int cx, int cy, int radius, int color, int filled);
 
 
 #endif /* __GRAPHICSCMDS_H_ */

@@ -98,9 +98,9 @@ BEGIN
 					current_state <= RUNNING;
 
 					x0 <= rad;
-					y0 <= 0;
+					y0 <= std_logic_vector(to_signed(0, 16));
 
-                    decisionOver2 <= to_signed(1, 16) - rad;
+                    decisionOver2 <= signed(to_signed(1, 16) - signed(rad));
 
 
 				ELSE
@@ -116,7 +116,7 @@ BEGIN
 
 				-- Wait until write succeeds to advance to next pixel
 				IF avm_m0_waitrequest = '0' THEN
-					IF current_y0 > current_x0 THEN
+					IF y0 > x0 THEN
 						-- Write completed
 						current_state <= IDLE;
 						avm_m0_write <= '0';
@@ -160,7 +160,7 @@ BEGIN
                             x0 <= next_x0;
                             y0 <= next_y0;
                             drawing_state <= Octant5;
-                            when Octant5 =>
+                            when Octant5 => --This state seems to take much longer than most.... 4 cycles. Oct1 takes 2, everything else 1.
                                 --DrawPixel(-x + cx, -y + cy); 
                             avm_m0_address <= std_logic_vector(unsigned(buf_addr)
                                                                + unsigned(cx) - unsigned(next_x0)
@@ -198,19 +198,21 @@ BEGIN
                             drawing_state <= MakeDecision;
 
                             when MakeDecision => --Here's the if logic from the pseudo-code on wikipedia.
-                            next_y0 := next_y0 + to_signed(1, 16); --y++ from pseudo-code.
+                            next_y0 := std_logic_vector(signed(next_y0) + to_signed(1, 16)); --y++ from pseudo-code.
 
                                 if decisionOver2 <= to_signed(0, 16) then
-                                    decisionOver2 <= decisionOver2 + (to_signed(2, 16) * next_y0 + to_signed(1, 16));
+--                                    decisionOver2 <= decisionOver2 + (to_signed(2, 16) * next_y0 + to_signed(1, 16));
+                                    decisionOver2 <= decisionOver2 + (signed(next_y0) + signed(next_y0) + to_signed(2, 16));
                                 else
-                                    next_x0 := next_x0 - to_signed(-1, 16);
-                                    decisionOver2 <= decisionOver2 + (to_signed(2, 16) * (next_y0 - next_x0) + to_signed(1, 16));
+                                    next_x0 := std_logic_vector(signed(next_x0) - to_signed(-1, 16));
+--                                    decisionOver2 <= decisionOver2 + (to_signed(2, 16) * (next_y0 - next_x0) + to_signed(1, 16));
+                                    decisionOver2 <= decisionOver2 + (signed(next_y0) + signed(next_y0) - signed(next_x0) - signed(next_x0) + to_signed(2, 16));
                                 end if;
 
 
                             x0 <= next_x0;
                             y0 <= next_y0;
-    
+                            drawing_state <= Octant1;
 
                         end case;
 
@@ -230,8 +232,8 @@ BEGIN
 
 
 				
-				current_x <= next_x;
-				current_y <= next_y;
+				x0 <= next_x0;
+				y0 <= next_y0;
 			END IF;
 		END IF;
 	END PROCESS op;
@@ -250,8 +252,8 @@ BEGIN
 		IF rising_edge(ncs_ci_clk) THEN
 			IF ncs_ci_reset = '1' THEN
 				buf_addr <= (others => '0');
-				x1 <= (others => '0');
-				y1 <= (others => '0');
+				cx <= (others => '0');
+				cy <= (others => '0');
 				rad <= (others => '0');
 				color <= (others => '0');
 			ELSIF avs_s0_write = '1' THEN
