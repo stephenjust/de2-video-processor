@@ -123,3 +123,11 @@ void draw_line(int x1, int y1, int x2, int y2, unsigned char color)
 	ALT_CI_CI_DRAW_LINE_0;
 }
 
+
+//Fonts:
+//https://github.com/dhepper/font8x8
+//License, Public Domain.
+
+
+
+
