@@ -82,7 +82,16 @@ int main()
 
 
 		//Do not run as of yet. Currently overwrites palettes.
-		//draw_circle (300, 300, 3, 0, 0);
+		draw_circle (300, 300, 3, 0, 0);
+		ALT_CI_CI_FRAME_DONE_0;
+
+		draw_circle (300, 300, 20, 0, 0);
+		ALT_CI_CI_FRAME_DONE_0;
+
+		draw_circle (400, 400, 20, 0, 1);
+		ALT_CI_CI_FRAME_DONE_0;
+
+		draw_circle (350, 350, 20, 0, 2);
 		ALT_CI_CI_FRAME_DONE_0;
 
 		alt_putstr("Done \n");

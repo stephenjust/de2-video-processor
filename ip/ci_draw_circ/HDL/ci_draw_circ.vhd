@@ -204,7 +204,7 @@ BEGIN
 --                                    decisionOver2 <= decisionOver2 + (to_signed(2, 16) * next_y0 + to_signed(1, 16));
                                     decisionOver2 <= decisionOver2 + (signed(next_y0) + signed(next_y0) + to_signed(2, 16));
                                 else
-                                    next_x0 := std_logic_vector(signed(next_x0) - to_signed(-1, 16));
+                                    next_x0 := std_logic_vector(signed(next_x0) - to_signed(1, 16));
 --                                    decisionOver2 <= decisionOver2 + (to_signed(2, 16) * (next_y0 - next_x0) + to_signed(1, 16));
                                     decisionOver2 <= decisionOver2 + (signed(next_y0) + signed(next_y0) - signed(next_x0) - signed(next_x0) + to_signed(2, 16));
                                 end if;
@@ -227,10 +227,6 @@ BEGIN
 
                     end if;
 				END IF;
-
-
-
-
 				
 				x0 <= next_x0;
 				y0 <= next_y0;
