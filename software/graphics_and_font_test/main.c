@@ -94,6 +94,40 @@ int main()
 		draw_circle (350, 350, 20, 0, 2);
 		ALT_CI_CI_FRAME_DONE_0;
 
+		//Circle Clipping tests
+
+		//Top Left
+		draw_circle (20, 20, 30, 0, 2);
+		ALT_CI_CI_FRAME_DONE_0;
+
+		//Top
+		draw_circle (200, 20, 30, 3, 2);
+		ALT_CI_CI_FRAME_DONE_0;
+
+		//Top Right
+		draw_circle (640-40, 20, 30, 4, 2);
+		ALT_CI_CI_FRAME_DONE_0;
+
+		//Left
+		draw_circle (20, 200, 30, 5, 2);
+		ALT_CI_CI_FRAME_DONE_0;
+
+		//Right
+		draw_circle (640-20, 200, 30, 6, 2);
+		ALT_CI_CI_FRAME_DONE_0;
+
+		//Bottom Left
+		draw_circle (0, 480 - 20, 30, 7, 2);
+		ALT_CI_CI_FRAME_DONE_0;
+
+		//Bottom
+		draw_circle (200, 480 - 20, 30, 8, 2);
+		ALT_CI_CI_FRAME_DONE_0;
+
+		//Bottom Right
+		draw_circle (640-20, 480 - 20, 30, 9, 2);
+		ALT_CI_CI_FRAME_DONE_0;
+
 		alt_putstr("Done \n");
 
 	return 0;

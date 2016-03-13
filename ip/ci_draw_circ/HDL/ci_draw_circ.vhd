@@ -123,76 +123,123 @@ BEGIN
 						ncs_ci_done <= '1'; --Assert frame drawing done.
                     else
 --Base case: avm_m0_address <= std_logic_vector(unsigned(buf_addr) + unsigned(next_x) + (unsigned(FRAME_WIDTH) * unsigned(next_y)));
+
+--check if next_x+whatever > FRAME_WIDTH and next_y + whatever > FRAME_HEIGHT. if either of those true,
+--dont' plot that pixel by not changing the address definition, and just moving along in the state machine. 
+
                         case drawing_state is 
                             when Octant1 =>
                                 --DrawPixel( x + cx,  y + cy);
+
+                            if (unsigned(cx) + unsigned(next_x0)) < unsigned(FRAME_WIDTH) and
+                               (unsigned(cx) + unsigned(next_x0)) >= to_unsigned(0, 16) and
+                               (unsigned(next_y0) +  unsigned(cy)) < unsigned(FRAME_HEIGHT) and
+                               (unsigned(next_y0) +  unsigned(cy)) >= to_unsigned(0, 16) then
+
                             avm_m0_address <= std_logic_vector(unsigned(buf_addr)
                                                                + unsigned(cx) + unsigned(next_x0)
                                                                + (unsigned(FRAME_WIDTH) * (unsigned(next_y0) +  unsigned(cy) )  )
                                                               );
+                            end if;
                             x0 <= next_x0;
                             y0 <= next_y0;
                             drawing_state <= Octant2;
                             when Octant2 =>
                                 --DrawPixel( y + cx,  x + cy);
+                            if (unsigned(cx) + unsigned(next_y0)) < unsigned(FRAME_WIDTH) and
+                               (unsigned(cx) + unsigned(next_y0)) >= to_unsigned(0, 16) and
+                               (unsigned(next_x0) +  unsigned(cy) ) < unsigned(FRAME_HEIGHT) and
+                               (unsigned(next_x0) +  unsigned(cy) ) >= to_unsigned(0, 16) then
+
                             avm_m0_address <= std_logic_vector(unsigned(buf_addr)
                                                                + unsigned(cx) + unsigned(next_y0)
                                                                + (unsigned(FRAME_WIDTH) * (unsigned(next_x0) +  unsigned(cy) )  )
                                                               );
+                            end if;
                             x0 <= next_x0;
                             y0 <= next_y0;
                             drawing_state <= Octant3;
                             when Octant3 =>
                                 --DrawPixel(-y + cx,  x + cy);
+                            if (unsigned(cx) - unsigned(next_y0)) < unsigned(FRAME_WIDTH) and
+                               (unsigned(cx) - unsigned(next_y0)) >= to_unsigned(0, 16) and
+                               (unsigned(next_x0) +  unsigned(cy) ) < unsigned(FRAME_HEIGHT) and 
+                               (unsigned(next_x0) +  unsigned(cy) ) >= to_unsigned(0, 16) then
                             avm_m0_address <= std_logic_vector(unsigned(buf_addr)
                                                                + unsigned(cx) - unsigned(next_y0)
                                                                + (unsigned(FRAME_WIDTH) * (unsigned(next_x0) +  unsigned(cy) )  )
                                                               );
+                            end if;
                             x0 <= next_x0;
                             y0 <= next_y0;
                             drawing_state <= Octant4;
                             when Octant4 =>
                                 --DrawPixel(-x + cx,  y + cy);
+                            if (unsigned(cx) - unsigned(next_x0)) < unsigned(FRAME_WIDTH) and
+                               (unsigned(cx) - unsigned(next_x0)) >= to_unsigned(0, 16) and
+                               (unsigned(next_y0) +  unsigned(cy) ) < unsigned(FRAME_HEIGHT) and 
+                               (unsigned(next_y0) +  unsigned(cy) ) >= to_unsigned(0, 16) then
                             avm_m0_address <= std_logic_vector(unsigned(buf_addr)
                                                                + unsigned(cx) - unsigned(next_x0)
                                                                + (unsigned(FRAME_WIDTH) * (unsigned(next_y0) +  unsigned(cy) )  )
                                                               );
+                            end if;
                             x0 <= next_x0;
                             y0 <= next_y0;
                             drawing_state <= Octant5;
                             when Octant5 => --This state seems to take much longer than most.... 4 cycles. Oct1 takes 2, everything else 1.
                                 --DrawPixel(-x + cx, -y + cy); 
+                            if (unsigned(cx) - unsigned(next_x0)) < unsigned(FRAME_WIDTH) and
+                               (unsigned(cx) - unsigned(next_x0)) >= to_unsigned(0, 16) and
+                               (unsigned(cy) -  unsigned(next_y0) ) < unsigned(FRAME_HEIGHT) and
+                               (unsigned(cy) -  unsigned(next_y0) ) >= to_unsigned(0, 16) then
                             avm_m0_address <= std_logic_vector(unsigned(buf_addr)
                                                                + unsigned(cx) - unsigned(next_x0)
                                                                + (unsigned(FRAME_WIDTH) * (unsigned(cy) -  unsigned(next_y0) )  )
                                                               );
+                            end if;
                             x0 <= next_x0;
                             y0 <= next_y0;
                             drawing_state <= Octant6;
                             when Octant6 =>
                                 --DrawPixel(-y + cx, -x + cy);
+                            if (unsigned(cx) - unsigned(next_y0)) < unsigned(FRAME_WIDTH) and
+                               (unsigned(cx) - unsigned(next_y0)) >= to_unsigned(0, 16) and
+                               (unsigned(cy) -  unsigned(next_x0) ) < unsigned(FRAME_HEIGHT) and
+                               (unsigned(cy) -  unsigned(next_x0) ) >= to_unsigned(0, 16) then
                             avm_m0_address <= std_logic_vector(unsigned(buf_addr)
                                                                + unsigned(cx) - unsigned(next_y0)
                                                                + (unsigned(FRAME_WIDTH) * (unsigned(cy) -  unsigned(next_x0) )  )
                                                               );
+                            end if;
                             x0 <= next_x0;
                             y0 <= next_y0;
                             drawing_state <= Octant7;
                             when Octant7 =>
                                 --DrawPixel( x + cx, -y + cy);
+                            if (unsigned(cx) + unsigned(next_x0)) < unsigned(FRAME_WIDTH) and
+                               (unsigned(cx) + unsigned(next_x0)) >= to_unsigned(0, 16) and
+                               (unsigned(cy) -  unsigned(next_y0) ) < unsigned(FRAME_HEIGHT) and
+                               (unsigned(cy) -  unsigned(next_y0) ) >= to_unsigned(0, 16) then
                             avm_m0_address <= std_logic_vector(unsigned(buf_addr)
                                                                + unsigned(cx) + unsigned(next_x0)
                                                                + (unsigned(FRAME_WIDTH) * (unsigned(cy) -  unsigned(next_y0) )  )
                                                               );
+                            end if;
                             x0 <= next_x0;
                             y0 <= next_y0;
                             drawing_state <= Octant8;
                             when Octant8 =>
                                 --DrawPixel( y + cx, -x + cy);
+                            if (unsigned(cx) + unsigned(next_y0)) < unsigned(FRAME_WIDTH) and
+                               (unsigned(cx) + unsigned(next_y0)) >= to_unsigned(0, 16) and
+                               (unsigned(cy) -  unsigned(next_x0) ) < unsigned(FRAME_HEIGHT) and
+                               (unsigned(cy) -  unsigned(next_x0) ) >= to_unsigned(0, 16) then
                             avm_m0_address <= std_logic_vector(unsigned(buf_addr)
                                                                + unsigned(cx) + unsigned(next_y0)
                                                                + (unsigned(FRAME_WIDTH) * (unsigned(cy) -  unsigned(next_x0) )  )
                                                               );
+                            end if;
                             x0 <= next_x0;
                             y0 <= next_y0;
                             drawing_state <= MakeDecision;
@@ -216,14 +263,10 @@ BEGIN
 
                         end case;
 
-                        --Do a check here for the m0_address between buf_addr and (640,480) before we exit the process for a loop.    
---                        if  unsigned(avm_m0_address) < unsigned(buf_addr) then
---                             avm_m0_address <= buf_addr;
---                        end if;
 
---                        if unsigned(avm_m0_address) > unsigned(FRAME_HEIGHT + (FRAME_WIDTH * FRAME_HEIGHT)) then
- --                           avm_m0_address <= std_logic_vector(unsigned(FRAME_WIDTH * FRAME_HEIGHT));
-  --                      end if;
+
+
+
 
                     end if;
 				END IF;
