@@ -24,13 +24,50 @@
 #define HEIGHT_OFFSET 0x16
 #define BITS_OFFSET 0x1C
 
+short int copy_file(EmbeddedFileSystem *efsl, char *file_name, void *dest_addr)
+{
+	File file;
+	unsigned char buffer[CHUNK_SIZE];
+	unsigned int offset;
+	int bytes_read, status;
+	alt_sgdma_descriptor descriptor, next_descriptor;
+	alt_sgdma_dev *dev;
+
+	printf("Copying file %s\n", file_name);
+
+	if (file_fopen(&file, &(efsl->myFs), file_name, 'r') != 0)
+		return -1;
+
+	dev = alt_avalon_sgdma_open(SGDMA_0_NAME);
+	offset = 0;
+	while (offset < file.FileSize)
+	{
+		bytes_read = file_read(&file, CHUNK_SIZE, buffer);
+		alt_avalon_sgdma_construct_mem_to_mem_desc(
+				&descriptor,
+				&next_descriptor,
+				(alt_u32 *) buffer,
+				(alt_u32 *) (dest_addr + offset),
+				bytes_read,
+				0,
+				0);
+		status = alt_avalon_sgdma_do_sync_transfer(dev, &descriptor);
+		offset += bytes_read;
+	}
+
+	// Close the file
+	if (file_fclose(&file) != 0)
+		return -1;
+
+	return 0;
+}
+
 short int copy_bmp(EmbeddedFileSystem *efsl, char *file_name, void *dest_addr)
 {
 	File file;
 	unsigned char buffer[CHUNK_SIZE];
 	int pixdata_offset, bmp_width, bmp_height, i, bytes_read, status;
-	alt_sgdma_descriptor descriptor;
-	alt_sgdma_descriptor next_descriptor;
+	alt_sgdma_descriptor descriptor, next_descriptor;
 	alt_sgdma_dev *dev;
 
 	printf("Copying bitmap %s\n", file_name);
@@ -57,15 +94,29 @@ short int copy_bmp(EmbeddedFileSystem *efsl, char *file_name, void *dest_addr)
 		return -1;
 	}
 
+	if (bmp_width > CHUNK_SIZE) {
+		printf("Maximum BMP width exceeded: %d > %d.\n", bmp_width, CHUNK_SIZE);
+		file_fclose(&file);
+		return -1;
+	}
+
 	// Advance the file pointer to the beginning of the image
 	file_setpos(&file, pixdata_offset);
 
 	dev = alt_avalon_sgdma_open(SGDMA_0_NAME);
-	for (i = 0; i < bmp_width*bmp_height; i = i + CHUNK_SIZE) {
-		bytes_read = file_read(&file, CHUNK_SIZE, buffer);
-		alt_avalon_sgdma_construct_mem_to_mem_desc(&descriptor, &next_descriptor, (alt_u32 *) buffer, (alt_u32 *) dest_addr, bytes_read, 0, 0);
+	// Copy the bitmap, mirroring in the y-direction to match our coordinate system
+	for (i = bmp_height-1; i >= 0; --i)
+	{
+		bytes_read = file_read(&file, bmp_width, buffer);
+		alt_avalon_sgdma_construct_mem_to_mem_desc(
+				&descriptor,
+				&next_descriptor,
+				(alt_u32 *) buffer,
+				(alt_u32 *) (dest_addr + i*bmp_width),
+				bytes_read,
+				0,
+				0);
 		status = alt_avalon_sgdma_do_sync_transfer(dev, &descriptor);
-		dest_addr += CHUNK_SIZE;
 	}
 
 	// Close the file
@@ -96,6 +147,7 @@ void clear_screen()
 int main()
 {
 	EmbeddedFileSystem efsl;
+	unsigned short palette_buffer[256];
 
 	clear_screen();
 
@@ -115,9 +167,18 @@ int main()
 
 	while (1)
 	{
+		copy_file(&efsl, "fish.pal", (void *) COLOUR_PALETTE_SHIFTER_0_BASE);
 		copy_bmp(&efsl, "fish.bmp", (void *) SRAM_0_BASE);
+		copy_file(&efsl, "fish_a.pal", (void *) COLOUR_PALETTE_SHIFTER_0_BASE);
+		copy_bmp(&efsl, "fish_a.bmp", (void *) SRAM_0_BASE);
+		copy_file(&efsl, "igloo.pal", (void *) COLOUR_PALETTE_SHIFTER_0_BASE);
 		copy_bmp(&efsl, "igloo.bmp", (void *) SRAM_0_BASE);
+		copy_file(&efsl, "igloo_a.pal", (void *) COLOUR_PALETTE_SHIFTER_0_BASE);
+		copy_bmp(&efsl, "igloo_a.bmp", (void *) SRAM_0_BASE);
+		copy_file(&efsl, "stove.pal", (void *) COLOUR_PALETTE_SHIFTER_0_BASE);
 		copy_bmp(&efsl, "stove.bmp", (void *) SRAM_0_BASE);
+		copy_file(&efsl, "stove_a.pal", (void *) COLOUR_PALETTE_SHIFTER_0_BASE);
+		copy_bmp(&efsl, "stove_a.bmp", (void *) SRAM_0_BASE);
 	}
 
 	return 0;
