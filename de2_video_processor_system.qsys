@@ -220,19 +220,11 @@
          type = "String";
       }
    }
-   element ci_draw_line_0.s0
+   element ci_draw_circ_0.s0
    {
       datum baseAddress
       {
-         value = "4231840";
-         type = "String";
-      }
-   }
-   element genesis_0.s0
-   {
-      datum baseAddress
-      {
-         value = "4231968";
+         value = "4231776";
          type = "String";
       }
    }
@@ -244,11 +236,27 @@
          type = "String";
       }
    }
-   element ci_draw_circ_0.s0
+   element genesis_0.s0
    {
       datum baseAddress
       {
-         value = "4231776";
+         value = "4231968";
+         type = "String";
+      }
+   }
+   element ci_draw_line_0.s0
+   {
+      datum baseAddress
+      {
+         value = "4231840";
+         type = "String";
+      }
+   }
+   element onchip_memory2_0.s1
+   {
+      datum baseAddress
+      {
+         value = "4210688";
          type = "String";
       }
    }
@@ -270,14 +278,6 @@
       datum baseAddress
       {
          value = "4231904";
-         type = "String";
-      }
-   }
-   element onchip_memory2_0.s1
-   {
-      datum baseAddress
-      {
-         value = "4210688";
          type = "String";
       }
    }
@@ -430,7 +430,7 @@
  <parameter name="projectName">de2_video_processor.qpf</parameter>
  <parameter name="sopcBorderPoints" value="false" />
  <parameter name="systemHash" value="1" />
- <parameter name="timeStamp" value="1457841703993" />
+ <parameter name="timeStamp" value="1457905830966" />
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
  <interface name="clk" internal="clk_0.clk_in" type="clock" dir="end" />
@@ -1197,7 +1197,9 @@
   <parameter name="transferMode" value="MEMORY_TO_MEMORY" />
   <parameter name="writeBurstcountWidth" value="4" />
  </module>
- <module kind="ci_draw_circ" version="1.0" enabled="1" name="ci_draw_circ_0" />
+ <module kind="ci_draw_circ" version="1.0" enabled="1" name="ci_draw_circ_0">
+  <parameter name="AUTO_CLOCK_CLOCK_RATE" value="50000000" />
+ </module>
  <connection
    kind="avalon"
    version="12.1"
@@ -1977,5 +1979,37 @@
    end="sdram_0.s1">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x00800000" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="12.1"
+   start="sgdma_0.m_read"
+   end="colour_palette_shifter_0.paletteram">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00409000" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="12.1"
+   start="sgdma_0.m_write"
+   end="colour_palette_shifter_0.paletteram">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00409000" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="12.1"
+   start="sgdma_0.descriptor_read"
+   end="colour_palette_shifter_0.paletteram">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00409000" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="12.1"
+   start="sgdma_0.descriptor_write"
+   end="colour_palette_shifter_0.paletteram">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00409000" />
  </connection>
 </system>
