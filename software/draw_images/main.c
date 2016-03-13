@@ -24,6 +24,57 @@
 #define HEIGHT_OFFSET 0x16
 #define BITS_OFFSET 0x1C
 
+short int copy_bmp(EmbeddedFileSystem *efsl, char *file_name, void *dest_addr)
+{
+	File file;
+	unsigned char buffer[CHUNK_SIZE];
+	int pixdata_offset, bmp_width, bmp_height, i, bytes_read, status;
+	alt_sgdma_descriptor descriptor;
+	alt_sgdma_descriptor next_descriptor;
+	alt_sgdma_dev *dev;
+
+	printf("Copying bitmap %s\n", file_name);
+
+	if (file_fopen(&file, &(efsl->myFs), file_name, 'r') != 0)
+		return -1;
+
+	// Read the first block of the file to get metadata
+	file_setpos(&file, 0);
+	file_read(&file, CHUNK_SIZE, buffer);
+
+	// Read bitmap metadata
+	pixdata_offset = *((short *) (buffer + PIXDATA_OFFSET));
+	if (*(buffer + BMP_TYPE_OFFSET) != 40) {
+		alt_putstr("Unsupported BMP type.\n");
+		file_fclose(&file);
+		return -1;
+	}
+	bmp_width = *((short *) (buffer + WIDTH_OFFSET));
+	bmp_height = *((short *) (buffer + HEIGHT_OFFSET));
+	if (*((short *) (buffer + BITS_OFFSET)) != 8) {
+		alt_putstr("BMP must be 8 bits per pixel.\n");
+		file_fclose(&file);
+		return -1;
+	}
+
+	// Advance the file pointer to the beginning of the image
+	file_setpos(&file, pixdata_offset);
+
+	dev = alt_avalon_sgdma_open(SGDMA_0_NAME);
+	for (i = 0; i < bmp_width*bmp_height; i = i + CHUNK_SIZE) {
+		bytes_read = file_read(&file, CHUNK_SIZE, buffer);
+		alt_avalon_sgdma_construct_mem_to_mem_desc(&descriptor, &next_descriptor, (alt_u32 *) buffer, (alt_u32 *) dest_addr, bytes_read, 0, 0);
+		status = alt_avalon_sgdma_do_sync_transfer(dev, &descriptor);
+		dest_addr += CHUNK_SIZE;
+	}
+
+	// Close the file
+	if (file_fclose(&file) != 0)
+		return -1;
+
+	return 0;
+}
+
 
 void draw_rectangle(int x1, int y1, int x2, int y2, unsigned char color)
 {
@@ -45,11 +96,6 @@ void clear_screen()
 int main()
 {
 	EmbeddedFileSystem efsl;
-	File readFile;
-	unsigned char buffer[CHUNK_SIZE];
-	char *fileName = "fish.bmp";
-	int block_offset = 0;
-	int bmp_width, bmp_height, file_len, pixdata_offset, i, bytes_read;
 
 	clear_screen();
 
@@ -67,56 +113,11 @@ int main()
 	else
 		printf("...success!\n");
 
-	// Open the test file
-	printf("\nAttempting to open file: \"%s\"\n", fileName);
-
-	if (file_fopen(&readFile, &efsl.myFs, fileName, 'r') != 0)
+	while (1)
 	{
-		printf("Error:\tCould not open file\n");
-		return(1);
-	}
-	else
-	{
-		printf("Reading file...\n");
-	}
-
-	// Read the first block of the file
-	file_read(&readFile, CHUNK_SIZE, buffer);
-
-	// Bitmap metadata is in the first file chunk at fixed offsets.
-	pixdata_offset = *((short *) (buffer + PIXDATA_OFFSET));
-	if (*(buffer + BMP_TYPE_OFFSET) != 40) {
-		alt_putstr("Unsupported BMP type.\n");
-	}
-	bmp_width = *((int *) (buffer + WIDTH_OFFSET));
-	bmp_height = *((int *) (buffer + HEIGHT_OFFSET));
-	if (*((short *) (buffer + BITS_OFFSET)) != 8) {
-		alt_putstr("BMP must be 8 bits per pixel.\n");
-	}
-
-	file_setpos(&readFile, pixdata_offset);
-
-	unsigned char status;
-
-	alt_sgdma_descriptor descriptor;
-	alt_sgdma_descriptor next_descriptor;
-	alt_sgdma_dev *dev;
-	dev = alt_avalon_sgdma_open(SGDMA_0_NAME);
-	int target_addr = SRAM_0_BASE;
-
-	for (i = 0; i < 640*480; i = i + CHUNK_SIZE) {
-		printf("Writing at index %d\n", i);
-		bytes_read = file_read(&readFile, CHUNK_SIZE, buffer);
-		alt_avalon_sgdma_construct_mem_to_mem_desc(&descriptor, &next_descriptor, (alt_u32 *) buffer, (alt_u32 *) target_addr, bytes_read, 0, 0);
-		status = alt_avalon_sgdma_do_sync_transfer(dev, &descriptor);
-		target_addr += CHUNK_SIZE;
-	}
-
-	// Close the file
-	if (file_fclose(&readFile) != 0)
-	{
-		printf("Error:\tCould not close file properly\n");
-		return(1);
+		copy_bmp(&efsl, "fish.bmp", (void *) SRAM_0_BASE);
+		copy_bmp(&efsl, "igloo.bmp", (void *) SRAM_0_BASE);
+		copy_bmp(&efsl, "stove.bmp", (void *) SRAM_0_BASE);
 	}
 
 	return 0;
