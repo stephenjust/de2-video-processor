@@ -144,15 +144,40 @@ int main()
 		draw_rounded_rect(410, 10, 430, 90 , 3, 0,  2);
 		ALT_CI_CI_FRAME_DONE_0;
 
-		draw_rounded_rect(440, 10, 490, 90 , 0, 1,  3);
+		draw_rounded_rect(440, 10, 490, 90 , 1, 0,  3);
 		ALT_CI_CI_FRAME_DONE_0;
 
 		//Triangle
 		i = 0;
 		for (i ; i < 20; i++){
 			draw_line(200, 200, 300, 270+i, 1);
-					ALT_CI_CI_FRAME_DONE_0;
 		}
+		ALT_CI_CI_FRAME_DONE_0;
+
+		//Triangles to the left of the donut.
+		draw_rectangle(30, 300, 130, 400, 4);
+		ALT_CI_CI_FRAME_DONE_0;
+
+
+		i = 0;
+
+		int tx1 = 80;
+		int ty1 = 320;
+
+		int tx2 = 60;
+		int ty2 = 350;
+
+		int tx3 = 125;
+		int ty3 = 350;
+
+		draw_triangle (80, 320, 60, 350, 125, 350, 1, 6);
+		draw_triangle (80, 380, 60, 350, 125, 350, 1, 7);
+
+		draw_triangle (125, 350, 80, 380, 205, 385, 1,11);
+		draw_triangle (125, 350, 80, 380, 205, 385, 0,15);
+
+
+		ALT_CI_CI_FRAME_DONE_0;
 
 		alt_putstr("Done \n");
 

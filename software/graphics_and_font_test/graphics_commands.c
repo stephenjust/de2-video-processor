@@ -103,6 +103,10 @@ void printPalette(int n){
 
 }
 
+void draw_pixel(int x1, int y1, unsigned char color){
+	IOWR_8DIRECT(SDRAM_0_BASE, SDRAM_VIDEO_OFFSET + y1 * 640 + x1, color);
+}
+
 
 
 void draw_rectangle(int x1, int y1, int x2, int y2, unsigned char color)
@@ -356,14 +360,16 @@ void draw_letter(int y1, int x1, int color, int pixel_size, char* letter){
     int x,y;
     int set;
     int mask;
-    for (x=0; x < 8; x++) {
-        for (y=0; y < 8; y++) {
+    for (x=0; x < 8; x++) { //++x might be faster?
+        for (y=0; y < 8; y++) { //++y might be faster??
             set = letter[x] & 1 << y;
             	if (set) {
             		if (pixel_size > 1) {
             			draw_rectangle(y1 + y*pixel_size, x1 + x*pixel_size, y1 + (y*pixel_size)+pixel_size, x1 + (x*pixel_size)+pixel_size, color);
             		} else {
-            			draw_rectangle(y1 + y, x1 + x, y1 + y, x1 + x, color);
+            			//Drawing individual pixels faster than drawing a rectangle?
+            			//draw_rectangle(y1 + y, x1 + x, y1 + y, x1 + x, color);
+            			draw_pixel(y, x, color);
             		}
             	}
             //alt_printf("%c", set ? 'X' : ' ');
@@ -510,7 +516,149 @@ void draw_rounded_rect(int x1, int y1, int x2, int y2, int radius, int filled, u
 //If no flat sides, then need to plot 2 triangles. Make a flat one, then recurse into self :)
 
 
+void draw_triangle (int x1, int y1, int x2, int y2, int x3, int y3, int filled, int color){
 
+	if (filled == 0) {
+		//Easiest base case
+		draw_line(x1, y1, x2, y2, color);
+		draw_line(x2, y2, x3, y3, color);
+		draw_line(x1, y1, x3, y3, color);
+	} else {
+
+		//0 for no flat sides. 1 for flat side in x direction opposite point 1, -1 for flat
+		//side in y direction opposite point 1, and so on.
+		int flatside = 0;
+		int i = 0;
+		int t; //temp.
+
+		//Also re-arrange the assigned points so that the for loops work.
+		if (y2 == y3){
+			flatside = 1; //Sweep from 1 to (x[2..3], y2)
+
+			if (x2 > x3){//Need to re-arrange points so x2<x3.
+				t = x2;
+				x2 = x3; // x2 <= x3.
+				x3 = t;
+			}
+		}
+		if (x2 == y3){
+			flatside = -1; //Sweep from 1 to (x2, y[2..3])
+
+			if (y2 > y3) { //Swap so y2 < y3
+				t = y2;	y2 = y3; y3 = t;
+			}
+		}
+		if (y1 == y3){
+			flatside = 2; //Sweep from 2 to (x[1..3], y1)
+
+			if (x1 > x3){//Need to re-arrange points so x1<x3.
+				t = x1;	x1 = x3; /* x1 <= x3. */ x3 = t;
+			}
+		}
+		if (x1 == x3){
+			flatside = -2; //Sweep from 2 to (x1, y[1..3])
+			if (y1 > y3) { //Swap so y1 < y3
+				t = y1;	y1 = y3; y3 = t;
+			}
+		}
+		if (y1 == y2){
+			flatside = 3; //Sweep from 3 to (x[1..2], y1)
+			if (x1 > x2){//Need to re-arrange points so x1<x2.
+				t = x1;	x1 = x2; /* x1 <= x2. */ x2 = t;
+			}
+		}
+		if (x1 == x2){
+			flatside = -3; //Sweep from 3 to (x1, y[1..2])
+			if (y1 > y2) { //Swap so y1 < y2
+				t = y1;	y1 = y2; y2 = t;
+			}
+		}
+
+		if (flatside == 1){
+			for (i = x2 ; i < x3; i++){
+				draw_line(x1, y1, i, y2, color);
+			}
+			return;
+		}
+		if (flatside == -1){
+			for (i = y2 ; i < y3; i++){
+				draw_line(x1, y1, x2, i, color);
+			}
+			return;
+		}
+		if (flatside == 2){
+			for (i = y1 ; i < y3; i++){
+				draw_line(x2, y2, i, y3, color);
+			}
+			return;
+		}
+		if (flatside == -2){
+			for (i = y1 ; i < y3; i++){
+				draw_line(x2, y2, x1, i, color);
+			}
+			return;
+		}
+		if (flatside == 3) {
+			for (i = x1 ; i < x2; i++){
+				draw_line(x3, y3, i, y2, color);
+			}
+			return;
+		}
+		if (flatside == -3){
+			for (i = x1 ; i < y2; i++){
+				draw_line(x3, y3, y1, i, color);
+			}
+			return;
+		}
+
+		if (flatside == 0){
+			//Now we have to split up the triangle into 2, calculate the bounds of the sweeps.
+
+			//First, re-arrange the points to the top most is 1, left most is 2, right most is 3.
+			int tx1;
+			int ty1;
+
+			int tx2;
+			int ty2;
+
+			int tx3;
+			int ty3;
+
+			if (y1 < y2 && y1 < y3){ tx1 = x1; ty1 = y1; }
+			if (y2 < y1 && y2 < y3){ tx1 = x2; ty1 = y2; }
+			if (y3 < y1 && y3 < y2){ tx1 = x3; ty1 = y3; }
+
+			if (x1 < x2 && x1 < x3){ tx2 = x1; ty2 = y1; }
+			if (x2 < x1 && x2 < x3){ tx2 = x2; ty2 = y2; }
+			if (x3 < x2 && x3 < x1){ tx2 = x3; ty2 = y3; }
+
+			if (x1 > x2 && x1 > x3){ tx3 = x1; ty3 = y1; }
+			if (x2 > x1 && x2 > x3){ tx3 = x2; ty3 = y2; }
+			if (x3 > x2 && x3 > x1){ tx3 = x3; ty3 = y3; }
+
+
+			//Next imagine a vertical line dropped down from 1, stopping where it intersects with
+			//the 2->3 line. Calculate that intersection, then plot 2 triangles.
+
+			int dropdowny = ty1;
+
+			int dy_offset = (ty3 - ty2) / (tx1 - tx2) ;
+
+			dropdowny = dropdowny + dy_offset + (ty2 < ty3) ? ty2 : ty3;
+
+			//left
+			draw_triangle (tx1, ty1, tx2, ty2, tx1, dropdowny, filled, color);
+			//right
+			draw_triangle (tx1, ty1, tx3, ty3, tx1, dropdowny, filled, color+1);
+
+
+
+		}
+
+
+	}
+
+}
 
 
 
