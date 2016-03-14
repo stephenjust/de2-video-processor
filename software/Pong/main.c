@@ -9,6 +9,8 @@
 
 #define PALETTE_SIZE 256
 #define SDRAM_VIDEO_OFFSET 0x300000
+#define COLLSION_COUNT 10
+#define MAX_BALL_SPEED 10
 
 struct Paddle{
 	int x;
@@ -67,65 +69,13 @@ int flip_sign(int x)
 
 struct Ball speedup_reflection(struct Ball ball)
 {
-	ball.velocity_x = (abs(ball.velocity_x) + 1) * flip_sign(ball.velocity_x);
+	if (ball.velocity_x < MAX_BALL_SPEED)
+		ball.velocity_x = (abs(ball.velocity_x) + 1) * flip_sign(ball.velocity_x);
+	else
+		ball.velocity_x = ( abs(ball.velocity_x) ) * flip_sign(ball.velocity_x);
 	ball.velocity_y = -abs(ball.velocity_y);
 	return ball;
 }
-//void draw_rectangle(int x1, int y1, int x2, int y2, unsigned char color)
-//{
-//	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 0, SDRAM_0_BASE + SDRAM_VIDEO_OFFSET); // Frame address
-//	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 4, x1); // X1
-//	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 8, y1); // Y1
-//	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 12, x2); // X2
-//	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 16, y2); // Y2
-//	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 20, color); // Color
-//	ALT_CI_CI_DRAW_RECT_0;
-//}
-
-//void draw_line(int x1, int y1, int x2, int y2, unsigned char color)
-//{
-//	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 0, SDRAM_0_BASE + SDRAM_VIDEO_OFFSET); // Frame address
-//	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 4, x1); // X1
-//	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 8, y1); // Y1
-//	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 12, x2); // X2
-//	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 16, y2); // Y2
-//	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 20, color); // Color
-//	ALT_CI_CI_DRAW_LINE_0;
-//}
-
-//void draw_ball(int x, int y)
-//{
-//	draw_rectangle(x-1, y+3, x+1, y+3, 0xFF);
-//	draw_rectangle(x-2, y+2, x+2, y+2, 0xFF);
-//	draw_rectangle(x-3, y-1, x+3, y+1, 0xFF);
-//	draw_rectangle(x-2, y-2, x+2, y-2, 0xFF);
-//	draw_rectangle(x-1, y-3, x+1, y-3, 0xFF);
-//}
-//
-//void draw_paddle(int x, int y)
-//{
-//	draw_rectangle(x-5, y-18, x+5, y+18, 0xFF);
-//}
-//
-//void draw_field()
-//{
-//	//black background
-//	draw_rectangle(0, 0, 640-1, 480-1, 0x00);
-//	//Top and bottom white walls
-//	draw_rectangle(0, 0, 640-1, 10, 0xFF);
-//	draw_rectangle(0, 480-11, 640-1, 480-1, 0xFF);
-//	//dashed line down center court
-//	int i;
-//	for (i = 0; i < 16; i++){
-//		draw_rectangle(317, i*30 + 13, 321, i*30 + 17, 0xFF);
-//	}
-//}
-
-//void clear_screen()
-//{
-//	draw_rectangle(0, 0, 640-1, 480-1, 0x00);
-//	ALT_CI_CI_FRAME_DONE_0;
-//}
 
 int main()
 {
@@ -290,7 +240,7 @@ int main()
 
 		/*ball*/
 		/* Test if ball is touching a paddle */
-		/* TODO: Account for paddles hitting the ball backwards
+		/*
 		 * TODO: set upper limit on ball speeds
 		 */
 		if (collision_counter != 0)
@@ -300,37 +250,37 @@ int main()
 				&& paddle1.y + 6 > ball.y && paddle1.y -6 < ball.y)
 		{
 			ball.velocity_x *= -1;
-			collision_counter = 4;
+			collision_counter = COLLSION_COUNT;
 		}
 		if (paddle1.x - 10 < ball.x && paddle1.x + 10 > ball.x && collision_counter == 0
 				&& paddle1.y + 18 > ball.y && paddle1.y + 7 < ball.y)
 		{
 			ball = speedup_reflection(ball);
-			collision_counter = 4;
+			collision_counter = COLLSION_COUNT;
 		}
 		if (paddle1.x - 10 < ball.x && paddle1.x + 10 > ball.x && collision_counter == 0
 				&& paddle1.y -7 > ball.y && paddle1.y -18 < ball.y)
 		{
 			ball = speedup_reflection(ball);
-			collision_counter = 4;
+			collision_counter = COLLSION_COUNT;
 		}
 		if (paddle2.x + 10 > ball.x && paddle2.x - 10 < ball.x && collision_counter == 0
 				&& paddle2.y + 6 > ball.y && paddle2.y -6 < ball.y)
 		{
 			ball.velocity_x *= -1;
-			collision_counter = 4;
+			collision_counter = COLLSION_COUNT;
 		}
 		if (paddle2.x + 10 > ball.x && paddle2.x - 10 < ball.x && collision_counter == 0
 				&& paddle2.y + 18 > ball.y && paddle2.y + 7 < ball.y)
 		{
 			ball = speedup_reflection(ball);
-			collision_counter = 4;
+			collision_counter = COLLSION_COUNT;
 		}
 		if (paddle2.x + 10 > ball.x && paddle2.x - 10 < ball.x && collision_counter == 0
 				&& paddle2.y -7 > ball.y && paddle2.y -18 < ball.y)
 		{
 			ball = speedup_reflection(ball);
-			collision_counter = 4;
+			collision_counter = COLLSION_COUNT;
 		}
 
 		/*Test if ball is touching top/bottom wall*/
@@ -379,10 +329,10 @@ int main()
 		/* Scores */
 		snprintf(score1, 3, "%d", p1_score);
 		snprintf(score2, 3, "%d", p2_score);
-		print2screen(200, 40, 0xFF, 1, score1);
-		print2screen(440, 40, 0xFF, 1, score2);
+		//print2screen(200, 40, 0xFF, 1, score1);
+		//print2screen(440, 40, 0xFF, 1, score2);
 
-		//print2screen(200, 200, 0xFF, 1, "Slowdown for Testing");
+		print2screen(200, 200, 0xFF, 1, "Slowdown for Testing");
 
 		/* Draw markers to determine where ball is going */
 		if (toggle_raytracing){
