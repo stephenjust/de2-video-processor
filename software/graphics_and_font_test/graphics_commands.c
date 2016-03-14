@@ -407,18 +407,27 @@ void draw_circle (int cx, int cy, int radius, int color, int filled){
 		IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 12, radius); // Radius
 		IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 16, color); // Color
 		ALT_CI_CI_DRAW_CIRC_0;
-	}else {//Interference pattern causes trippy effect. if filled == 2.
+	}
+
+	if (filled < 0) {//Interference pattern causes trippy effect. Get the effect by setting filled to be <0.
 		int r = 0;
 		for (r = 1; r < radius; r++) {
 			IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 0, SDRAM_0_BASE + SDRAM_VIDEO_OFFSET); // Frame address
 			IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 4, cx); // CX
 			IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 8, cy); // CY
-			IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 12, r*filled); // Radius
+			IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 12, r*(-1)*filled); // Radius
 			IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 16, color); // Color
 			ALT_CI_CI_DRAW_CIRC_0;
 		}
 	}
+
+	if (filled == 1) {
+		//Call the special filled circle drawer hardware.
+	}
+
 }
+
+//Triangle command is just a bunch of lines from a point.
 
 
 
