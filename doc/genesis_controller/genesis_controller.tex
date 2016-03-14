@@ -101,12 +101,18 @@ in Figure~\ref{fig:schematic}.
   \label{fig:schematic}
 \end{figure}
 
-This tutorial assumes there is a functional system with a \texttt{VGA\_VS}
-signal available to act as a clocked source to drive the controller at 60Hz. 
+In a typical video game system, you might want to trigger the Genesis controller
+from a 60Hz pulse, such as a video VSync signal. However, to simplify this demo,
+there is a simple process in the VHDL top-level file to generate a pulse
+every 50ms to trigger the Genesis controller block.
 
 \subsection{Qsys}
 
-In order to use a genesis controller, a custom component must be created in Qsys.
+In order to use a genesis controller, a custom component must be created in
+Qsys. This component is provided in the companion code to this application note,
+found in the \texttt{ip} directory. The following instructions detail how you
+might recreate this block, and set up a Qsys system to use it. The provided demo
+system is set up slightly differently, to use LEDs as an output.
 
 \begin{enumerate}
   \item Name the component \texttt{genesis}
@@ -158,15 +164,11 @@ In order to use a genesis controller, a custom component must be created in Qsys
     \end{figure}
 
 
-  \item Add the 16x2 character display from the university program
-
   \item Regenerate base addresses in the event of conflicts.
 
 \end{enumerate}
 
 \subsection{Quartus}
-
-FIXME: We should trigger off a timer instead of VGA!
 
 The Genesis controllers are connected to the DE2 via one of the GPIO ports. In
 our system, we used \texttt{GPIO\_1}. To ensure correct controller behaviour,
@@ -183,8 +185,7 @@ the ports similar to the ones shown in Listing~\ref{lst:comp_port} within its
 component declaration.
 
 \begin{lstlisting}[language={vhdl},caption={Qsys System Ports for Genesis Controller},label={lst:comp_port}]
-  video_vga_controller_0_external_interface_VS : out std_logic; -- VS
-  genesis_0_conduit_end_vsync  : in    std_logic  := 'X';             -- vsync
+  genesis_0_conduit_end_vsync  : in    std_logic  := 'X';             -- trigger signal, usually vsync
   genesis_0_conduit_end_dpad_up_input1            : in    std_logic  := 'X';             -- dpad_up_input1
   genesis_0_conduit_end_dpad_down_input1          : in    std_logic  := 'X';             -- dpad_down_input1
   genesis_0_conduit_end_dpad_left_input1          : in    std_logic  := 'X';             -- dpad_left_input1
@@ -207,7 +208,7 @@ interface PCB is shown in Listing~\ref{lst:port_map}.
 
 \begin{lstlisting}[language={vhdl},caption={Port Map Configuration},label={lst:port_map}]
   video_vga_controller_0_external_interface_VS => VGA_VS,
-  genesis_0_conduit_end_vsync  => VGA_VS,
+  genesis_0_conduit_end_vsync  => genesis_trigger,
   genesis_0_conduit_end_dpad_up_input1            => GPIO_1(9),
   genesis_0_conduit_end_dpad_down_input1          => GPIO_1(13),
   genesis_0_conduit_end_dpad_left_input1          => GPIO_1(17),
@@ -228,12 +229,10 @@ Compile the project to ensure it is working.
 
 \subsection{Eclipse}
 
-\begin{enumerate}
-  \item Create a new Nios II application and BSP from template (HelloWorld / MicroCOS)
-  \item Replace the contents of the HelloWorld.c with gen\_demo.c
-  \item Running the application on the board will display which button 
-is pressed from either controller on the lines of the LCD.
-\end{enumerate}
+A sample workspace is included in the companion code to read the Genesis
+controllers connected to the system, and output to the red LEDs on the DE2.
+This is located in the \texttt{software} directory of the companion code
+package.
 
 \section{Reading from the Controllers}
 
