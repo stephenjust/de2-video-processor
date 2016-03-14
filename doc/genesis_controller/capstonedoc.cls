@@ -4,11 +4,11 @@
 \ProvidesClass{capstonedoc}[2016/01/23 Capstone Documentation Class]
 
 % Inherit from article class
-\LoadClass[twocolumn]{article}
+\LoadClass[onecolumn]{article}
 % Handle class options
-\DeclareOption{onecolumn}{\OptionNotUsed}
-\DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
-\ProcessOptions\relax
+%\DeclareOption{onecolumn}{\OptionNotUsed}
+%\DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
+%\ProcessOptions\relax
 
 \usepackage{ragged2e}
 \usepackage{color}
@@ -34,24 +34,26 @@
 % Macro to generate title page header
 % (Override macro in article class)
 \renewcommand{\maketitle}{
-  \twocolumn[%
-    {
-      \fontsize{1.2cm}{1.5cm}%
-      \fontfamily{phv}%
-      \fontseries{b}%
-      \fontshape{sl}%
-      \selectfont\normalcolor%
-      \begin{flushleft}%
-        \@title%
-      \end{flushleft}%
-    }
-    {
+  {
+    \fontsize{1.2cm}{1.5cm}%
+    \fontfamily{phv}%
+    \fontseries{b}%
+    \fontshape{sl}%
+    \selectfont\normalcolor%
+    \begin{flushleft}%
       \noindent%
-      \@author%
-      \hfill%
-      \@date%
-    }
-    \noindent\rule{\textwidth}{0.5pt}
-    \vspace{5mm}
-  ]
+      \@title%
+    \end{flushleft}%
+  }
+  {
+    \fontfamily{phv}%
+    \fontseries{b}%
+    \fontshape{sl}%
+    \noindent%
+    \@author%
+    \hfill%
+    \@date%
+  }
+  \noindent\rule{\textwidth}{0.5pt}
+  \vspace{5mm}
 }
