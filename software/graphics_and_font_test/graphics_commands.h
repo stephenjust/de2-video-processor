@@ -33,6 +33,8 @@ void printPalette(int n);
 void draw_rectangle(int x1, int y1, int x2, int y2, unsigned char color);
 
 void draw_line(int x1, int y1, int x2, int y2, unsigned char color);
+void draw_circle (int cx, int cy, int radius, int color, int filled);
+void draw_rounded_rect(int x1, int y1, int x2, int y2, int radius, int filled, unsigned char color);
 
 
 void clear_screen();
@@ -44,7 +46,7 @@ extern char font8x8_basic[][8];
 
 void draw_letter(int y1, int x1, int color, int pixel_size, char* letter);
 void print2screen(int x1, int y1, int color, int pixel_size, char* string);
-void draw_circle (int cx, int cy, int radius, int color, int filled);
+
 
 
 #endif /* __GRAPHICSCMDS_H_ */

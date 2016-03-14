@@ -422,12 +422,92 @@ void draw_circle (int cx, int cy, int radius, int color, int filled){
 	}
 
 	if (filled == 1) {
-		//Call the special filled circle drawer hardware.
+		//Building filled circles in hardware causes a brain stack overflow with how deep and complicated the state machine is.
+		//What we need instead is draw a circle, then in software, call the line algorithm a bunch of times to draw a line from
+		//The center to the edges of the circle. It's not as fast as doing it all in hardware, but it should still be relatively
+		//fast since we're not plotting individual pixels in C.
+		IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 0, SDRAM_0_BASE + SDRAM_VIDEO_OFFSET); // Frame address
+		IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 4, cx); // CX
+		IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 8, cy); // CY
+		IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 12, radius); // Radius
+		IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 16, color); // Color
+		ALT_CI_CI_DRAW_CIRC_0;
+
+		//How to draw the filler lines:
+		//http://stackoverflow.com/questions/5607946/bresenhams-circle-algorithm-filling-question
+		//p.x -> cx
+		//p.y -> cy
+		//Stack overflow code has x, y reversed.
+//		( cx+x, cy+y ) to ( cx-x, cy+y )
+//		( cx+y, cy+x ) to ( cx-y, cy+x )
+//		( cx+x, cy-y ) to ( cx-x, cy-y )
+//		( cx+y, cy-x ) to ( cx-y, cy-x )
+
+		//Bresenham's Circle Drawing Algorithm, modified.
+		  int x = radius;
+		  int y = 0;
+		  int decisionOver2 = 1 - x;   // Decision criterion divided by 2 evaluated at x=r, y=0
+
+		  while( y <= x )
+		  {
+			draw_line(cx+x, cy+y, cx-x, cy+y, color);
+			draw_line(cx+y, cy+x, cx-y, cy+x, color);
+			draw_line(cx+x, cy-y, cx-x, cy-y, color);
+			draw_line(cx+y, cy-x, cx-y, cy-x, color);
+
+		    y++;
+		    if (decisionOver2<=0)
+		    {
+		      decisionOver2 += 2 * y + 1;   // Change in decision criterion for y -> y+1
+		    }
+		    else
+		    {
+		      x--;
+		      decisionOver2 += 2 * (y - x) + 1;   // Change for y -> y+1, x -> x-1
+		    }
+		  }
 	}
+}
+
+//Rounded Rectangle (filled)
+void draw_rounded_rect(int x1, int y1, int x2, int y2, int radius, int filled, unsigned char color){
+
+	if (radius == 0){
+		//Regular unfilled rectangle. Draw with 4 lines.
+		draw_line(x1, y1, x2, y1, color); //Top
+		draw_line(x1, y1, x1, y2, color); //Left
+		draw_line(x2, y1, x2, y2, color); //Right
+		draw_line(x1, y2, x2, y2, color); //Bottom
+
+		if (filled == 1) {
+			draw_rectangle(x1, y1, x2, y1, color);
+		}
+	} else {
+		draw_circle (x1 + radius, y1 + radius, radius, color, 1); //TL
+		draw_circle (x2 - radius, y1 + radius, radius, color, 1); //TR
+		draw_circle (x1 + radius, y2 - radius, radius, color, 1); //BL
+		draw_circle (x2 - radius, y2 - radius, radius, color, 1); //BR
+
+		if (filled == 1){
+			draw_rectangle(x1 + radius, y1 + radius, x2 - radius, y2 - radius, color); //Center
+		}
+
+		draw_rectangle(x1 + radius, y1, x2 - radius, y1 + radius, color); //top
+		draw_rectangle(x1, y1 + radius, x1 + radius, y2 - radius, color); //left
+		draw_rectangle(x2 - radius, y1 + radius, x2, y2 - radius, color); //right
+		draw_rectangle(x1 + radius, y2 - radius, x2 - radius, y2, color); //bottom
+	}
+
 
 }
 
+
 //Triangle command is just a bunch of lines from a point.
+
+//If bottom is flat line, then just do one line from top, along the bottom. Optimization.
+//if bottom is not flat, then look at coordinates and find a flat line. For loop over that thing from
+//the other line.
+//If no flat sides, then need to plot 2 triangles. Make a flat one, then recurse into self :)
 
 
 

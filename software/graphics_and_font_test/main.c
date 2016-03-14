@@ -128,6 +128,25 @@ int main()
 		draw_circle (640-20, 480 - 20, 30, 9, -2);
 		ALT_CI_CI_FRAME_DONE_0;
 
+
+		//Draw a completely filled circle.
+		draw_circle (480, 400, 20, 3, 1);
+		ALT_CI_CI_FRAME_DONE_0;
+
+
+		//Draw a rounded Rect
+
+		//draw_rounded_rect(x1, y1, x2, y2, radius, filled,  color);
+
+		draw_rounded_rect(350, 10, 400, 90 , 3, 1,  1);
+		ALT_CI_CI_FRAME_DONE_0;
+
+		draw_rounded_rect(410, 10, 430, 90 , 3, 0,  2);
+		ALT_CI_CI_FRAME_DONE_0;
+
+		draw_rounded_rect(440, 10, 490, 90 , 0, 1,  3);
+		ALT_CI_CI_FRAME_DONE_0;
+
 		//Triangle
 		i = 0;
 		for (i ; i < 20; i++){
