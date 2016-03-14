@@ -2,18 +2,28 @@
 
 % Document Info
 \title{Sega Genesis Controller Interfacing}
-\date{2016-01-23}
-\author{Stephen Just}
+\date{2016-03-13}
+\author{Mason Strong, Stephen Just}
 
 \usepackage{cite}
 \usepackage[hyphens]{url}
+
+\usepackage{wrapfig}
 \usepackage{graphicx}
 \graphicspath{ {images/} }
+
+\usepackage{caption}
 
 \begin{document}
 \maketitle
 
 %Document body
+
+\begin{wrapfigure}{r}{0.4\textwidth}
+  \includegraphics[width=0.35\textwidth]{genesis_controller}
+  \caption{Genesis Controller}
+  \label{fig:controller_photo}
+\end{wrapfigure}
 
 \section{Introduction}
 The Sega Genesis was an old 16-bit game console that was released in North
@@ -46,11 +56,6 @@ console or other device. The pins on this connector are configured as follows:
   9   & Start button      & C button           \\
 \end{tabular}
 \vspace{5mm}
-
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=6cm]{genesis_controller}
-\end{figure}
 
 While the controller was designed for +5 Volts for power, because of its simple
 design, it is possible to determine that it is actually capable of 2 - 6 Volts.
@@ -87,96 +92,151 @@ Ensure that you are in possession of a three-button genesis controller, and a
 corresponding adapter board to interface the DB9 connector with the appropriate 
 GPIO pins on the DE2. Should an adapter board be unavailable, a 40-pin ribbon 
 cable breadboarded with a male DB9 connector according to the pinout described 
-in [SCHEMATIC_IMAGE]. 
+in [SCHEMATIC\_IMAGE]. 
 
-This tutorial assumes there is a functional system with a VGA_VS signal available 
-to act as a clocked source to drive the controller at 60Hz. 
+This tutorial assumes there is a functional system with a \texttt{VGA\_VS}
+signal available to act as a clocked source to drive the controller at 60Hz. 
 
-Qsys:
+\subsection{Qsys}
+
 In order to use a genesis controller, a custom component must be created in Qsys.
-1. Name the component "genesis"
-2. Provide "custom_controller.vhd" as the synthesis file
-3. Setup the signals according to the following:
-\includegraphics{fig1}
-4. Configure the remaining sections as follows:
-\includegraphics{fig2}
-\includegraphics{fig3}
-\includegraphics{fig4}
-5. Add the custom component. Connect clock, s0 and reset appropriately.
-Ensure that conduit_end is exported properly.
-\includegraphics{fig5}
 
-[NEED TO DOUBLE CHECK THIS]
-6. Add the 16x2 character display from the university program
+\begin{enumerate}
+  \item Name the component \texttt{genesis}
+  \item Provide \texttt{custom\_controller.vhd} as the synthesis file
+  \item Setup the signals as shown below in figure~\ref{fig:qsys_signals}:
 
-7. Regenerate base addresses in the event of conflicts.
+    \begin{figure}[h]
+      \centering
+      \includegraphics[width=5cm]{fig1}
+      \caption{Genesis Component Signals}
+      \label{fig:qsys_signals}
+    \end{figure}
+
+  \item Configure the component interfaces as in figures
+    \ref{fig:qsys_signals2}, \ref{fig:qsys_signals3}, and
+    \ref{fig:qsys_signals4}:
+
+    \begin{figure}[h]
+      \centering
+      \includegraphics[width=5.5cm]{fig2}
+      \caption{Genesis Component Signals}
+      \label{fig:qsys_signals2}
+    \end{figure}
+
+    \begin{figure}[h]
+      \centering
+      \includegraphics[width=5.5cm]{fig3}
+      \caption{Genesis Component Signals}
+      \label{fig:qsys_signals3}
+    \end{figure}
+
+    \begin{figure}[h]
+      \centering
+      \includegraphics[width=5.5cm]{fig4}
+      \caption{Genesis Component Signals}
+      \label{fig:qsys_signals4}
+    \end{figure}
+
+  \item Add the custom component to your system. Connect \texttt{clock},
+    \texttt{s0}, and \texttt{reset} appropriately.
+    Ensure that \texttt{conduit\_end} is exported properly. An example of this
+    configuration is shown in figure~\ref{fig:qsys_signals5}.
+
+    \begin{figure}[h]
+      \centering
+      \includegraphics[width=5.5cm]{fig5}
+      \caption{Genesis Component Signals}
+      \label{fig:qsys_signals5}
+    \end{figure}
 
 
-Quartus:
-The following are required in the toplevel of your quartus entity portmap:
+  \item Add the 16x2 character display from the university program
 
-\begin{lstlisting}[language={vhdl},float]
-	VGA_VS : buffer std_logic;
-	GPIO_0 : inout std_logic_vector (35 downto 0) := (others => 'Z');
+  \item Regenerate base addresses in the event of conflicts.
+
+\end{enumerate}
+
+\subsection{Quartus}
+
+FIXME: We should trigger off a timer instead of VGA!
+
+The Genesis controllers are connected to the DE2 via one of the GPIO ports. In
+our system, we used \texttt{GPIO\_1}. To ensure correct controller behaviour,
+the GPIO connector should be configured as high-impedance by default, as is
+shown in Listing~\ref{lst:tl_port}.
+
+\begin{lstlisting}[language={vhdl},caption={Entity Port for Genesis Controllers},label={lst:tl_port}]
+  VGA_VS : buffer std_logic;
+  GPIO_1 : inout std_logic_vector (35 downto 0) := (others => 'Z');
 \end{lstlisting}
 
-within the architecture portmap:
+The Qsys system containing the Genesis controller interface component includes
+the ports similar to the ones shown in Listing~\ref{lst:comp_port} within its
+component declaration.
 
-\begin{lstlisting}[language={vhdl},float]
-	video_vga_controller_0_external_interface_VS : out std_logic; -- VS
-	genesis_0_conduit_end_vsync  : in    std_logic  := 'X';             -- vsync
-	genesis_0_conduit_end_dpad_up_input1            : in    std_logic  := 'X';             -- dpad_up_input1
-	genesis_0_conduit_end_dpad_down_input1          : in    std_logic  := 'X';             -- dpad_down_input1
-	genesis_0_conduit_end_dpad_left_input1          : in    std_logic  := 'X';             -- dpad_left_input1
-	genesis_0_conduit_end_dpad_right_input1         : in    std_logic  := 'X';             -- dpad_right_input1
-	genesis_0_conduit_end_select_input1             : out   std_logic;                     -- select_input1
-	genesis_0_conduit_end_start_c_input1            : in    std_logic  := 'X';             -- start_c_input1
-	genesis_0_conduit_end_ab_input1                 : in    std_logic  := 'X';             -- ab_input1
-	genesis_0_conduit_end_dpad_up_input2            : in    std_logic  := 'X';             -- dpad_up_input2
-	genesis_0_conduit_end_dpad_down_input2          : in    std_logic  := 'X';             -- dpad_down_input2
-	genesis_0_conduit_end_dpad_left_input2          : in    std_logic  := 'X';             -- dpad_left_input2
-	genesis_0_conduit_end_dpad_right_input2         : in    std_logic  := 'X';             -- dpad_right_input2
-	genesis_0_conduit_end_select_input2             : out   std_logic;                     -- select_input2
-	genesis_0_conduit_end_start_c_input2            : in    std_logic  := 'X';             -- start_c_input2
-	genesis_0_conduit_end_ab_input2                 : in    std_logic  := 'X';             -- ab_input2
+\begin{lstlisting}[language={vhdl},caption={Qsys System Ports for Genesis Controller},label={lst:comp_port}]
+  video_vga_controller_0_external_interface_VS : out std_logic; -- VS
+  genesis_0_conduit_end_vsync  : in    std_logic  := 'X';             -- vsync
+  genesis_0_conduit_end_dpad_up_input1            : in    std_logic  := 'X';             -- dpad_up_input1
+  genesis_0_conduit_end_dpad_down_input1          : in    std_logic  := 'X';             -- dpad_down_input1
+  genesis_0_conduit_end_dpad_left_input1          : in    std_logic  := 'X';             -- dpad_left_input1
+  genesis_0_conduit_end_dpad_right_input1         : in    std_logic  := 'X';             -- dpad_right_input1
+  genesis_0_conduit_end_select_input1             : out   std_logic;                     -- select_input1
+  genesis_0_conduit_end_start_c_input1            : in    std_logic  := 'X';             -- start_c_input1
+  genesis_0_conduit_end_ab_input1                 : in    std_logic  := 'X';             -- ab_input1
+  genesis_0_conduit_end_dpad_up_input2            : in    std_logic  := 'X';             -- dpad_up_input2
+  genesis_0_conduit_end_dpad_down_input2          : in    std_logic  := 'X';             -- dpad_down_input2
+  genesis_0_conduit_end_dpad_left_input2          : in    std_logic  := 'X';             -- dpad_left_input2
+  genesis_0_conduit_end_dpad_right_input2         : in    std_logic  := 'X';             -- dpad_right_input2
+  genesis_0_conduit_end_select_input2             : out   std_logic;                     -- select_input2
+  genesis_0_conduit_end_start_c_input2            : in    std_logic  := 'X';             -- start_c_input2
+  genesis_0_conduit_end_ab_input2                 : in    std_logic  := 'X';             -- ab_input2
 \end{lstlisting}
 
-and within the component portmap:
-\begin{lstlisting}[language={vhdl},float]
-	video_vga_controller_0_external_interface_VS => VGA_VS,
-	genesis_0_conduit_end_vsync  => VGA_VS,
-	genesis_0_conduit_end_dpad_up_input1            => GPIO_1(9),            --.dpad_up_input1
-	genesis_0_conduit_end_dpad_down_input1          => GPIO_1(13),            --.dpad_down_input1
-	genesis_0_conduit_end_dpad_left_input1          => GPIO_1(17),            --.dpad_left_input1
-	genesis_0_conduit_end_dpad_right_input1         => GPIO_1(19),            --.dpad_right_input1
-	genesis_0_conduit_end_select_input1             => GPIO_1(15),            --.select_input1
-	genesis_0_conduit_end_start_c_input1            => GPIO_1(21),            --.start_c_input1
-	genesis_0_conduit_end_ab_input1                 => GPIO_1(11),            -- .ab_input1
-	genesis_0_conduit_end_dpad_up_input2            => GPIO_1(23),            --.dpad_up_input2
-	genesis_0_conduit_end_dpad_down_input2          => GPIO_1(27),            --.dpad_down_input2
-	genesis_0_conduit_end_dpad_left_input2          => GPIO_1(31),            --.dpad_left_input2
-	genesis_0_conduit_end_dpad_right_input2         => GPIO_1(33),            --.dpad_right_input2
-	genesis_0_conduit_end_select_input2             => GPIO_1(29),            --.select_input2
-	genesis_0_conduit_end_start_c_input2            => GPIO_1(35),            --.start_c_input2
-	genesis_0_conduit_end_ab_input2                 => GPIO_1(25),            --
+The instance of the Qsys system defines which pins on the DE2's GPIO header are
+connected to the pins on the Genesis controllers. The configuration used for our
+interface PCB is shown in Listing~\ref{lst:port_map}.
+
+\begin{lstlisting}[language={vhdl},caption={Port Map Configuration},label={lst:port_map}]
+  video_vga_controller_0_external_interface_VS => VGA_VS,
+  genesis_0_conduit_end_vsync  => VGA_VS,
+  genesis_0_conduit_end_dpad_up_input1            => GPIO_1(9),
+  genesis_0_conduit_end_dpad_down_input1          => GPIO_1(13),
+  genesis_0_conduit_end_dpad_left_input1          => GPIO_1(17),
+  genesis_0_conduit_end_dpad_right_input1         => GPIO_1(19),
+  genesis_0_conduit_end_select_input1             => GPIO_1(15),
+  genesis_0_conduit_end_start_c_input1            => GPIO_1(21),
+  genesis_0_conduit_end_ab_input1                 => GPIO_1(11),
+  genesis_0_conduit_end_dpad_up_input2            => GPIO_1(23),
+  genesis_0_conduit_end_dpad_down_input2          => GPIO_1(27),
+  genesis_0_conduit_end_dpad_left_input2          => GPIO_1(31),
+  genesis_0_conduit_end_dpad_right_input2         => GPIO_1(33),
+  genesis_0_conduit_end_select_input2             => GPIO_1(29),
+  genesis_0_conduit_end_start_c_input2            => GPIO_1(35),
+  genesis_0_conduit_end_ab_input2                 => GPIO_1(25),
 \end{lstlisting}
 
-Compile the project to ensure its working. 
+Compile the project to ensure it is working. 
 
-Eclipse: 
-1. Create a new nios II application and BSP from template (HelloWorld/MicroCOS)
-2. Replace the contents of the HelloWorld.c with gen_demo.c
-3. Running the application on the board will display which button 
+\subsection{Eclipse}
+
+\begin{enumerate}
+  \item Create a new Nios II application and BSP from template (HelloWorld / MicroCOS)
+  \item Replace the contents of the HelloWorld.c with gen\_demo.c
+  \item Running the application on the board will display which button 
 is pressed from either controller on the lines of the LCD.
+\end{enumerate}
 
 \section{Reading from the Controllers}
+
 The current state for each button for either controller is stored 
-in a 32 bit value, with 16 of those bits corresponding to a button 
-on either controller. By reading the memory at GENESIS_0_BASE, 
+in a 32-bit value, with 16 of those bits corresponding to a button 
+on either controller. By reading the memory at \texttt{GENESIS\_0\_BASE}, 
 one can examine a particular bit to determine which button is being 
 pressed. The code below illustrates this simply: 
 
-\begin{lstlisting}[language={c},float]
+\begin{lstlisting}[language={c},tabsize=2,caption={Reading Genesis Controller State}]
 	  int genesis_value = IORD_32DIRECT(GENESIS_0_BASE, 0);
 
 	  if ((genesis_value)& (1 << 0)){
