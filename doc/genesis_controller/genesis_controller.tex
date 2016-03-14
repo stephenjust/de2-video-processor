@@ -92,13 +92,14 @@ Ensure that you are in possession of a three-button genesis controller, and a
 corresponding adapter board to interface the DB9 connector with the appropriate 
 GPIO pins on the DE2. Should an adapter board be unavailable, a 40-pin ribbon 
 cable breadboarded with a male DB9 connector according to the pinout described 
-in following image: 
+in Figure~\ref{fig:schematic}.
 
-\begin{wrapfigure}{r}{0.4\textwidth}
-  \includegraphics[width=5cm]{schematic}
-  \caption{DB9 to GPIO}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=7cm]{schematic}
+  \caption{Connection Schematic}
   \label{fig:schematic}
-\end{wrapfigure}
+\end{figure}
 
 This tutorial assumes there is a functional system with a \texttt{VGA\_VS}
 signal available to act as a clocked source to drive the controller at 60Hz. 
@@ -114,7 +115,7 @@ In order to use a genesis controller, a custom component must be created in Qsys
 
     \begin{figure}[h]
       \centering
-      \includegraphics[width=5cm]{fig1}
+      \includegraphics[width=7cm]{fig1}
       \caption{Genesis Component Signals}
       \label{fig:qsys_signals}
     \end{figure}
@@ -123,24 +124,24 @@ In order to use a genesis controller, a custom component must be created in Qsys
     \ref{fig:qsys_signals2}, \ref{fig:qsys_signals3}, and
     \ref{fig:qsys_signals4}:
 
-    \begin{figure}[h]
+    \begin{figure}[h!]
       \centering
-      \includegraphics[width=5.5cm]{fig2}
-      \caption{Genesis Component Signals}
+      \includegraphics[width=10cm]{fig2}
+      \caption{Genesis Component Clock and Reset Configuration}
       \label{fig:qsys_signals2}
     \end{figure}
 
-    \begin{figure}[h]
+    \begin{figure}[h!]
       \centering
-      \includegraphics[width=5.5cm]{fig3}
-      \caption{Genesis Component Signals}
+      \includegraphics[width=10cm]{fig3}
+      \caption{Genesis Component MM Slave Configuration}
       \label{fig:qsys_signals3}
     \end{figure}
 
-    \begin{figure}[h]
+    \begin{figure}[h!]
       \centering
-      \includegraphics[width=5.5cm]{fig4}
-      \caption{Genesis Component Signals}
+      \includegraphics[width=10cm]{fig4}
+      \caption{Genesis Component Conduit Configuration}
       \label{fig:qsys_signals4}
     \end{figure}
 
@@ -151,8 +152,8 @@ In order to use a genesis controller, a custom component must be created in Qsys
 
     \begin{figure}[h]
       \centering
-      \includegraphics[width=5.5cm]{fig5}
-      \caption{Genesis Component Signals}
+      \includegraphics[width=10cm]{fig5}
+      \caption{Genesis Component Qsys Connections}
       \label{fig:qsys_signals5}
     \end{figure}
 
@@ -295,6 +296,8 @@ pressed. The code below illustrates this simply:
 		  printf("2 Start was pressed\n");
 	  }
 \end{lstlisting}
+
+\newpage
 
 % References
 \bibliographystyle{ieeetr}

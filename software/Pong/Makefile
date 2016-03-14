@@ -142,7 +142,9 @@ ACDS_VERSION := 12.1sp1
 ELF := Pong.elf
 
 # Paths to C, C++, and assembly source files.
-C_SRCS := main.c
+C_SRCS += main.c
+C_SRCS += graphics_commands.c
+C_SRCS += pong_graphics.c
 CXX_SRCS :=
 ASM_SRCS :=
 

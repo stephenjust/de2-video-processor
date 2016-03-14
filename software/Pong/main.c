@@ -57,61 +57,75 @@ struct Ball find_end_point(struct Ball my_ball, struct Paddle p1, struct Paddle 
 	}
 }
 
-void draw_rectangle(int x1, int y1, int x2, int y2, unsigned char color)
+int flip_sign(int x)
 {
-	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 0, SDRAM_0_BASE + SDRAM_VIDEO_OFFSET); // Frame address
-	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 4, x1); // X1
-	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 8, y1); // Y1
-	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 12, x2); // X2
-	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 16, y2); // Y2
-	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 20, color); // Color
-	ALT_CI_CI_DRAW_RECT_0;
+	if (x > 0)
+		return -1;
+	else
+		return 1;
 }
 
-void draw_line(int x1, int y1, int x2, int y2, unsigned char color)
+struct Ball speedup_reflection(struct Ball ball)
 {
-	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 0, SDRAM_0_BASE + SDRAM_VIDEO_OFFSET); // Frame address
-	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 4, x1); // X1
-	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 8, y1); // Y1
-	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 12, x2); // X2
-	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 16, y2); // Y2
-	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 20, color); // Color
-	ALT_CI_CI_DRAW_LINE_0;
+	ball.velocity_x = (abs(ball.velocity_x) + 1) * flip_sign(ball.velocity_x);
+	ball.velocity_y = -abs(ball.velocity_y);
+	return ball;
 }
+//void draw_rectangle(int x1, int y1, int x2, int y2, unsigned char color)
+//{
+//	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 0, SDRAM_0_BASE + SDRAM_VIDEO_OFFSET); // Frame address
+//	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 4, x1); // X1
+//	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 8, y1); // Y1
+//	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 12, x2); // X2
+//	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 16, y2); // Y2
+//	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 20, color); // Color
+//	ALT_CI_CI_DRAW_RECT_0;
+//}
 
-void draw_ball(int x, int y)
-{
-	draw_rectangle(x-1, y+3, x+1, y+3, 0xFF);
-	draw_rectangle(x-2, y+2, x+2, y+2, 0xFF);
-	draw_rectangle(x-3, y-1, x+3, y+1, 0xFF);
-	draw_rectangle(x-2, y-2, x+2, y-2, 0xFF);
-	draw_rectangle(x-1, y-3, x+1, y-3, 0xFF);
-}
+//void draw_line(int x1, int y1, int x2, int y2, unsigned char color)
+//{
+//	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 0, SDRAM_0_BASE + SDRAM_VIDEO_OFFSET); // Frame address
+//	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 4, x1); // X1
+//	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 8, y1); // Y1
+//	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 12, x2); // X2
+//	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 16, y2); // Y2
+//	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 20, color); // Color
+//	ALT_CI_CI_DRAW_LINE_0;
+//}
 
-void draw_paddle(int x, int y)
-{
-	draw_rectangle(x-5, y-18, x+5, y+18, 0xFF);
-}
+//void draw_ball(int x, int y)
+//{
+//	draw_rectangle(x-1, y+3, x+1, y+3, 0xFF);
+//	draw_rectangle(x-2, y+2, x+2, y+2, 0xFF);
+//	draw_rectangle(x-3, y-1, x+3, y+1, 0xFF);
+//	draw_rectangle(x-2, y-2, x+2, y-2, 0xFF);
+//	draw_rectangle(x-1, y-3, x+1, y-3, 0xFF);
+//}
+//
+//void draw_paddle(int x, int y)
+//{
+//	draw_rectangle(x-5, y-18, x+5, y+18, 0xFF);
+//}
+//
+//void draw_field()
+//{
+//	//black background
+//	draw_rectangle(0, 0, 640-1, 480-1, 0x00);
+//	//Top and bottom white walls
+//	draw_rectangle(0, 0, 640-1, 10, 0xFF);
+//	draw_rectangle(0, 480-11, 640-1, 480-1, 0xFF);
+//	//dashed line down center court
+//	int i;
+//	for (i = 0; i < 16; i++){
+//		draw_rectangle(317, i*30 + 13, 321, i*30 + 17, 0xFF);
+//	}
+//}
 
-void draw_field()
-{
-	//black background
-	draw_rectangle(0, 0, 640-1, 480-1, 0x00);
-	//Top and bottom white walls
-	draw_rectangle(0, 0, 640-1, 10, 0xFF);
-	draw_rectangle(0, 480-11, 640-1, 480-1, 0xFF);
-	//dashed line down center court
-	int i;
-	for (i = 0; i < 16; i++){
-		draw_rectangle(317, i*30 + 13, 321, i*30 + 17, 0xFF);
-	}
-}
-
-void clear_screen()
-{
-	draw_rectangle(0, 0, 640-1, 480-1, 0x00);
-	ALT_CI_CI_FRAME_DONE_0;
-}
+//void clear_screen()
+//{
+//	draw_rectangle(0, 0, 640-1, 480-1, 0x00);
+//	ALT_CI_CI_FRAME_DONE_0;
+//}
 
 int main()
 {
@@ -126,6 +140,8 @@ int main()
 	int paddle_counter = 0;
 	int p1_score = 0;
 	int p2_score = 0;
+	char score1[3];
+	char score2[3];
 	int collision_counter = 0;
 	unsigned int controller_value;
 	unsigned int row, col;
@@ -272,14 +288,11 @@ int main()
 			toggle_counter = 30;
 		}
 
-		/* Decrement Counters */
-		if (toggle_counter != 0)
-			toggle_counter--;
-		if (paddle_counter != 0)
-			paddle_counter--;
-
 		/*ball*/
 		/* Test if ball is touching a paddle */
+		/* TODO: Account for paddles hitting the ball backwards
+		 * TODO: set upper limit on ball speeds
+		 */
 		if (collision_counter != 0)
 			collision_counter--;
 
@@ -292,15 +305,13 @@ int main()
 		if (paddle1.x - 10 < ball.x && paddle1.x + 10 > ball.x && collision_counter == 0
 				&& paddle1.y + 18 > ball.y && paddle1.y + 7 < ball.y)
 		{
-			ball.velocity_x = ball.velocity_x*-1 + 1;
-			ball.velocity_y = abs(ball.velocity_y);
+			ball = speedup_reflection(ball);
 			collision_counter = 4;
 		}
 		if (paddle1.x - 10 < ball.x && paddle1.x + 10 > ball.x && collision_counter == 0
 				&& paddle1.y -7 > ball.y && paddle1.y -18 < ball.y)
 		{
-			ball.velocity_x = ball.velocity_x*-1 + 1;
-			ball.velocity_y = -abs(ball.velocity_y);
+			ball = speedup_reflection(ball);
 			collision_counter = 4;
 		}
 		if (paddle2.x + 10 > ball.x && paddle2.x - 10 < ball.x && collision_counter == 0
@@ -312,15 +323,13 @@ int main()
 		if (paddle2.x + 10 > ball.x && paddle2.x - 10 < ball.x && collision_counter == 0
 				&& paddle2.y + 18 > ball.y && paddle2.y + 7 < ball.y)
 		{
-			ball.velocity_x = ball.velocity_x*-1 - 1;
-			ball.velocity_y = abs(ball.velocity_y);
+			ball = speedup_reflection(ball);
 			collision_counter = 4;
 		}
 		if (paddle2.x + 10 > ball.x && paddle2.x - 10 < ball.x && collision_counter == 0
 				&& paddle2.y -7 > ball.y && paddle2.y -18 < ball.y)
 		{
-			ball.velocity_x = ball.velocity_x*-1 - 1;
-			ball.velocity_y = -abs(ball.velocity_y);
+			ball = speedup_reflection(ball);
 			collision_counter = 4;
 		}
 
@@ -345,6 +354,12 @@ int main()
 			p1_score+=1;
 		}
 
+		/* Decrement Counters */
+		if (toggle_counter != 0)
+			toggle_counter--;
+		if (paddle_counter != 0)
+			paddle_counter--;
+
 		/* Update ball location */
 		ball.x = ball.x + ball_speed*ball.velocity_x;
 		ball.y = ball.y + ball_speed*ball.velocity_y;
@@ -357,12 +372,17 @@ int main()
 		/*Draw Everything*/
 		draw_rectangle(0, 0, 640-1, 480-1, 0x00);
 		draw_field();
-
-		//TODO: Draw Scores
-
 		draw_paddle(paddle1.x, paddle1.y);
 		draw_paddle(paddle2.x, paddle2.y);
 		draw_ball(ball.x, ball.y);
+
+		/* Scores */
+		snprintf(score1, 3, "%d", p1_score);
+		snprintf(score2, 3, "%d", p2_score);
+		print2screen(200, 40, 0xFF, 1, score1);
+		print2screen(440, 40, 0xFF, 1, score2);
+
+		//print2screen(200, 200, 0xFF, 1, "Slowdown for Testing");
 
 		/* Draw markers to determine where ball is going */
 		if (toggle_raytracing){
