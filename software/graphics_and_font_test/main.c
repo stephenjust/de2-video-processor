@@ -172,9 +172,10 @@ int main()
 
 		draw_triangle (80, 320, 60, 350, 125, 350, 1, 6);
 		draw_triangle (80, 380, 60, 350, 125, 350, 1, 7);
-
-		draw_triangle (125, 350, 80, 380, 205, 385, 1,11);
-		draw_triangle (125, 350, 80, 380, 205, 385, 0,15);
+		draw_triangle (180, 380, 180, 350, 125, 350, 1, 8);
+		ALT_CI_CI_FRAME_DONE_0;
+		draw_triangle (125, 350, 80, 380, 205, 395, 1,11);
+		draw_triangle (125, 350, 80, 380, 205, 395, 0,15);
 
 
 		ALT_CI_CI_FRAME_DONE_0;
