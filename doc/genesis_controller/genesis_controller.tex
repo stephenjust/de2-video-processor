@@ -92,7 +92,13 @@ Ensure that you are in possession of a three-button genesis controller, and a
 corresponding adapter board to interface the DB9 connector with the appropriate 
 GPIO pins on the DE2. Should an adapter board be unavailable, a 40-pin ribbon 
 cable breadboarded with a male DB9 connector according to the pinout described 
-in [SCHEMATIC\_IMAGE]. 
+in following image: 
+
+\begin{wrapfigure}{r}{0.4\textwidth}
+  \includegraphics[width=5cm]{schematic}
+  \caption{DB9 to GPIO}
+  \label{fig:schematic}
+\end{wrapfigure}
 
 This tutorial assumes there is a functional system with a \texttt{VGA\_VS}
 signal available to act as a clocked source to drive the controller at 60Hz. 
