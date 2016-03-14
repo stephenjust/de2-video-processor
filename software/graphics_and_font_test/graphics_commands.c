@@ -642,14 +642,14 @@ void draw_triangle (int x1, int y1, int x2, int y2, int x3, int y3, int filled, 
 
 			int dropdowny = ty1;
 
-			int dy_offset = (ty3 - ty2) / (tx1 - tx2) ;
+			int dy_offset =(tx1 - tx2) * (abs(ty3 - ty2) / abs(tx3 - tx2)) ;
 
-			dropdowny = dropdowny + dy_offset + (ty2 < ty3) ? ty2 : ty3;
+			dropdowny = ty1 + ((ty2 < ty3) ? ty2 : ty3) + dy_offset;
 
 			//left
 			draw_triangle (tx1, ty1, tx2, ty2, tx1, dropdowny, filled, color);
 			//right
-			draw_triangle (tx1, ty1, tx3, ty3, tx1, dropdowny, filled, color+1);
+			//draw_triangle (tx1, ty1, tx3, ty3, tx1, dropdowny, filled, color+1);
 
 
 
