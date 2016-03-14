@@ -9,7 +9,8 @@
 
 #define PALETTE_SIZE 256
 #define SDRAM_VIDEO_OFFSET 0x300000
-#define COLLSION_COUNT 10
+//TODO: Set collision count as a function of paddle width and ball speed
+#define COLLISION_COUNT 10
 #define MAX_BALL_SPEED 10
 
 struct Paddle{
@@ -97,7 +98,6 @@ int main()
 	unsigned int row, col;
 	unsigned int i = 0;
 	unsigned int j = 0;
-	unsigned int delay = 0;
 
 	alt_putstr("Restoring default palette\n");
 
@@ -240,9 +240,6 @@ int main()
 
 		/*ball*/
 		/* Test if ball is touching a paddle */
-		/*
-		 * TODO: set upper limit on ball speeds
-		 */
 		if (collision_counter != 0)
 			collision_counter--;
 
@@ -250,43 +247,44 @@ int main()
 				&& paddle1.y + 6 > ball.y && paddle1.y -6 < ball.y)
 		{
 			ball.velocity_x *= -1;
-			collision_counter = COLLSION_COUNT;
+			collision_counter = COLLISION_COUNT;
 		}
 		if (paddle1.x - 10 < ball.x && paddle1.x + 10 > ball.x && collision_counter == 0
 				&& paddle1.y + 18 > ball.y && paddle1.y + 7 < ball.y)
 		{
 			ball = speedup_reflection(ball);
-			collision_counter = COLLSION_COUNT;
+			collision_counter = COLLISION_COUNT;
 		}
 		if (paddle1.x - 10 < ball.x && paddle1.x + 10 > ball.x && collision_counter == 0
 				&& paddle1.y -7 > ball.y && paddle1.y -18 < ball.y)
 		{
 			ball = speedup_reflection(ball);
-			collision_counter = COLLSION_COUNT;
+			collision_counter = COLLISION_COUNT;
 		}
 		if (paddle2.x + 10 > ball.x && paddle2.x - 10 < ball.x && collision_counter == 0
 				&& paddle2.y + 6 > ball.y && paddle2.y -6 < ball.y)
 		{
 			ball.velocity_x *= -1;
-			collision_counter = COLLSION_COUNT;
+			collision_counter = COLLISION_COUNT;
 		}
 		if (paddle2.x + 10 > ball.x && paddle2.x - 10 < ball.x && collision_counter == 0
 				&& paddle2.y + 18 > ball.y && paddle2.y + 7 < ball.y)
 		{
 			ball = speedup_reflection(ball);
-			collision_counter = COLLSION_COUNT;
+			collision_counter = COLLISION_COUNT;
 		}
 		if (paddle2.x + 10 > ball.x && paddle2.x - 10 < ball.x && collision_counter == 0
 				&& paddle2.y -7 > ball.y && paddle2.y -18 < ball.y)
 		{
 			ball = speedup_reflection(ball);
-			collision_counter = COLLSION_COUNT;
+			collision_counter = COLLISION_COUNT;
 		}
 
 		/*Test if ball is touching top/bottom wall*/
-		if (ball.y <= 15 || ball.y >= 465)
+		if ( (ball.y <= 15 || ball.y >= 465) && collision_counter == 0)
 		{
 			ball.velocity_y *= -1;
+			collision_counter = COLLISION_COUNT;
 		}
 		/* Test if ball is going to score */
 		if (ball.x < 5)
@@ -329,10 +327,12 @@ int main()
 		/* Scores */
 		snprintf(score1, 3, "%d", p1_score);
 		snprintf(score2, 3, "%d", p2_score);
-		//print2screen(200, 40, 0xFF, 1, score1);
+		draw_int(200,40, p1_score, 0xFF);
+		draw_int(440,40, p2_score, 0xFF);
+		//print2screen(200, 40, 0xFF, 2, score1);
 		//print2screen(440, 40, 0xFF, 1, score2);
 
-		print2screen(200, 200, 0xFF, 1, "Slowdown for Testing");
+		//print2screen(200, 200, 0xFF, 1, "Slowdown for Testing");
 
 		/* Draw markers to determine where ball is going */
 		if (toggle_raytracing){
