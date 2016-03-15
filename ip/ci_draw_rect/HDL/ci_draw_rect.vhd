@@ -10,6 +10,8 @@ LIBRARY ieee;
 USE ieee.numeric_std.all;
 USE ieee.std_logic_1164.all;
 
+USE work.geometry.all;
+
 ENTITY ci_draw_rect IS
 	PORT (
 		clk              : in     std_logic; -- Only keeping QSYS happy - use ncs_ci_clk
@@ -151,37 +153,13 @@ BEGIN
 					WHEN REG_BUF_ADDR =>
 						buf_addr <= avs_s0_writedata;
 					WHEN REG_X1 =>
-						IF signed(avs_s0_writedata(15 downto 0)) < to_signed(0, 16) THEN
-							x1 <= (others => '0');
-						ELSIF signed(avs_s0_writedata(15 downto 0)) >= FRAME_WIDTH THEN
-							x1 <= std_logic_vector(FRAME_WIDTH - to_signed(1, 16));
-						ELSE
-							x1 <= avs_s0_writedata(15 downto 0);
-						END IF;
+						x1 <= std_logic_vector(clip(signed(avs_s0_writedata(15 downto 0)), to_signed(0, 16), FRAME_WIDTH - to_signed(1, 16)));
 					WHEN REG_Y1 =>
-						IF signed(avs_s0_writedata(15 downto 0)) < to_signed(0, 16) THEN
-							y1 <= (others => '0');
-						ELSIF signed(avs_s0_writedata(15 downto 0)) >= FRAME_HEIGHT THEN
-							y1 <= std_logic_vector(FRAME_HEIGHT - to_signed(1, 16));
-						ELSE
-							y1 <= avs_s0_writedata(15 downto 0);
-						END IF;
+						y1 <= std_logic_vector(clip(signed(avs_s0_writedata(15 downto 0)), to_signed(0, 16), FRAME_HEIGHT - to_signed(1, 16)));
 					WHEN REG_X2 =>
-						IF signed(avs_s0_writedata(15 downto 0)) < to_signed(0, 16) THEN
-							x2 <= (others => '0');
-						ELSIF signed(avs_s0_writedata(15 downto 0)) >= FRAME_WIDTH THEN
-							x2 <= std_logic_vector(FRAME_WIDTH - to_signed(1, 16));
-						ELSE
-							x2 <= avs_s0_writedata(15 downto 0);
-						END IF;
+						x2 <= std_logic_vector(clip(signed(avs_s0_writedata(15 downto 0)), to_signed(0, 16), FRAME_WIDTH - to_signed(1, 16)));
 					WHEN REG_Y2 =>
-						IF signed(avs_s0_writedata(15 downto 0)) < to_signed(0, 16) THEN
-							y2 <= (others => '0');
-						ELSIF signed(avs_s0_writedata(15 downto 0)) >= FRAME_HEIGHT THEN
-							y2 <= std_logic_vector(FRAME_HEIGHT - to_signed(1, 16));
-						ELSE
-							y2 <= avs_s0_writedata(15 downto 0);
-						END IF;
+						y2 <= std_logic_vector(clip(signed(avs_s0_writedata(15 downto 0)), to_signed(0, 16), FRAME_HEIGHT - to_signed(1, 16)));
 					WHEN REG_COLOR =>
 						color <= avs_s0_writedata(7 downto 0);
 					WHEN OTHERS =>

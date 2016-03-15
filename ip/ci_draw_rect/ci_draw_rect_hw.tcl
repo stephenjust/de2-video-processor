@@ -39,6 +39,7 @@ add_fileset QUARTUS_SYNTH QUARTUS_SYNTH "" ""
 set_fileset_property QUARTUS_SYNTH TOP_LEVEL ci_draw_rect
 set_fileset_property QUARTUS_SYNTH ENABLE_RELATIVE_INCLUDE_PATHS false
 add_fileset_file ci_draw_rect.vhd VHDL PATH HDL/ci_draw_rect.vhd
+add_fileset_file geometry.vhd VHDL PATH ../common/geometry.vhd
 
 
 # 
