@@ -55,19 +55,16 @@ ARCHITECTURE Behavioral OF ci_draw_rect IS
 
 	-- Configuration registers
 	SIGNAL buf_addr : std_logic_vector(31 downto 0) := (others => '0');
-	SIGNAL point1, point2 : point_t := ((others => '0'), (others => '0'));
+	SIGNAL point1, point2, current_point : point_t := ((others => '0'), (others => '0'));
 	SIGNAL color : std_logic_vector(7 downto 0) := (others => '0');
 
 	SIGNAL current_state : op_state := IDLE;
-	SIGNAL current_x : std_logic_vector(15 downto 0);
-	SIGNAL current_y : std_logic_vector(15 downto 0);
 
 BEGIN
 
 	-- Do operation
 	op : PROCESS(ncs_ci_clk)
-		VARIABLE next_x : std_logic_vector(15 downto 0);
-		VARIABLE next_y : std_logic_vector(15 downto 0);
+		variable next_point : point_t;
 	BEGIN
 		IF rising_edge(ncs_ci_clk) THEN
 			IF reset = '1' OR ncs_ci_reset = '1' THEN
@@ -77,8 +74,7 @@ BEGIN
 				avm_m0_write <= '0';
 				IF ncs_ci_start = '1' THEN
 					current_state <= RUNNING;
-					current_x <= std_logic_vector(point1.x);
-					current_y <= std_logic_vector(point1.y);
+					current_point <= point1;
 				ELSE
 					current_state <= IDLE;
 				END IF;
@@ -86,26 +82,25 @@ BEGIN
 				avm_m0_burstcount <= x"01";
 				avm_m0_writedata <= (color & color); -- Use byteenable to mask even/odd bytes
 				avm_m0_write <= '1';
-				next_x := current_x;
-				next_y := current_y;
+				next_point := current_point;
 
 				-- Wait until write succeeds to advance to next pixel
 				IF avm_m0_waitrequest = '0' THEN
-					IF current_y = std_logic_vector(point2.y) and current_x(15 downto 1) = std_logic_vector(point2.x(15 downto 1)) THEN
+					IF current_point.y = point2.y and current_point.x(15 downto 1) = point2.x(15 downto 1) THEN
 						-- Write completed
 						current_state <= IDLE;
 						avm_m0_write <= '0';
 						ncs_ci_done <= '1';
-					ELSIF current_x(15 downto 1) = std_logic_vector(point2.x(15 downto 1)) THEN
+					ELSIF current_point.x(15 downto 1) = point2.x(15 downto 1) THEN
 						-- Advance to next row
-						next_y := std_logic_vector(signed(current_y) + to_signed(1, 16));
-						next_x := std_logic_vector(point1.x);
+						next_point.y := current_point.y + to_signed(1, 16);
+						next_point.x := point1.x;
 					ELSE
 						-- Advance to next pixel
-						IF current_x(0) = '1' THEN
-							next_x := std_logic_vector(signed(current_x) + to_signed(1, 16));
+						IF current_point.x(0) = '1' THEN
+							next_point.x := current_point.x + to_signed(1, 16);
 						ELSE
-							next_x := std_logic_vector(signed(current_x) + to_signed(2, 16));
+							next_point.x := current_point.x + to_signed(2, 16);
 						END IF;
 					END IF;
 				END IF;
@@ -115,17 +110,16 @@ BEGIN
 				-- then only write the most significant pixel. If we are at the end of a
 				-- line, and the pixel being drawn is of even index, then we only write the
 				-- least significant pixel. Otherwise, write both pixels.
-				IF next_x(0) = '1' THEN
+				IF next_point.x(0) = '1' THEN
 					avm_m0_byteenable <= b"10";
-				ELSIF next_x(15 downto 1) = std_logic_vector(point2.x(15 downto 1)) and point2.x(0) = '0' THEN
+				ELSIF next_point.x(15 downto 1) = point2.x(15 downto 1) and point2.x(0) = '0' THEN
 					avm_m0_byteenable <= b"01";
 				ELSE
 					avm_m0_byteenable <= b"11";
 				END IF;
 
-				avm_m0_address <= std_logic_vector(unsigned(buf_addr) + unsigned(next_x) + (unsigned(FRAME_WIDTH) * unsigned(next_y)));
-				current_x <= next_x;
-				current_y <= next_y;
+				avm_m0_address <= std_logic_vector(unsigned(buf_addr) + unsigned(next_point.x) + (unsigned(FRAME_WIDTH) * unsigned(next_point.y)));
+				current_point <= next_point;
 			END IF;
 		END IF;
 	END PROCESS op;
