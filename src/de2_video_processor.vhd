@@ -62,6 +62,16 @@ entity de2_video_processor is
 		-- Input switches and buttons
 		SW           : in       std_logic_vector (17 downto 0);
 		KEY          : in       std_logic_vector (3 downto 0);
+
+		-- 7-Segment LEDs
+		HEX0         : out      std_logic_vector (6 downto 0) := (others => '1');
+		HEX1         : out      std_logic_vector (6 downto 0) := (others => '1');
+		HEX2         : out      std_logic_vector (6 downto 0) := (others => '1');
+		HEX3         : out      std_logic_vector (6 downto 0) := (others => '1');
+		HEX4         : out      std_logic_vector (6 downto 0) := (others => '1');
+		HEX5         : out      std_logic_vector (6 downto 0) := (others => '1');
+		HEX6         : out      std_logic_vector (6 downto 0) := (others => '1');
+		HEX7         : out      std_logic_vector (6 downto 0) := (others => '1');
 		
 		-- GPIO Port 0 
 		GPIO_0 : inout std_logic_vector (35 downto 0) := (others => 'Z');
