@@ -10,6 +10,7 @@ LIBRARY ieee;
 USE ieee.numeric_std.all;
 USE ieee.std_logic_1164.all;
 
+USE work.avalon.all;
 USE work.geometry.all;
 
 ENTITY ci_draw_rect IS
@@ -58,7 +59,17 @@ ARCHITECTURE Behavioral OF ci_draw_rect IS
 	SIGNAL point1, point2, current_point : point_t := ((others => '0'), (others => '0'));
 	SIGNAL color : std_logic_vector(7 downto 0) := (others => '0');
 
+	-- Avalon Writer Signals
+	SIGNAL writer_start, writer_done : std_logic;
+	SIGNAL writer_address_start, writer_address_end : std_logic_vector(31 downto 0);
+
 	SIGNAL current_state : op_state := IDLE;
+
+	FUNCTION point_address ( base_address : std_logic_vector; point : point_t )
+	RETURN std_logic_vector IS
+	BEGIN
+		RETURN std_logic_vector(unsigned(base_address) + unsigned(point.y * FRAME_WIDTH + point.x));
+	END FUNCTION;
 
 BEGIN
 
@@ -71,54 +82,30 @@ BEGIN
 				current_state <= IDLE;
 			ELSIF current_state = IDLE THEN
 				ncs_ci_done <= '0';
-				avm_m0_write <= '0';
 				IF ncs_ci_start = '1' THEN
 					current_state <= RUNNING;
 					current_point <= point1;
+					writer_address_start <= point_address(buf_addr, point1);
+					writer_address_end <= std_logic_vector(unsigned(point_address(buf_addr, point1)) + unsigned(point2.x - point1.x));
+					writer_start <= '1';
 				ELSE
 					current_state <= IDLE;
 				END IF;
 			ELSIF current_state = RUNNING THEN
-				avm_m0_burstcount <= x"01";
-				avm_m0_writedata <= (color & color); -- Use byteenable to mask even/odd bytes
-				avm_m0_write <= '1';
 				next_point := current_point;
-
-				-- Wait until write succeeds to advance to next pixel
-				IF avm_m0_waitrequest = '0' THEN
-					IF current_point.y = point2.y and current_point.x(15 downto 1) = point2.x(15 downto 1) THEN
+				writer_start <= '0';
+				IF writer_done = '1' THEN
+					IF current_point.y >= point2.y THEN
 						-- Write completed
 						current_state <= IDLE;
-						avm_m0_write <= '0';
 						ncs_ci_done <= '1';
-					ELSIF current_point.x(15 downto 1) = point2.x(15 downto 1) THEN
-						-- Advance to next row
-						next_point.y := current_point.y + to_signed(1, 16);
-						next_point.x := point1.x;
 					ELSE
-						-- Advance to next pixel
-						IF current_point.x(0) = '1' THEN
-							next_point.x := current_point.x + to_signed(1, 16);
-						ELSE
-							next_point.x := current_point.x + to_signed(2, 16);
-						END IF;
+						next_point.y := current_point.y + to_signed(1, 16);
+						writer_address_start <= point_address(buf_addr, next_point);
+						writer_address_end <= std_logic_vector(unsigned(point_address(buf_addr, next_point)) + unsigned(point2.x - point1.x));
+						writer_start <= '1';
 					END IF;
 				END IF;
-
-				-- Check byte alignment to set byteenable
-				-- If we are writing an odd X pixel (will only occur in the first column),
-				-- then only write the most significant pixel. If we are at the end of a
-				-- line, and the pixel being drawn is of even index, then we only write the
-				-- least significant pixel. Otherwise, write both pixels.
-				IF next_point.x(0) = '1' THEN
-					avm_m0_byteenable <= b"10";
-				ELSIF next_point.x(15 downto 1) = point2.x(15 downto 1) and point2.x(0) = '0' THEN
-					avm_m0_byteenable <= b"01";
-				ELSE
-					avm_m0_byteenable <= b"11";
-				END IF;
-
-				avm_m0_address <= std_logic_vector(unsigned(buf_addr) + unsigned(next_point.x) + (unsigned(FRAME_WIDTH) * unsigned(next_point.y)));
 				current_point <= next_point;
 			END IF;
 		END IF;
@@ -158,4 +145,24 @@ BEGIN
 		END IF;
 	END PROCESS update_cfg;
 
+	writer: avalon_write_sequential
+	PORT MAP (
+		clk              => ncs_ci_clk,
+		reset            => ncs_ci_reset,
+
+		-- Control Signals
+		data             => color,
+		address_start    => writer_address_start,
+		address_end      => writer_address_end,
+		start            => writer_start,
+		done             => writer_done,
+
+		-- Avalon-MM Master
+		avm_write        => avm_m0_write,
+		avm_writedata    => avm_m0_writedata,
+		avm_byteenable   => avm_m0_byteenable,
+		avm_burstcount   => avm_m0_burstcount,
+		avm_address      => avm_m0_address,
+		avm_waitrequest  => avm_m0_waitrequest
+	);
 END ARCHITECTURE;

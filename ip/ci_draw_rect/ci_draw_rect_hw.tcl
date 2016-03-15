@@ -40,6 +40,8 @@ set_fileset_property QUARTUS_SYNTH TOP_LEVEL ci_draw_rect
 set_fileset_property QUARTUS_SYNTH ENABLE_RELATIVE_INCLUDE_PATHS false
 add_fileset_file ci_draw_rect.vhd VHDL PATH HDL/ci_draw_rect.vhd
 add_fileset_file geometry.vhd VHDL PATH ../common/geometry.vhd
+add_fileset_file avalon.vhd VHDL PATH ../common/avalon.vhd
+add_fileset_file avalon_write_sequential.vhd VHDL PATH ../common/avalon/avalon_write_sequential.vhd
 
 
 # 
