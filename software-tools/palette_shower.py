@@ -57,7 +57,7 @@ k = 0
 for i in range(1,17):
 				for j in range(1,17):
 								fill_color = "#%06x" % data888[k]
-								print(fill_color)
+								print(str(k) + ": " + str(fill_color))
 								w.create_rectangle(j*30, i*30, j*30+30, i*30+30, width=0, fill=fill_color)
 								k = k + 1
 for i in range(1,17):
