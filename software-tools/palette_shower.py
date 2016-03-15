@@ -7,18 +7,9 @@ top = tkinter.Tk()
 w = tkinter.Canvas(top, bg="white", height=540, width=540)
 w.pack()
 data = numpy.fromfile(in_file, dtype=numpy.uint16)
-#from https://stackoverflow.com/q/5414638
-#data888 = ((data & 0xF800) >> 8) + ((data & 0x07E0) >> 3) + ((data & 0x001F) << 3)
-#Add upper values of color channels to empty bitshifted bits
-
-#These colors are totally wrong
-dataBlue = (data & 0x001F)
-dataBlue = (dataBlue << 3) | (dataBlue >> 2)
-dataRed = (data & 0xF800)
-dataRed = (dataRed << 3) | (dataRed >> 2)
-dataGreen = (data & 0x07E0)
-dataGreen = (dataGreen << 3) | (dataGreen >> 4)
-data888 = dataBlue + (dataRed<<8) + ( dataGreen<<5)
+data = data.astype(numpy.uint32)
+#from https://stackoverflow.com/q/5415360
+data888 = ((data & 0xF800) << 8) + ((data & 0x07E0) << 5) + ((data & 0x001F) << 3)
 
 k = 0
 for i in range(1,17):
@@ -30,7 +21,7 @@ for i in range(1,17):
 for i in range(1,17):
 				for j in range(1,17):
 								value = str(j + 16*(i-1) )
-								w.create_text(j*30+3, i*30+3, text=value) 
+								w.create_text(j*30+14, i*30+16, text=value) 
 top.mainloop()
 
 
