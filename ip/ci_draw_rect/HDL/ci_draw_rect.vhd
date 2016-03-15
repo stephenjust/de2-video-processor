@@ -55,10 +55,7 @@ ARCHITECTURE Behavioral OF ci_draw_rect IS
 
 	-- Configuration registers
 	SIGNAL buf_addr : std_logic_vector(31 downto 0) := (others => '0');
-	SIGNAL x1 : std_logic_vector(15 downto 0) := (others => '0');
-	SIGNAL y1 : std_logic_vector(15 downto 0) := (others => '0');
-	SIGNAL x2 : std_logic_vector(15 downto 0) := (others => '0');
-	SIGNAL y2 : std_logic_vector(15 downto 0) := (others => '0');
+	SIGNAL point1, point2 : point_t := ((others => '0'), (others => '0'));
 	SIGNAL color : std_logic_vector(7 downto 0) := (others => '0');
 
 	SIGNAL current_state : op_state := IDLE;
@@ -80,8 +77,8 @@ BEGIN
 				avm_m0_write <= '0';
 				IF ncs_ci_start = '1' THEN
 					current_state <= RUNNING;
-					current_x <= x1;
-					current_y <= y1;
+					current_x <= std_logic_vector(point1.x);
+					current_y <= std_logic_vector(point1.y);
 				ELSE
 					current_state <= IDLE;
 				END IF;
@@ -94,15 +91,15 @@ BEGIN
 
 				-- Wait until write succeeds to advance to next pixel
 				IF avm_m0_waitrequest = '0' THEN
-					IF current_y = y2 and current_x(15 downto 1) = x2(15 downto 1) THEN
+					IF current_y = std_logic_vector(point2.y) and current_x(15 downto 1) = std_logic_vector(point2.x(15 downto 1)) THEN
 						-- Write completed
 						current_state <= IDLE;
 						avm_m0_write <= '0';
 						ncs_ci_done <= '1';
-					ELSIF current_x(15 downto 1) = x2(15 downto 1) THEN
+					ELSIF current_x(15 downto 1) = std_logic_vector(point2.x(15 downto 1)) THEN
 						-- Advance to next row
 						next_y := std_logic_vector(signed(current_y) + to_signed(1, 16));
-						next_x := x1;
+						next_x := std_logic_vector(point1.x);
 					ELSE
 						-- Advance to next pixel
 						IF current_x(0) = '1' THEN
@@ -120,7 +117,7 @@ BEGIN
 				-- least significant pixel. Otherwise, write both pixels.
 				IF next_x(0) = '1' THEN
 					avm_m0_byteenable <= b"10";
-				ELSIF next_x(15 downto 1) = x2(15 downto 1) and x2(0) = '0' THEN
+				ELSIF next_x(15 downto 1) = std_logic_vector(point2.x(15 downto 1)) and point2.x(0) = '0' THEN
 					avm_m0_byteenable <= b"01";
 				ELSE
 					avm_m0_byteenable <= b"11";
@@ -143,23 +140,21 @@ BEGIN
 		IF rising_edge(ncs_ci_clk) THEN
 			IF ncs_ci_reset = '1' THEN
 				buf_addr <= (others => '0');
-				x1 <= (others => '0');
-				y1 <= (others => '0');
-				x2 <= (others => '0');
-				y2 <= (others => '0');
+				point1 <= ((others => '0'), (others => '0'));
+				point2 <= ((others => '0'), (others => '0'));
 				color <= (others => '0');
 			ELSIF avs_s0_write = '1' THEN
 				CASE avs_s0_address IS
 					WHEN REG_BUF_ADDR =>
 						buf_addr <= avs_s0_writedata;
 					WHEN REG_X1 =>
-						x1 <= std_logic_vector(clip(signed(avs_s0_writedata(15 downto 0)), to_signed(0, 16), FRAME_WIDTH - to_signed(1, 16)));
+						point1.x <= clip(signed(avs_s0_writedata(15 downto 0)), to_signed(0, 16), FRAME_WIDTH - to_signed(1, 16));
 					WHEN REG_Y1 =>
-						y1 <= std_logic_vector(clip(signed(avs_s0_writedata(15 downto 0)), to_signed(0, 16), FRAME_HEIGHT - to_signed(1, 16)));
+						point1.y <= clip(signed(avs_s0_writedata(15 downto 0)), to_signed(0, 16), FRAME_HEIGHT - to_signed(1, 16));
 					WHEN REG_X2 =>
-						x2 <= std_logic_vector(clip(signed(avs_s0_writedata(15 downto 0)), to_signed(0, 16), FRAME_WIDTH - to_signed(1, 16)));
+						point2.x <= clip(signed(avs_s0_writedata(15 downto 0)), to_signed(0, 16), FRAME_WIDTH - to_signed(1, 16));
 					WHEN REG_Y2 =>
-						y2 <= std_logic_vector(clip(signed(avs_s0_writedata(15 downto 0)), to_signed(0, 16), FRAME_HEIGHT - to_signed(1, 16)));
+						point2.y <= clip(signed(avs_s0_writedata(15 downto 0)), to_signed(0, 16), FRAME_HEIGHT - to_signed(1, 16));
 					WHEN REG_COLOR =>
 						color <= avs_s0_writedata(7 downto 0);
 					WHEN OTHERS =>
