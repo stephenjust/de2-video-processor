@@ -10,7 +10,8 @@
 #define PALETTE_SIZE 256
 #define SDRAM_VIDEO_OFFSET 0x300000
 //TODO: Set collision count as a function of paddle width and ball speed
-#define COLLISION_COUNT 10
+//TODO: change paddles to reflect ball as a function of ball-paddle delta
+#define COLLISION_COUNT 2
 #define MAX_BALL_SPEED 10
 
 struct Paddle{
@@ -70,7 +71,7 @@ int flip_sign(int x)
 
 struct Ball speedup_reflection(struct Ball ball)
 {
-	if (ball.velocity_x < MAX_BALL_SPEED)
+	if (abs(ball.velocity_x) < MAX_BALL_SPEED)
 		ball.velocity_x = (abs(ball.velocity_x) + 1) * flip_sign(ball.velocity_x);
 	else
 		ball.velocity_x = ( abs(ball.velocity_x) ) * flip_sign(ball.velocity_x);
