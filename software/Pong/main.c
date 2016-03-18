@@ -286,6 +286,13 @@ int main()
 		if ( (ball.y <= 150 || ball.y >= 4650) && collision_counter == 0)
 		{
 			ball.velocity_y *= -1;
+
+			/*Stop ball getting stuck in wall*/
+			if (ball.y < 150)
+				ball.y = 150;
+			else if (ball.y > 4650)
+				ball.y = 4650;
+
 			collision_counter = COLLISION_COUNT;
 		}
 		/* Test if ball is going to score */
@@ -340,6 +347,10 @@ int main()
 		/* Scores */
 		draw_int(200,40, p1_score, 0xFF);
 		draw_int(440,40, p2_score, 0xFF);
+
+		if (p1_score == 10 || p2_score == 10){
+			end_game(p1_score, p2_score);
+		}
 
 //		print2screen(200, 200, 0xFF, 1, "Slowdown for Testing");
 
