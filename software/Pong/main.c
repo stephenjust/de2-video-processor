@@ -98,6 +98,7 @@ int main()
 	int ball_speed = 4;
 	int toggle_raytracing = 0;
 	int toggle_counter = 0;
+	int end_game_bool = 0;
 	struct Paddle paddle1 = {.y = 2400, .x = 200};
 	struct Paddle paddle2 = {.y = 2400, .x = 6200};
 	struct Ball ball = {.y = 2400, .x = 3200, .velocity_x = ball_speed, .velocity_y = ball_speed};
@@ -106,8 +107,6 @@ int main()
 	int paddle_counter = 0;
 	int p1_score = 0;
 	int p2_score = 0;
-	char score1[3];
-	char score2[3];
 	int collision_counter = 0;
 	unsigned int controller_value;
 	unsigned int row, col;
@@ -203,7 +202,7 @@ int main()
 		}
 
 		/*Toggle Raytracing*/
-		if ( (controller_value & (1 << 4)) && toggle_counter == 0){
+		if ( (controller_value & (1 << 4)) && !(controller_value & (1 << 5)) && toggle_counter == 0){
 			toggle_raytracing = !toggle_raytracing;
 			toggle_counter = 30;
 		}
@@ -248,7 +247,7 @@ int main()
 			}
 		}
 		/* Toggle Raytracing */
-		if ( (controller_value & (1 << 14)) && toggle_counter == 0){
+		if ( (controller_value & (1 << 14)) && !(controller_value & (1 << 15)) && toggle_counter == 0){
 			toggle_raytracing = !toggle_raytracing;
 			toggle_counter = 30;
 		}
@@ -275,7 +274,7 @@ int main()
 		{
 			ball = reflect_ball(paddle2, ball);
 			/*Rocket the ball back horizontally if A&B held during collision*/
-			if ( (controller_value & (1 << 4)) && (controller_value & (1 << 5)) && paddle_counter == 0){
+			if ( (controller_value & (1 << 14)) && (controller_value & (1 << 15)) && paddle_counter == 0){
 				ball.velocity_x = find_sign(ball.velocity_x)*MAX_BALL_SPEED;
 				ball.velocity_y = 0;
 			}
@@ -350,6 +349,23 @@ int main()
 
 		if (p1_score == 10 || p2_score == 10){
 			end_game(p1_score, p2_score);
+			end_game_bool = 1;
+		}
+
+		if (end_game_bool == 1){
+			ball_speed = 4;
+			toggle_raytracing = 0;
+			toggle_counter = 0;
+			end_game_bool = 0;
+			paddle1 = (struct Paddle){.y = 2400, .x = 200};
+			paddle2 = (struct Paddle){.y = 2400, .x = 6200};
+			ball = (struct Ball){.y = 2400, .x = 3200, .velocity_x = ball_speed, .velocity_y = ball_speed};
+			paddle1_speed = 40;
+			paddle2_speed = 40;
+			paddle_counter = 0;
+			p1_score = 0;
+			p2_score = 0;
+			collision_counter = 0;
 		}
 
 //		print2screen(200, 200, 0xFF, 1, "Slowdown for Testing");

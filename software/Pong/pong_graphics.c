@@ -136,9 +136,8 @@ void draw_int(int x, int y, int value, int color){
 		draw_rectangle( (x+0), (y+2), (x+12), (y+3), color);
 
 		draw_rectangle( (x+0), (y+4), (x+3), (y+10), color);
-		//TODO: Slightly wrong on the loop, right hand side, too square I think
-		draw_rectangle( (x+0), (y+11), (x+13), (y+12), color);
-		draw_rectangle( (x+0), (y+13), (x+14), (y+13), color);
+		draw_rectangle( (x+0), (y+11), (x+12), (y+12), color);
+		draw_rectangle( (x+0), (y+13), (x+13), (y+13), color);
 		draw_rectangle( (x+0), (y+14), (x+14), (y+14), color);
 
 		draw_rectangle( (x+11), (y+15), (x+14), (y+21), color);
@@ -187,8 +186,8 @@ void draw_int(int x, int y, int value, int color){
 
 		draw_rectangle( (x+11), (y+4), (x+14), (y+10), color);
 
-		draw_rectangle( (x+0), (y+11), (x+13), (y+14), color);
-		draw_rectangle( (x+1), (y+13), (x+14), (y+14), color);
+		draw_rectangle( (x+0), (y+11), (x+14), (y+12), color);
+		draw_rectangle( (x+1), (y+13), (x+14), (y+13), color);
 		draw_rectangle( (x+2), (y+14), (x+14), (y+14), color);
 
 
@@ -202,7 +201,24 @@ void draw_int(int x, int y, int value, int color){
 
 	else
 		return;
+}
 
+void end_game(int p1_score, int p2_score)
+{
+	int controller_value;
+	while (1){
+		controller_value = IORD_32DIRECT(GENESIS_0_BASE, 0);
+		draw_rectangle(0,0,639,479,0x00);
+		if (p1_score > p2_score)
+			print2screen(90, 200, 0xFF, 4, "Player 1 Wins!");
+		else
+			print2screen(90, 200, 0xFF, 4, "Player 2 Wins!");
+		print2screen(140, 400, 0xFF, 2, "Press A to Continue");
+		ALT_CI_CI_FRAME_DONE_0;
+
+		if ((controller_value & (1 << 4)) || (controller_value & (1 << 14)))
+			break;
+	}
 }
 
 
