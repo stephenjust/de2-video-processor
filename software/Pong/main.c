@@ -9,10 +9,9 @@
 
 #define PALETTE_SIZE 256
 #define SDRAM_VIDEO_OFFSET 0x300000
-//TODO: Set collision count as a function of paddle width and ball speed
-//TODO: change paddles to reflect ball as a function of ball-paddle delta
-#define COLLISION_COUNT 2
-#define MAX_BALL_SPEED 10
+
+#define COLLISION_COUNT 5
+#define MAX_BALL_SPEED 20//10
 
 struct Paddle{
 	int x;
@@ -34,13 +33,13 @@ unsigned char color_array[] = {
 };
 
 struct Ball find_end_point(struct Ball my_ball, struct Paddle p1, struct Paddle p2){
-	int x_endleft = p1.x + 5;
-	int x_endright = p2.x - 5;
+	int x_endleft = p1.x + 50;
+	int x_endright = p2.x - 50;
 	int y_steps, x_steps, new_x, new_y;
 	if (my_ball.velocity_y < 0)
-		y_steps = (13 - my_ball.y) / my_ball.velocity_y;
+		y_steps = (130 - my_ball.y) / my_ball.velocity_y;
 	if (my_ball.velocity_y > 0)
-		y_steps = (466 - my_ball.y) / my_ball.velocity_y;
+		y_steps = (4660 - my_ball.y) / my_ball.velocity_y;
 	if (my_ball.velocity_x > 0)
 		x_steps = (x_endright - my_ball.x) / my_ball.velocity_x;
 	if (my_ball.velocity_x < 0)
@@ -69,26 +68,41 @@ int flip_sign(int x)
 		return 1;
 }
 
-struct Ball speedup_reflection(struct Ball ball)
+int find_sign(int x)
 {
+	if (x > 0)
+		return 1;
+	else
+		return -1;
+}
+
+struct Ball reflect_ball(struct Paddle paddle, struct Ball ball)
+{
+	int delta = ball.y - paddle.y;
+
+	ball.velocity_y = delta * abs(ball.velocity_x) / 18;
+
 	if (abs(ball.velocity_x) < MAX_BALL_SPEED)
 		ball.velocity_x = (abs(ball.velocity_x) + 1) * flip_sign(ball.velocity_x);
 	else
 		ball.velocity_x = ( abs(ball.velocity_x) ) * flip_sign(ball.velocity_x);
-	ball.velocity_y = -abs(ball.velocity_y);
+
+	if (abs(ball.velocity_y) > abs(ball.velocity_x))
+		ball.velocity_y = find_sign(ball.velocity_y) * abs(ball.velocity_x);
+
 	return ball;
 }
 
 int main()
 {
-	int ball_speed = 1;
+	int ball_speed = 4;
 	int toggle_raytracing = 0;
 	int toggle_counter = 0;
-	struct Paddle paddle1 = {.y = 240, .x = 20};
-	struct Paddle paddle2 = {.y = 240, .x = 620};
-	struct Ball ball = {.y = 240, .x = 320, .velocity_x = ball_speed, .velocity_y = ball_speed};
-	int paddle1_speed = 8;
-	int paddle2_speed = 8;
+	struct Paddle paddle1 = {.y = 2400, .x = 200};
+	struct Paddle paddle2 = {.y = 2400, .x = 6200};
+	struct Ball ball = {.y = 2400, .x = 3200, .velocity_x = ball_speed, .velocity_y = ball_speed};
+	int paddle1_speed = 40;
+	int paddle2_speed = 40;
 	int paddle_counter = 0;
 	int p1_score = 0;
 	int p2_score = 0;
@@ -150,40 +164,40 @@ int main()
 		/*player 1*/
 		/* Move Vertically */
 		if (controller_value & (1 << 0)){
-			if (paddle1.y > 29){
+			if (paddle1.y > 290){
 				paddle1.y -= paddle1_speed;
 			}
 			else
-				paddle1.y = 29;
+				paddle1.y = 290;
 		}
 		if (controller_value & (1 << 1)){
-			if (paddle1.y < 450){
+			if (paddle1.y < 4500){
 				paddle1.y += paddle1_speed;
 			}
 			else
-				paddle1.y = 450;
+				paddle1.y = 4500;
 		}
 		/* Move Horizontally */
 		if ( (controller_value & (1 << 2)) && (controller_value & (1 << 5)) ){
-			if (paddle1.x > 5){
+			if (paddle1.x > 50){
 				paddle1.x -= paddle1_speed;
 			}
 			else
-				paddle1.x = 5;
+				paddle1.x = 50;
 		}
 		if ( (controller_value & (1 << 3)) && (controller_value & (1 << 5)) ){
-			if (paddle1.x < 635){
+			if (paddle1.x < 6350){
 				paddle1.x += paddle1_speed;
 			}
 			else
-				paddle1.x = 635;
+				paddle1.x = 6350;
 		}
 
 		/* Slow other player down */
 		if ( (controller_value & (1 << 5)) && (controller_value & (1 << 6)) && paddle_counter == 0){
 			if (paddle2_speed > 1)
 			{
-				paddle_counter = 200;
+				paddle_counter = 50;
 				paddle2_speed--;
 			}
 		}
@@ -197,39 +211,39 @@ int main()
 		/*player 2*/
 		/* Move Vertically */
 		if (controller_value & (1 << 10)){
-			if (paddle2.y > 29){
+			if (paddle2.y > 290){
 				paddle2.y -= paddle2_speed;
 			}
 			else
-				paddle2.y = 29;
+				paddle2.y = 290;
 		}
 		if (controller_value & (1 << 11)){
-			if (paddle2.y < 450){
+			if (paddle2.y < 4500){
 				paddle2.y += paddle2_speed;
 			}
 			else
-				paddle2.y = 450;
+				paddle2.y = 4500;
 		}
 		/* Move Horizontally */
 		if ( (controller_value & (1 << 12)) && (controller_value & (1 << 15)) ){
-			if (paddle2.x > 5){
+			if (paddle2.x > 50){
 				paddle2.x -= paddle2_speed;
 			}
 			else
-				paddle2.x = 5;
+				paddle2.x = 50;
 		}
 		if ( (controller_value & (1 << 13)) && (controller_value & (1 << 15)) ){
-			if (paddle2.x < 635){
+			if (paddle2.x < 6350){
 				paddle2.x += paddle2_speed;
 			}
 			else
-				paddle2.x = 635;
+				paddle2.x = 6350;
 		}
 		/* Slow other player down */
 		if ( (controller_value & (1 << 15)) && (controller_value & (1 << 16)) && paddle_counter == 0){
 			if (paddle1_speed > 1)
 			{
-				paddle_counter = 200;
+				paddle_counter = 50;
 				paddle1_speed--;
 			}
 		}
@@ -244,60 +258,39 @@ int main()
 		if (collision_counter != 0)
 			collision_counter--;
 
-		if (paddle1.x - 10 < ball.x && paddle1.x + 10 > ball.x && collision_counter == 0
-				&& paddle1.y + 6 > ball.y && paddle1.y -6 < ball.y)
+		if (paddle1.x - 100 < ball.x && paddle1.x + 100 > ball.x && collision_counter == 0
+				&& paddle1.y + 180 > ball.y && paddle1.y - 180 < ball.y)
 		{
-			ball.velocity_x *= -1;
+			//ball.velocity_x *= -1;
+			ball = reflect_ball(paddle1, ball);
 			collision_counter = COLLISION_COUNT;
 		}
-		if (paddle1.x - 10 < ball.x && paddle1.x + 10 > ball.x && collision_counter == 0
-				&& paddle1.y + 18 > ball.y && paddle1.y + 7 < ball.y)
+
+		if (paddle2.x + 100 > ball.x && paddle2.x - 100 < ball.x && collision_counter == 0
+				&& paddle2.y + 180 > ball.y && paddle2.y - 180 < ball.y)
 		{
-			ball = speedup_reflection(ball);
-			collision_counter = COLLISION_COUNT;
-		}
-		if (paddle1.x - 10 < ball.x && paddle1.x + 10 > ball.x && collision_counter == 0
-				&& paddle1.y -7 > ball.y && paddle1.y -18 < ball.y)
-		{
-			ball = speedup_reflection(ball);
-			collision_counter = COLLISION_COUNT;
-		}
-		if (paddle2.x + 10 > ball.x && paddle2.x - 10 < ball.x && collision_counter == 0
-				&& paddle2.y + 6 > ball.y && paddle2.y -6 < ball.y)
-		{
-			ball.velocity_x *= -1;
-			collision_counter = COLLISION_COUNT;
-		}
-		if (paddle2.x + 10 > ball.x && paddle2.x - 10 < ball.x && collision_counter == 0
-				&& paddle2.y + 18 > ball.y && paddle2.y + 7 < ball.y)
-		{
-			ball = speedup_reflection(ball);
-			collision_counter = COLLISION_COUNT;
-		}
-		if (paddle2.x + 10 > ball.x && paddle2.x - 10 < ball.x && collision_counter == 0
-				&& paddle2.y -7 > ball.y && paddle2.y -18 < ball.y)
-		{
-			ball = speedup_reflection(ball);
+			//ball.velocity_x *= -1;
+			ball = reflect_ball(paddle2, ball);
 			collision_counter = COLLISION_COUNT;
 		}
 
 		/*Test if ball is touching top/bottom wall*/
-		if ( (ball.y <= 15 || ball.y >= 465) && collision_counter == 0)
+		if ( (ball.y <= 150 || ball.y >= 4650) && collision_counter == 0)
 		{
 			ball.velocity_y *= -1;
 			collision_counter = COLLISION_COUNT;
 		}
 		/* Test if ball is going to score */
-		if (ball.x < 5)
+		if (ball.x < 50)
 		{
-			ball.x = 320;
+			ball.x = 3200;
 			ball.velocity_x = -ball_speed;
 			ball.velocity_y = ball_speed;
 			p2_score+=1;
 		}
-		if (ball.x > 635)
+		if (ball.x > 6350)
 		{
-			ball.x = 320;
+			ball.x = 3200;
 			ball.velocity_x = ball_speed;
 			ball.velocity_y = ball_speed;
 			p1_score+=1;
@@ -321,26 +314,28 @@ int main()
 		/*Draw Everything*/
 		draw_rectangle(0, 0, 640-1, 480-1, 0x00);
 		draw_field();
+
+		/* Draw markers to determine where ball is going */
+		if (toggle_raytracing){
+			draw_line(scale_input(ball.x), scale_input(ball.y),
+					scale_input(ball_prime.x), scale_input(ball_prime.y), 79);
+			draw_line(scale_input(ball_prime.x), scale_input(ball_prime.y),
+					scale_input(ball_doubleprime.x), scale_input(ball_doubleprime.y), 103);
+			draw_line(scale_input(ball_doubleprime.x), scale_input(ball_doubleprime.y),
+					scale_input(ball_tprime.x), scale_input(ball_tprime.y), 163);
+		}
+
 		draw_paddle(paddle1.x, paddle1.y);
 		draw_paddle(paddle2.x, paddle2.y);
 		draw_ball(ball.x, ball.y);
 
 		/* Scores */
-		snprintf(score1, 3, "%d", p1_score);
-		snprintf(score2, 3, "%d", p2_score);
 		draw_int(200,40, p1_score, 0xFF);
 		draw_int(440,40, p2_score, 0xFF);
-		//print2screen(200, 40, 0xFF, 2, score1);
-		//print2screen(440, 40, 0xFF, 1, score2);
 
-		//print2screen(200, 200, 0xFF, 1, "Slowdown for Testing");
+//		print2screen(200, 200, 0xFF, 1, "Slowdown for Testing");
 
-		/* Draw markers to determine where ball is going */
-		if (toggle_raytracing){
-			draw_line(ball.x, ball.y, ball_prime.x, ball_prime.y, 0xE0);
-			draw_line(ball_prime.x, ball_prime.y, ball_doubleprime.x, ball_doubleprime.y, 0x1A);
-			draw_line(ball_doubleprime.x, ball_doubleprime.y, ball_tprime.x, ball_tprime.y, 0xFA);
-		}
+
 
 		ALT_CI_CI_FRAME_DONE_0;
 
