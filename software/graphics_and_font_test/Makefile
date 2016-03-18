@@ -191,6 +191,8 @@ BUILD_POST_PROCESS :=
 
 
 
+ALT_LIBRARY_ROOT_DIR := ../video_system_graphics_library
+include ../video_system_graphics_library/public.mk
 #END GENERATED
 
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
