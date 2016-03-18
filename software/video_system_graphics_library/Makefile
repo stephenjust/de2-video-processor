@@ -151,7 +151,8 @@ ACDS_VERSION := 12.1sp1
 LIB_NAME := video_system_graphics_library
 
 # Paths to C, C++, and assembly source files.
-C_SRCS :=
+C_SRCS += graphics_commands.c
+C_SRCS += graphics_benchmark.c
 CXX_SRCS :=
 ASM_SRCS :=
 
