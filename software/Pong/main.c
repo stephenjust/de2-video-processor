@@ -261,16 +261,24 @@ int main()
 		if (paddle1.x - 100 < ball.x && paddle1.x + 100 > ball.x && collision_counter == 0
 				&& paddle1.y + 180 > ball.y && paddle1.y - 180 < ball.y)
 		{
-			//ball.velocity_x *= -1;
 			ball = reflect_ball(paddle1, ball);
+			/*Rocket the ball back horizontally if A&B held during collision*/
+			if ( (controller_value & (1 << 4)) && (controller_value & (1 << 5)) && paddle_counter == 0){
+				ball.velocity_x = find_sign(ball.velocity_x)*MAX_BALL_SPEED;
+				ball.velocity_y = 0;
+			}
 			collision_counter = COLLISION_COUNT;
 		}
 
 		if (paddle2.x + 100 > ball.x && paddle2.x - 100 < ball.x && collision_counter == 0
 				&& paddle2.y + 180 > ball.y && paddle2.y - 180 < ball.y)
 		{
-			//ball.velocity_x *= -1;
 			ball = reflect_ball(paddle2, ball);
+			/*Rocket the ball back horizontally if A&B held during collision*/
+			if ( (controller_value & (1 << 4)) && (controller_value & (1 << 5)) && paddle_counter == 0){
+				ball.velocity_x = find_sign(ball.velocity_x)*MAX_BALL_SPEED;
+				ball.velocity_y = 0;
+			}
 			collision_counter = COLLISION_COUNT;
 		}
 
