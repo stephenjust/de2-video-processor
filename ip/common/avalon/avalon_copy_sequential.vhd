@@ -27,6 +27,8 @@ PORT(
 	s_address_start  : in     std_logic_vector(31 downto 0);
 	s_address_end    : in     std_logic_vector(31 downto 0);
 	d_address_start  : in     std_logic_vector(31 downto 0);
+	skip_byte_en     : in     std_logic;
+	skip_byte_value  : in     std_logic_vector(7 downto 0);
 	start            : in     std_logic;
 	done             : out    std_logic;
 
@@ -35,7 +37,7 @@ PORT(
 	avm_readdata     : in     std_logic_vector(DATA_WIDTH-1 downto 0);
 	avm_readdatavalid: in     std_logic;
 	avm_write        : buffer std_logic;
-	avm_writedata    : out    std_logic_vector(DATA_WIDTH-1 downto 0);
+	avm_writedata    : buffer std_logic_vector(DATA_WIDTH-1 downto 0);
 	avm_burstcount   : out    std_logic_vector(7 downto 0) := x"01";
 	avm_address      : buffer std_logic_vector(31 downto 0);
 	avm_waitrequest  : in     std_logic
@@ -51,6 +53,7 @@ ARCHITECTURE arch OF avalon_copy_sequential IS
 	SIGNAL fifo_empty : std_logic;
 	SIGNAL current_state : state;
 	SIGNAL is_reading : boolean;
+	SIGNAL skipped_byte : std_logic := '0';
 
 	FUNCTION min (a, b : std_logic_vector) RETURN std_logic_vector IS
 	BEGIN
@@ -72,14 +75,13 @@ BEGIN
 				current_state <= IDLE;
 			ELSIF current_state = IDLE THEN
 				done <= '0';
-				avm_write <= '0';
 				avm_read <= '0';
 				IF start = '1' THEN
 					current_state <= RUNNING;
 					read_remaining <= s_address_end - s_address_start;
 					avm_read <= '1';
 					avm_address <= s_address_start;
-					avm_burstcount <= min(read_remaining, x"20");
+					--avm_burstcount <= min(read_remaining, x"20");
 					count <= 1;
 					is_reading <= true;
 				ELSE
@@ -90,12 +92,11 @@ BEGIN
 
 				IF is_reading THEN
 					IF avm_readdatavalid = '1' THEN
-						avm_burstcount <= x"00";
+						--avm_burstcount <= x"00";
 						IF (DATA_WIDTH = 8 AND count >= read_remaining) OR (DATA_WIDTH = 16 AND 2*count >= read_remaining) OR count = 32 THEN
 							is_reading <= false;
 							address_next := s_address_end - read_remaining - conv_std_logic_vector(count, 32) + d_address_start - s_address_start;
 							avm_read <= '0';
-							avm_write <= '1';
 							avm_burstcount <= conv_std_logic_vector(count, 8);
 							IF DATA_WIDTH = 8 THEN
 								read_remaining <= read_remaining - conv_std_logic_vector(count, 32);
@@ -112,15 +113,13 @@ BEGIN
 						END IF;
 					END IF;
 				ELSE
-					IF avm_waitrequest = '0' THEN
-						avm_burstcount <= x"00";
+					IF avm_waitrequest = '0' OR skipped_byte = '1' THEN
+						--avm_burstcount <= x"00";
 						IF count = 0 THEN
 							IF read_remaining = 0 THEN
 								current_state <= IDLE;
-								avm_write <= '0';
 							ELSE
 								address_next := s_address_end - read_remaining - conv_std_logic_vector(count, 32);
-								avm_write <= '0';
 								avm_read <= '1';
 								is_reading <= true;
 								count <= 1;
@@ -139,6 +138,11 @@ BEGIN
 			END IF;
 		END IF;
 	END PROCESS control;
+
+	avm_write <= '1' WHEN current_state = RUNNING
+		AND is_reading = false
+		AND ((avm_writedata = skip_byte_value AND skip_byte_en = '1') OR skip_byte_en = '0') ELSE '0';
+	skipped_byte <= '1' WHEN skip_byte_en = '1' AND skip_byte_value = avm_writedata ELSE '0';
 
 	-- Instantiate an altera-provided single-clock FIFO
 	f0 : scfifo

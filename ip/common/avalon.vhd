@@ -45,6 +45,8 @@ PACKAGE avalon IS
 		s_address_start  : in     std_logic_vector(31 downto 0);
 		s_address_end    : in     std_logic_vector(31 downto 0);
 		d_address_start  : in     std_logic_vector(31 downto 0);
+		skip_byte_en     : in     std_logic;
+		skip_byte_value  : in     std_logic_vector(7 downto 0);
 		start            : in     std_logic;
 		done             : out    std_logic;
 
