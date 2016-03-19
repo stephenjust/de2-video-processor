@@ -228,19 +228,19 @@
          type = "String";
       }
    }
-   element ci_draw_circ_0.s0
-   {
-      datum baseAddress
-      {
-         value = "4231840";
-         type = "String";
-      }
-   }
    element ci_draw_rect_0.s0
    {
       datum baseAddress
       {
          value = "4231936";
+         type = "String";
+      }
+   }
+   element genesis_0.s0
+   {
+      datum baseAddress
+      {
+         value = "4232032";
          type = "String";
       }
    }
@@ -260,19 +260,11 @@
          type = "String";
       }
    }
-   element genesis_0.s0
+   element ci_draw_circ_0.s0
    {
       datum baseAddress
       {
-         value = "4232032";
-         type = "String";
-      }
-   }
-   element timer_0.s1
-   {
-      datum baseAddress
-      {
-         value = "4231968";
+         value = "4231840";
          type = "String";
       }
    }
@@ -294,6 +286,14 @@
       datum baseAddress
       {
          value = "4210688";
+         type = "String";
+      }
+   }
+   element timer_0.s1
+   {
+      datum baseAddress
+      {
+         value = "4231968";
          type = "String";
       }
    }
@@ -446,7 +446,7 @@
  <parameter name="projectName">de2_video_processor.qpf</parameter>
  <parameter name="sopcBorderPoints" value="false" />
  <parameter name="systemHash" value="1" />
- <parameter name="timeStamp" value="1458273706798" />
+ <parameter name="timeStamp" value="1458418520234" />
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
  <interface name="clk" internal="clk_0.clk_in" type="clock" dir="end" />
@@ -520,7 +520,7 @@
   <parameter name="setting_activateModelChecker" value="false" />
   <parameter name="setting_HDLSimCachesCleared" value="true" />
   <parameter name="setting_HBreakTest" value="false" />
-  <parameter name="muldiv_divider" value="false" />
+  <parameter name="muldiv_divider" value="true" />
   <parameter name="mpu_useLimit" value="false" />
   <parameter name="mpu_enabled" value="false" />
   <parameter name="mmu_enabled" value="false" />
@@ -552,7 +552,7 @@
   <parameter name="setting_interruptControllerType" value="Internal" />
   <parameter name="setting_branchPredictionType" value="Automatic" />
   <parameter name="setting_bhtPtrSz" value="8" />
-  <parameter name="muldiv_multiplierType" value="NoneSmall" />
+  <parameter name="muldiv_multiplierType" value="EmbeddedMulFast" />
   <parameter name="mpu_minInstRegionSize" value="12" />
   <parameter name="mpu_minDataRegionSize" value="12" />
   <parameter name="mmu_uitlbNumEntries" value="4" />
@@ -560,7 +560,7 @@
   <parameter name="mmu_tlbPtrSz" value="7" />
   <parameter name="mmu_tlbNumWays" value="16" />
   <parameter name="mmu_processIDNumBits" value="8" />
-  <parameter name="impl" value="Tiny" />
+  <parameter name="impl" value="Small" />
   <parameter name="icache_size" value="1024" />
   <parameter name="icache_ramBlockType" value="Automatic" />
   <parameter name="icache_numTCIM" value="0" />
@@ -2084,4 +2084,20 @@
    version="12.1"
    start="altpll_0.c1"
    end="ci_copy_rect_0.clock" />
+ <connection
+   kind="avalon"
+   version="12.1"
+   start="sgdma_0.descriptor_write"
+   end="sram_0.avalon_sram_slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x01080000" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="12.1"
+   start="sgdma_0.descriptor_read"
+   end="sram_0.avalon_sram_slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x01080000" />
+ </connection>
 </system>
