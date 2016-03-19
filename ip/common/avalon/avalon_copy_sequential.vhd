@@ -16,9 +16,6 @@ LIBRARY altera_mf;
 USE altera_mf.altera_mf_components.all;
 
 ENTITY avalon_copy_sequential IS
-GENERIC(
-	DATA_WIDTH       : integer := 8
-);
 PORT(
 	clk              : in     std_logic;
 	reset            : in     std_logic;
@@ -34,10 +31,10 @@ PORT(
 
 	-- Avalon-MM Master
 	avm_read         : out    std_logic;
-	avm_readdata     : in     std_logic_vector(DATA_WIDTH-1 downto 0);
+	avm_readdata     : in     std_logic_vector(7 downto 0);
 	avm_readdatavalid: in     std_logic;
 	avm_write        : buffer std_logic;
-	avm_writedata    : buffer std_logic_vector(DATA_WIDTH-1 downto 0);
+	avm_writedata    : buffer std_logic_vector(7 downto 0);
 	avm_burstcount   : out    std_logic_vector(7 downto 0) := x"01";
 	avm_address      : buffer std_logic_vector(31 downto 0);
 	avm_waitrequest  : in     std_logic
@@ -48,12 +45,15 @@ ARCHITECTURE arch OF avalon_copy_sequential IS
 
 	TYPE state IS (IDLE, RUNNING);
 
-	SIGNAL count : integer;
+	SIGNAL count : integer := 0;
 	SIGNAL read_remaining : std_logic_vector(31 downto 0);
 	SIGNAL fifo_empty : std_logic;
 	SIGNAL current_state : state;
 	SIGNAL is_reading : boolean;
 	SIGNAL skipped_byte : std_logic := '0';
+	SIGNAL chunk_offset : std_logic_vector(31 downto 0);
+	SIGNAL do_write : std_logic;
+	SIGNAL pending_waitrequest : std_logic;
 
 	FUNCTION min (a, b : std_logic_vector) RETURN std_logic_vector IS
 	BEGIN
@@ -76,14 +76,17 @@ BEGIN
 			ELSIF current_state = IDLE THEN
 				done <= '0';
 				avm_read <= '0';
+				do_write <= '0';
 				IF start = '1' THEN
 					current_state <= RUNNING;
 					read_remaining <= s_address_end - s_address_start;
 					avm_read <= '1';
 					avm_address <= s_address_start;
-					--avm_burstcount <= min(read_remaining, x"20");
-					count <= 1;
+					count <= 0;
+					chunk_offset <= (others => '0');
 					is_reading <= true;
+					avm_burstcount <= min(conv_std_logic_vector(32, 32), (s_address_end - s_address_start))(7 downto 0);
+					pending_waitrequest <= '1';
 				ELSE
 					current_state <= IDLE;
 				END IF;
@@ -91,63 +94,64 @@ BEGIN
 				address_next := avm_address;
 
 				IF is_reading THEN
-					IF avm_readdatavalid = '1' THEN
-						--avm_burstcount <= x"00";
-						IF (DATA_WIDTH = 8 AND count >= read_remaining) OR (DATA_WIDTH = 16 AND 2*count >= read_remaining) OR count = 32 THEN
-							is_reading <= false;
-							address_next := s_address_end - read_remaining - conv_std_logic_vector(count, 32) + d_address_start - s_address_start;
-							avm_read <= '0';
-							avm_burstcount <= conv_std_logic_vector(count, 8);
-							IF DATA_WIDTH = 8 THEN
-								read_remaining <= read_remaining - conv_std_logic_vector(count, 32);
-							ELSIF DATA_WIDTH = 16 THEN
-								read_remaining <= read_remaining - conv_std_logic_vector(2*count, 32);
-							END IF;
-						ELSE
-							IF DATA_WIDTH = 8 THEN
-								address_next := avm_address + x"1";
-							ELSIF DATA_WIDTH = 16 THEN
-								address_next := avm_address + x"2";
-							END IF;
-							count <= count + 1;
-						END IF;
+					-- For read bursts, de-assert read and the burstcount
+					-- after the transfer is acknowledged.
+					IF avm_waitrequest = '1' THEN
+						pending_waitrequest <= '0';
+					ELSIF pending_waitrequest <= '0' AND avm_waitrequest = '0' THEN
+						avm_read <= '0';
+						avm_burstcount <= (others => '0');
+					END IF;
+					IF count >= read_remaining OR count = 32 THEN
+						-- Done reading chunk. Start writing.
+						is_reading <= false;
+						address_next := d_address_start + chunk_offset;
+						chunk_offset <= chunk_offset + conv_std_logic_vector(count, 32);
+						avm_read <= '0';
+						read_remaining <= read_remaining - conv_std_logic_vector(count, 32);
+						do_write <= '1';
+						avm_burstcount <= x"01";
+					ELSIF avm_readdatavalid = '1' THEN
+						address_next := avm_address + x"1";
+						count <= count + 1;
 					END IF;
 				ELSE
 					IF avm_waitrequest = '0' OR skipped_byte = '1' THEN
-						--avm_burstcount <= x"00";
-						IF count = 0 THEN
+						avm_burstcount <= x"01";
+						IF count = 1 THEN
+							do_write <= '0';
 							IF read_remaining = 0 THEN
+								done <= '1';
 								current_state <= IDLE;
 							ELSE
+								avm_burstcount <= min(conv_std_logic_vector(32, 8), read_remaining(7 downto 0));
 								address_next := s_address_end - read_remaining - conv_std_logic_vector(count, 32);
 								avm_read <= '1';
+								pending_waitrequest <= '1';
 								is_reading <= true;
-								count <= 1;
+								count <= 0;
 							END IF;
 						ELSE
 							count <= count - 1;
-							IF DATA_WIDTH = 8 THEN
-								address_next := avm_address + x"1";
-							ELSIF DATA_WIDTH = 16 THEN
-								address_next := avm_address + x"2";
-							END IF;
+							address_next := avm_address + x"1";
 						END IF;
 						
 					END IF;
 				END IF;
+				avm_address <= address_next;
 			END IF;
 		END IF;
 	END PROCESS control;
 
 	avm_write <= '1' WHEN current_state = RUNNING
-		AND is_reading = false
+		AND do_write = '1'
 		AND ((avm_writedata = skip_byte_value AND skip_byte_en = '1') OR skip_byte_en = '0') ELSE '0';
 	skipped_byte <= '1' WHEN skip_byte_en = '1' AND skip_byte_value = avm_writedata ELSE '0';
 
 	-- Instantiate an altera-provided single-clock FIFO
 	f0 : scfifo
 	GENERIC MAP(
-		lpm_width              => DATA_WIDTH,
+		lpm_width              => 8,
 		lpm_widthu             => 6,
 		lpm_numwords           => 64,
 		lpm_showahead          => "ON",

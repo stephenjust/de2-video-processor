@@ -84,6 +84,7 @@ BEGIN
 	-- Do operation
 	op : PROCESS(ncs_ci_clk)
 		variable next_point, next_dest_point : point_t;
+		variable source_rect_width : unsigned(15 downto 0);
 	BEGIN
 		IF rising_edge(ncs_ci_clk) THEN
 			IF reset = '1' OR ncs_ci_reset = '1' THEN
@@ -91,12 +92,13 @@ BEGIN
 			ELSIF current_state = IDLE THEN
 				ncs_ci_done <= '0';
 				IF ncs_ci_start = '1' THEN
+					source_rect_width := rect_width(source_rect);
 					current_state <= RUNNING;
 					current_point <= source_rect.p1;
 					current_dest_point <= dest_rect.p1;
-					copy_src_address_start <= std_logic_vector(pixbuf_pixel_address(source_buffer, current_point));
-					copy_src_address_end <= std_logic_vector(pixbuf_pixel_address(source_buffer, current_point) + rect_width(source_rect) - to_unsigned(1, 16));
-					copy_dest_address_start <= std_logic_vector(pixbuf_pixel_address(dest_buffer, current_dest_point));
+					copy_src_address_start <= std_logic_vector(pixbuf_pixel_address(source_buffer, source_rect.p1));
+					copy_src_address_end <= std_logic_vector(pixbuf_pixel_address(source_buffer, source_rect.p1) + source_rect_width - to_unsigned(1, 16));
+					copy_dest_address_start <= std_logic_vector(pixbuf_pixel_address(dest_buffer, dest_rect.p1));
 					copy_start <= '1';
 				ELSE
 					current_state <= IDLE;
@@ -111,10 +113,11 @@ BEGIN
 						current_state <= IDLE;
 						ncs_ci_done <= '1';
 					ELSE
+						source_rect_width := rect_width(source_rect);
 						next_point.y := current_point.y + to_signed(1, 16);
 						next_dest_point.y := current_dest_point.y + to_signed(1, 16);
 						copy_src_address_start <= std_logic_vector(pixbuf_pixel_address(source_buffer, next_point));
-						copy_src_address_end <= std_logic_vector(pixbuf_pixel_address(source_buffer, next_point) + rect_width(source_rect) - to_unsigned(1, 16));
+						copy_src_address_end <= std_logic_vector(pixbuf_pixel_address(source_buffer, next_point) + source_rect_width - to_unsigned(1, 16));
 						copy_dest_address_start <= std_logic_vector(pixbuf_pixel_address(dest_buffer, next_dest_point));
 						copy_start <= '1';
 					END IF;
@@ -164,6 +167,10 @@ BEGIN
 						source_rect.p2.x <= signed(avs_s0_writedata(15 downto 0));
 					WHEN REG_SRC_RECT_Y2 =>
 						source_rect.p2.y <= signed(avs_s0_writedata(15 downto 0));
+					WHEN REG_DEST_RECT_X1 =>
+						dest_rect.p1.x <= signed(avs_s0_writedata(15 downto 0));
+					WHEN REG_DEST_RECT_Y1 =>
+						dest_rect.p1.y <= signed(avs_s0_writedata(15 downto 0));
 					WHEN REG_TRANS_ENABLE =>
 						trans_enable <= OR_REDUCE(avs_s0_writedata(15 downto 0));
 					WHEN REG_TRANS_COLOR =>

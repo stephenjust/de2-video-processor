@@ -34,9 +34,6 @@ PACKAGE avalon IS
 	END COMPONENT avalon_write_sequential;
 
 	COMPONENT avalon_copy_sequential IS
-	GENERIC(
-		DATA_WIDTH       : integer := 8
-	);
 	PORT(
 		clk              : in     std_logic;
 		reset            : in     std_logic;
@@ -52,10 +49,10 @@ PACKAGE avalon IS
 
 		-- Avalon-MM Master
 		avm_read         : out    std_logic;
-		avm_readdata     : in     std_logic_vector(DATA_WIDTH-1 downto 0);
+		avm_readdata     : in     std_logic_vector(7 downto 0);
 		avm_readdatavalid: in     std_logic;
 		avm_write        : out    std_logic;
-		avm_writedata    : out    std_logic_vector(DATA_WIDTH-1 downto 0);
+		avm_writedata    : out    std_logic_vector(7 downto 0);
 		avm_burstcount   : out    std_logic_vector(7 downto 0);
 		avm_address      : buffer std_logic_vector(31 downto 0);
 		avm_waitrequest  : in     std_logic
