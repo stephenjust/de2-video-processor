@@ -39,6 +39,22 @@ void draw_field()
 	}
 }
 
+void draw_table()
+{
+	//white background
+	draw_rectangle(0, 0, 640-1, 480-1, 0xFF);
+	//walls on table
+	draw_rectangle(0, 0, 640-1, 10, 139);
+	draw_rectangle(0, 480-11, 640-1, 480-1, 139);
+	draw_rectangle(0, 11, 10, 159, 139);
+	draw_rectangle(0, 320, 10, 479, 139);
+	draw_rectangle(620, 11, 639, 159, 139);
+	draw_rectangle(620, 320, 639, 479, 139);
+
+	//center of board
+	draw_rectangle(310, 11, 330, 469, 192);
+}
+
 void draw_int(int x, int y, int value, int color){
 	/*
 	 * Fonts based on https://saelaenx.files.wordpress.com/2012/10/emon-font-size-04-01.png
@@ -201,6 +217,24 @@ void draw_int(int x, int y, int value, int color){
 
 	else
 		return;
+}
+
+void draw_wall(){
+	//136 = brown, 219 = grey, 73=dark grey
+	draw_rectangle( (280), (11), (360), (468), 68);
+	int i, j, k;
+	//Lines slow down the game speed by a fair bit.
+//	for (i = 0; i < 45; i++){
+//		draw_line(280, 20+i*10, 360, 20+i*10, 136);
+//		if (i%2 == 0){
+//			for (j = 0; j < 3; j++)
+//				draw_line(300+j*20, 10+i*10, 300+j*20, 20+i*10, 104);
+//		}
+//		else{
+//			for (j = 0; j < 4; j++)
+//				draw_line(290+j*20, 10+i*10, 290+j*20, 20+i*10, 104);
+//		}
+//	}
 }
 
 void end_game(int p1_score, int p2_score)

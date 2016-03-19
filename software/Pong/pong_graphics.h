@@ -13,6 +13,8 @@ void draw_field();
 
 void draw_int(int x, int y, int scale, int value, int color);
 
+void draw_wall();
+
 void end_game(int p1_score, int p2_score);
 
 #endif /* __PONGGFX_H_ */
