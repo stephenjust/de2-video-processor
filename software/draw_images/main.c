@@ -15,6 +15,7 @@
 
 #define PALETTE_SIZE 256
 #define SDRAM_VIDEO_OFFSET 0x300000
+#define SDRAM_IMAGE_OFFSET 0x500000
 #define CHUNK_SIZE 2048
 
 // BMP file offsets
@@ -23,6 +24,56 @@
 #define WIDTH_OFFSET 0x12
 #define HEIGHT_OFFSET 0x16
 #define BITS_OFFSET 0x1C
+
+typedef struct pixbuf_t {
+	void *address;
+	unsigned short width;
+	unsigned short height;
+} pixbuf_t;
+
+typedef struct point_t {
+	unsigned short x;
+	unsigned short y;
+} point_t;
+
+void *pixbuf_point_address(pixbuf_t *buf, point_t *point)
+{
+	return buf->address + point->x + point->y * buf->width;
+}
+
+void copy_window(pixbuf_t *source_buf, pixbuf_t *dest_buf, point_t *src_p1, point_t *src_p2, point_t *dest_p1)
+{
+	alt_sgdma_dev *dev;
+	alt_sgdma_descriptor descriptor, next_descriptor;
+	short int i;
+	short int num_rows = src_p2->y - src_p1->y + 1;
+	short int num_cols = src_p2->x - src_p1->x + 1;
+	point_t next_src_point, next_dest_point;
+
+	dev = alt_avalon_sgdma_open(SGDMA_0_NAME);
+
+	// Construct standard copy descriptors
+	alt_avalon_sgdma_construct_mem_to_mem_desc(
+			&descriptor,
+			&next_descriptor,
+			(alt_u32 *) 0,
+			(alt_u32 *) 0,
+			num_cols,
+			0,
+			0);
+	next_src_point.x = src_p1->x;
+	next_src_point.y = src_p1->y;
+	next_dest_point.x = dest_p1->x;
+	next_dest_point.y = dest_p1->y;
+
+	for (i = 0; i < num_rows; i++) {
+		descriptor.read_addr = pixbuf_point_address(source_buf, &next_src_point);
+		descriptor.write_addr = pixbuf_point_address(dest_buf, &next_dest_point);
+		alt_avalon_sgdma_do_sync_transfer(dev, &descriptor);
+		next_src_point.y++;
+		next_dest_point.y++;
+	}
+}
 
 short int copy_file(EmbeddedFileSystem *efsl, char *file_name, void *dest_addr)
 {
@@ -165,21 +216,68 @@ int main()
 	else
 		printf("...success!\n");
 
-	while (1)
-	{
-		copy_file(&efsl, "fish.pal", (void *) COLOUR_PALETTE_SHIFTER_0_BASE);
-		copy_bmp(&efsl, "fish.bmp", (void *) SRAM_0_BASE);
-		copy_file(&efsl, "fish_a.pal", (void *) COLOUR_PALETTE_SHIFTER_0_BASE);
-		copy_bmp(&efsl, "fish_a.bmp", (void *) SRAM_0_BASE);
-		copy_file(&efsl, "igloo.pal", (void *) COLOUR_PALETTE_SHIFTER_0_BASE);
-		copy_bmp(&efsl, "igloo.bmp", (void *) SRAM_0_BASE);
-		copy_file(&efsl, "igloo_a.pal", (void *) COLOUR_PALETTE_SHIFTER_0_BASE);
-		copy_bmp(&efsl, "igloo_a.bmp", (void *) SRAM_0_BASE);
-		copy_file(&efsl, "stove.pal", (void *) COLOUR_PALETTE_SHIFTER_0_BASE);
-		copy_bmp(&efsl, "stove.bmp", (void *) SRAM_0_BASE);
-		copy_file(&efsl, "stove_a.pal", (void *) COLOUR_PALETTE_SHIFTER_0_BASE);
-		copy_bmp(&efsl, "stove_a.bmp", (void *) SRAM_0_BASE);
-	}
+	copy_file(&efsl, "fish.pal", (void *) COLOUR_PALETTE_SHIFTER_0_BASE);
+	copy_bmp(&efsl, "fish.bmp", (void *) SDRAM_0_BASE + SDRAM_IMAGE_OFFSET);
+
+	printf("Copying image buffer to output buffer\n");
+//	pixbuf_t source_buf = {
+//			.address = SDRAM_0_BASE + SDRAM_IMAGE_OFFSET,
+//			.width = 64,
+//			.height = 64
+//	};
+//	pixbuf_t dest_buf = {
+//			.address = SDRAM_0_BASE + SDRAM_VIDEO_OFFSET,
+//			.width = 640,
+//			.height = 480
+//	};
+//	point_t src_p1 = {
+//			.x = 0,
+//			.y = 0
+//	};
+//	point_t src_p2 = {
+//			.x = 63,
+//			.y = 63
+//	};
+//	point_t dest_p1 = {
+//			.x = 0,
+//			.y = 0
+//	};
+//
+//	copy_window(&source_buf, &dest_buf, &src_p1, &src_p2, &dest_p1);
+//	CONSTANT REG_SRC_BUF_ADDR  : std_logic_vector(3 downto 0) := B"0000";
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 0, SDRAM_0_BASE + SDRAM_IMAGE_OFFSET);
+//	CONSTANT REG_SRC_W         : std_logic_vector(3 downto 0) := B"0001";
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 4, 640);
+//	CONSTANT REG_SRC_H         : std_logic_vector(3 downto 0) := B"0010";
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 8, 480);
+//	CONSTANT REG_DEST_BUF_ADDR : std_logic_vector(3 downto 0) := B"0011";
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 12, SDRAM_0_BASE + SDRAM_VIDEO_OFFSET);
+//	CONSTANT REG_DEST_W        : std_logic_vector(3 downto 0) := B"0100";
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 16, 640);
+//	CONSTANT REG_DEST_H        : std_logic_vector(3 downto 0) := B"0101";
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 20, 480);
+//	CONSTANT REG_SRC_RECT_X1   : std_logic_vector(3 downto 0) := B"0110";
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 24, 20);
+//	CONSTANT REG_SRC_RECT_Y1   : std_logic_vector(3 downto 0) := B"0111";
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 28, 10);
+//	CONSTANT REG_SRC_RECT_X2   : std_logic_vector(3 downto 0) := B"1000";
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 32, 639);
+//	CONSTANT REG_SRC_RECT_Y2   : std_logic_vector(3 downto 0) := B"1001";
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 36, 479);
+//	CONSTANT REG_DEST_RECT_X1  : std_logic_vector(3 downto 0) := B"1010";
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 40, 20);
+//	CONSTANT REG_DEST_RECT_Y1  : std_logic_vector(3 downto 0) := B"1011";
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 44, 10);
+//	CONSTANT REG_TRANS_ENABLE  : std_logic_vector(3 downto 0) := B"1100";
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 48, 0);
+//	CONSTANT REG_TRANS_COLOR   : std_logic_vector(3 downto 0) := B"1101";
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 52, 0);
+	ALT_CI_CI_COPY_RECT_0;
+
+	ALT_CI_CI_FRAME_DONE_0;
+	printf("Done!\n");
+
+	while (1) {};
 
 	return 0;
 }

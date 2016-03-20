@@ -47,13 +47,14 @@ ARCHITECTURE arch OF avalon_copy_sequential IS
 
 	SIGNAL count : integer := 0;
 	SIGNAL read_remaining : std_logic_vector(31 downto 0);
-	SIGNAL fifo_empty : std_logic;
+	SIGNAL fifo_empty, fifo_full : std_logic;
 	SIGNAL current_state : state;
 	SIGNAL is_reading : boolean;
 	SIGNAL skipped_byte : std_logic := '0';
 	SIGNAL chunk_offset : std_logic_vector(31 downto 0);
 	SIGNAL do_write : std_logic;
-	SIGNAL pending_waitrequest : std_logic;
+	SIGNAL fifo_read, fifo_write, fifo_reset : std_logic;
+	SIGNAL fifo_usedw : std_logic_vector(5 downto 0);
 
 	FUNCTION min (a, b : std_logic_vector) RETURN std_logic_vector IS
 	BEGIN
@@ -79,14 +80,13 @@ BEGIN
 				do_write <= '0';
 				IF start = '1' THEN
 					current_state <= RUNNING;
-					read_remaining <= s_address_end - s_address_start;
+					read_remaining <= s_address_end - s_address_start + '1';
 					avm_read <= '1';
 					avm_address <= s_address_start;
 					count <= 0;
 					chunk_offset <= (others => '0');
 					is_reading <= true;
-					avm_burstcount <= min(conv_std_logic_vector(32, 32), (s_address_end - s_address_start))(7 downto 0);
-					pending_waitrequest <= '1';
+					avm_burstcount <= min(conv_std_logic_vector(64, 32), (s_address_end - s_address_start + '1'))(7 downto 0);
 				ELSE
 					current_state <= IDLE;
 				END IF;
@@ -96,21 +96,20 @@ BEGIN
 				IF is_reading THEN
 					-- For read bursts, de-assert read and the burstcount
 					-- after the transfer is acknowledged.
-					IF avm_waitrequest = '1' THEN
-						pending_waitrequest <= '0';
-					ELSIF pending_waitrequest <= '0' AND avm_waitrequest = '0' THEN
+					IF avm_waitrequest = '0' THEN
 						avm_read <= '0';
-						avm_burstcount <= (others => '0');
+						avm_burstcount <= x"01";
 					END IF;
-					IF count >= read_remaining OR count = 32 THEN
+					IF (count + 1) >= read_remaining OR (count + 1) = 64 THEN
 						-- Done reading chunk. Start writing.
 						is_reading <= false;
 						address_next := d_address_start + chunk_offset;
-						chunk_offset <= chunk_offset + conv_std_logic_vector(count, 32);
+						chunk_offset <= chunk_offset + conv_std_logic_vector(count+1, 32);
 						avm_read <= '0';
-						read_remaining <= read_remaining - conv_std_logic_vector(count, 32);
+						read_remaining <= read_remaining - conv_std_logic_vector(count+1, 32);
 						do_write <= '1';
 						avm_burstcount <= x"01";
+						count <= count + 1;
 					ELSIF avm_readdatavalid = '1' THEN
 						address_next := avm_address + x"1";
 						count <= count + 1;
@@ -124,10 +123,9 @@ BEGIN
 								done <= '1';
 								current_state <= IDLE;
 							ELSE
-								avm_burstcount <= min(conv_std_logic_vector(32, 8), read_remaining(7 downto 0));
-								address_next := s_address_end - read_remaining - conv_std_logic_vector(count, 32);
+								avm_burstcount <= min(conv_std_logic_vector(64, 32), read_remaining)(7 downto 0);
+								address_next := s_address_start + chunk_offset;
 								avm_read <= '1';
-								pending_waitrequest <= '1';
 								is_reading <= true;
 								count <= 0;
 							END IF;
@@ -148,6 +146,10 @@ BEGIN
 		AND ((avm_writedata = skip_byte_value AND skip_byte_en = '1') OR skip_byte_en = '0') ELSE '0';
 	skipped_byte <= '1' WHEN skip_byte_en = '1' AND skip_byte_value = avm_writedata ELSE '0';
 
+	fifo_write <= avm_readdatavalid and not fifo_full;
+	fifo_read <= avm_write and not avm_waitrequest and not fifo_empty;
+	fifo_reset <= reset or start;
+
 	-- Instantiate an altera-provided single-clock FIFO
 	f0 : scfifo
 	GENERIC MAP(
@@ -162,14 +164,16 @@ BEGIN
 	)
 	PORT MAP(
 		clock       => clk,
-		aclr        => reset,
+		aclr        => fifo_reset,
 
-		wrreq       => avm_readdatavalid,
+		wrreq       => fifo_write,
 		data        => avm_readdata,
 
-		rdreq       => avm_write and not avm_waitrequest,
+		rdreq       => fifo_read,
 		q           => avm_writedata,
 
+		usedw       => fifo_usedw,
+		full        => fifo_full,
 		empty       => fifo_empty
 	);
 END ARCHITECTURE arch;
