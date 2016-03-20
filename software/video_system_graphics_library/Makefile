@@ -153,6 +153,25 @@ LIB_NAME := video_system_graphics_library
 # Paths to C, C++, and assembly source files.
 C_SRCS += graphics_commands.c
 C_SRCS += graphics_benchmark.c
+C_SRCS += efsl/debug.c
+C_SRCS += efsl/dir.c
+C_SRCS += efsl/disc.c
+C_SRCS += efsl/efs.c
+C_SRCS += efsl/extract.c
+C_SRCS += efsl/fat.c
+C_SRCS += efsl/file.c
+C_SRCS += efsl/fs.c
+C_SRCS += efsl/ioman.c
+C_SRCS += efsl/ls.c
+C_SRCS += efsl/mkfs.c
+C_SRCS += efsl/nios2.c
+C_SRCS += efsl/nios2_ramdisk.c
+C_SRCS += efsl/partition.c
+C_SRCS += efsl/plibc.c
+C_SRCS += efsl/sd.c
+C_SRCS += efsl/time.c
+C_SRCS += efsl/ui.c
+C_SRCS += sdcard_ops.c
 CXX_SRCS :=
 ASM_SRCS :=
 

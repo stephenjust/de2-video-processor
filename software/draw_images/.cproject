@@ -274,9 +274,7 @@
 									<listOptionValue builtIn="false" value="__GCC_ATOMIC_CHAR16_T_LOCK_FREE"/>
 									<listOptionValue builtIn="false" value="__CHAR16_TYPE__"/>
 								</option>
-								<option id="gnu.cpp.compiler.option.include.paths.987768862" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="/home/stephen/school/ECE492/de2-video-processor/software/libefsl"/>
-								</option>
+								<option id="gnu.cpp.compiler.option.include.paths.987768862" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1839348223" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.base.978056948" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base">
@@ -529,23 +527,19 @@
 									<listOptionValue builtIn="false" value="__GCC_ATOMIC_CHAR16_T_LOCK_FREE"/>
 									<listOptionValue builtIn="false" value="__CHAR16_TYPE__"/>
 								</option>
-								<option id="gnu.c.compiler.option.include.paths.551805273" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="/home/stephen/school/ECE492/de2-video-processor/software/libefsl"/>
-								</option>
+								<option id="gnu.c.compiler.option.include.paths.551805273" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath"/>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.592787538" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.linker.base.269390208" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
 							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.1153492146" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base">
-								<option id="gnu.cpp.link.option.libs.1945584217" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/libefsl/liblibefsl.a}&quot;"/>
-								</option>
+								<option id="gnu.cpp.link.option.libs.1945584217" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.500647601" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
 								</inputType>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.assembler.base.1421807188" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.base">
-								<option id="gnu.both.asm.option.include.paths.2030666419" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath"/>
+								<option id="gnu.both.asm.option.include.paths.2030666419" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths"/>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1565370182" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
 						</toolChain>
@@ -564,7 +558,7 @@
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings">
-				<externalSettings containerId="libefsl;" factoryId="org.eclipse.cdt.core.cfg.export.settings.sipplier"/>
+				<externalSettings containerId="video_system_graphics_library;" factoryId="org.eclipse.cdt.core.cfg.export.settings.sipplier"/>
 			</storageModule>
 		</cconfiguration>
 	</storageModule>

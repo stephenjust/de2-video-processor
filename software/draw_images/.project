@@ -3,7 +3,7 @@
 	<name>draw_images</name>
 	<comment></comment>
 	<projects>
-		<project>libefsl</project>
+		<project>video_system_graphics_library</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
