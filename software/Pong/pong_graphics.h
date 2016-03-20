@@ -11,7 +11,7 @@ void draw_paddle(int x, int y);
 
 void draw_field();
 
-void draw_int(int x, int y, int scale, int value, int color);
+void draw_int(int x, int y, int value, int color);
 
 void draw_wall();
 

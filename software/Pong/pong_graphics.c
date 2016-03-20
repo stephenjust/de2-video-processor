@@ -1,7 +1,7 @@
 #include <system.h>
 #include <io.h>
 
-#include "graphics_commands.h"
+#include <graphics_commands.h>
 
 int scale_input(int x){
 	return x / 10;

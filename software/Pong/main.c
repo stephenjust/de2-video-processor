@@ -7,6 +7,8 @@
 #include <sys/alt_stdio.h>
 #include <string.h>
 
+#include "pong_graphics.h"
+
 #define PALETTE_SIZE 256
 #define SDRAM_VIDEO_OFFSET 0x300000
 

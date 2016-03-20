@@ -1,7 +1,7 @@
 #ifndef __GRAPHICSCMDS_H_
 #define __GRAPHICSCMDS_H_
 
-
+#include "graphics_defs.h"
 
 #define PALETTE_SIZE 256
 #define SDRAM_VIDEO_OFFSET 0x300000

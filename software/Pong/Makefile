@@ -143,7 +143,6 @@ ELF := Pong.elf
 
 # Paths to C, C++, and assembly source files.
 C_SRCS += main.c
-C_SRCS += graphics_commands.c
 C_SRCS += pong_graphics.c
 CXX_SRCS :=
 ASM_SRCS :=
@@ -182,9 +181,9 @@ SYS_LIB :=
 BSP_ROOT_DIR := ../video_system_bsp/
 
 # List of application specific include directories, library directories and library names
-APP_INCLUDE_DIRS :=
-APP_LIBRARY_DIRS :=
-APP_LIBRARY_NAMES :=
+APP_INCLUDE_DIRS := ../video_system_graphics_library
+APP_LIBRARY_DIRS := ../video_system_graphics_library
+APP_LIBRARY_NAMES := video_system_graphics_library
 
 # Pre- and post- processor settings.
 BUILD_PRE_PROCESS :=
@@ -192,6 +191,8 @@ BUILD_POST_PROCESS :=
 
 
 
+ALT_LIBRARY_ROOT_DIR := ../video_system_graphics_library
+include ../video_system_graphics_library/public.mk
 #END GENERATED
 
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
