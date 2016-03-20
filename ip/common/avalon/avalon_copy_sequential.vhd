@@ -143,11 +143,11 @@ BEGIN
 
 	avm_write <= '1' WHEN current_state = RUNNING
 		AND do_write = '1'
-		AND ((avm_writedata = skip_byte_value AND skip_byte_en = '1') OR skip_byte_en = '0') ELSE '0';
-	skipped_byte <= '1' WHEN skip_byte_en = '1' AND skip_byte_value = avm_writedata ELSE '0';
+		AND ((avm_writedata /= skip_byte_value AND skip_byte_en = '1') OR skip_byte_en = '0') ELSE '0';
+	skipped_byte <= '1' WHEN do_write = '1' AND skip_byte_en = '1' AND skip_byte_value = avm_writedata ELSE '0';
 
 	fifo_write <= avm_readdatavalid and not fifo_full;
-	fifo_read <= avm_write and not avm_waitrequest and not fifo_empty;
+	fifo_read <= ((avm_write and not avm_waitrequest) or skipped_byte) and not fifo_empty;
 	fifo_reset <= reset or start;
 
 	-- Instantiate an altera-provided single-clock FIFO

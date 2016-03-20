@@ -216,8 +216,8 @@ int main()
 	else
 		printf("...success!\n");
 
-	copy_file(&efsl, "fish.pal", (void *) COLOUR_PALETTE_SHIFTER_0_BASE);
-	copy_bmp(&efsl, "fish.bmp", (void *) SDRAM_0_BASE + SDRAM_IMAGE_OFFSET);
+	copy_file(&efsl, "trump.pal", (void *) COLOUR_PALETTE_SHIFTER_0_BASE);
+	copy_bmp(&efsl, "trump.bmp", (void *) SDRAM_0_BASE + SDRAM_IMAGE_OFFSET);
 
 	printf("Copying image buffer to output buffer\n");
 //	pixbuf_t source_buf = {
@@ -247,9 +247,9 @@ int main()
 //	CONSTANT REG_SRC_BUF_ADDR  : std_logic_vector(3 downto 0) := B"0000";
 	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 0, SDRAM_0_BASE + SDRAM_IMAGE_OFFSET);
 //	CONSTANT REG_SRC_W         : std_logic_vector(3 downto 0) := B"0001";
-	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 4, 640);
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 4, 140);
 //	CONSTANT REG_SRC_H         : std_logic_vector(3 downto 0) := B"0010";
-	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 8, 480);
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 8, 169);
 //	CONSTANT REG_DEST_BUF_ADDR : std_logic_vector(3 downto 0) := B"0011";
 	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 12, SDRAM_0_BASE + SDRAM_VIDEO_OFFSET);
 //	CONSTANT REG_DEST_W        : std_logic_vector(3 downto 0) := B"0100";
@@ -257,21 +257,21 @@ int main()
 //	CONSTANT REG_DEST_H        : std_logic_vector(3 downto 0) := B"0101";
 	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 20, 480);
 //	CONSTANT REG_SRC_RECT_X1   : std_logic_vector(3 downto 0) := B"0110";
-	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 24, 20);
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 24, 0);
 //	CONSTANT REG_SRC_RECT_Y1   : std_logic_vector(3 downto 0) := B"0111";
-	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 28, 10);
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 28, 0);
 //	CONSTANT REG_SRC_RECT_X2   : std_logic_vector(3 downto 0) := B"1000";
-	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 32, 639);
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 32, 139);
 //	CONSTANT REG_SRC_RECT_Y2   : std_logic_vector(3 downto 0) := B"1001";
-	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 36, 479);
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 36, 168);
 //	CONSTANT REG_DEST_RECT_X1  : std_logic_vector(3 downto 0) := B"1010";
 	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 40, 20);
 //	CONSTANT REG_DEST_RECT_Y1  : std_logic_vector(3 downto 0) := B"1011";
 	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 44, 10);
 //	CONSTANT REG_TRANS_ENABLE  : std_logic_vector(3 downto 0) := B"1100";
-	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 48, 0);
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 48, 1);
 //	CONSTANT REG_TRANS_COLOR   : std_logic_vector(3 downto 0) := B"1101";
-	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 52, 0);
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 52, 223);
 	ALT_CI_CI_COPY_RECT_0;
 
 	ALT_CI_CI_FRAME_DONE_0;
