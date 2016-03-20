@@ -16,9 +16,6 @@
 #include <altera_avalon_sgdma_descriptor.h>
 #include <altera_avalon_sgdma_regs.h>
 
-#define PALETTE_SIZE 256
-#define SDRAM_VIDEO_OFFSET 0x300000
-
 int min(int a, int b) {
 	if (a < b) return a;
 	else return b;
@@ -29,6 +26,7 @@ int main()
 	char error;
 	EmbeddedFileSystem efsl;
 
+	graphics_init();
 	clear_screen();
 
 	// Initialises the filesystem on the SD card, if the filesystem does not
@@ -51,7 +49,7 @@ int main()
 
 	printf("Copying image buffer to output buffer\n");
 	pixbuf_t sdram_buf = {
-			.base_address = SDRAM_0_BASE + SDRAM_VIDEO_OFFSET,
+			.base_address = graphics_sdram_backbuffer,
 			.width = 640,
 			.height = 480
 	};

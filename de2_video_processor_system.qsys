@@ -236,7 +236,7 @@
          type = "String";
       }
    }
-   element genesis_0.s0
+   element video_fb_streamer_0.s0
    {
       datum baseAddress
       {
@@ -244,11 +244,19 @@
          type = "String";
       }
    }
-   element ci_draw_line_0.s0
+   element ci_draw_circ_0.s0
    {
       datum baseAddress
       {
-         value = "4231904";
+         value = "4231840";
+         type = "String";
+      }
+   }
+   element genesis_0.s0
+   {
+      datum baseAddress
+      {
+         value = "4232036";
          type = "String";
       }
    }
@@ -260,11 +268,19 @@
          type = "String";
       }
    }
-   element ci_draw_circ_0.s0
+   element ci_draw_line_0.s0
    {
       datum baseAddress
       {
-         value = "4231840";
+         value = "4231904";
+         type = "String";
+      }
+   }
+   element onchip_memory2_0.s1
+   {
+      datum baseAddress
+      {
+         value = "4210688";
          type = "String";
       }
    }
@@ -278,14 +294,6 @@
       datum baseAddress
       {
          value = "8388608";
-         type = "String";
-      }
-   }
-   element onchip_memory2_0.s1
-   {
-      datum baseAddress
-      {
-         value = "4210688";
          type = "String";
       }
    }
@@ -446,7 +454,7 @@
  <parameter name="projectName">de2_video_processor.qpf</parameter>
  <parameter name="sopcBorderPoints" value="false" />
  <parameter name="systemHash" value="1" />
- <parameter name="timeStamp" value="1458418520234" />
+ <parameter name="timeStamp" value="1458501666271" />
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
  <interface name="clk" internal="clk_0.clk_in" type="clock" dir="end" />
@@ -586,7 +594,7 @@
   <parameter name="tightlyCoupledInstructionMaster2AddrWidth" value="1" />
   <parameter name="tightlyCoupledInstructionMaster3AddrWidth" value="1" />
   <parameter name="instSlaveMapParam"><![CDATA[<address-map><slave name='onchip_memory2_0.s1' start='0x404000' end='0x408000' /><slave name='nios2_qsys_0.jtag_debug_module' start='0x408800' end='0x409000' /><slave name='spi_0.spi_control_port' start='0x4092C0' end='0x4092E0' /><slave name='sdram_0.s1' start='0x800000' end='0x1000000' /><slave name='sram_0.avalon_sram_slave' start='0x1080000' end='0x1100000' /></address-map>]]></parameter>
-  <parameter name="dataSlaveMapParam"><![CDATA[<address-map><slave name='generic_tristate_controller_0.uas' start='0x0' end='0x400000' /><slave name='onchip_memory2_0.s1' start='0x404000' end='0x408000' /><slave name='nios2_qsys_0.jtag_debug_module' start='0x408800' end='0x409000' /><slave name='colour_palette_shifter_0.paletteram' start='0x409000' end='0x409200' /><slave name='ci_copy_rect_0.s0' start='0x409200' end='0x409240' /><slave name='sgdma_0.csr' start='0x409240' end='0x409280' /><slave name='ci_draw_circ_0.s0' start='0x4092A0' end='0x4092C0' /><slave name='spi_0.spi_control_port' start='0x4092C0' end='0x4092E0' /><slave name='ci_draw_line_0.s0' start='0x4092E0' end='0x409300' /><slave name='ci_draw_rect_0.s0' start='0x409300' end='0x409320' /><slave name='timer_0.s1' start='0x409320' end='0x409340' /><slave name='altpll_0.pll_slave' start='0x409340' end='0x409350' /><slave name='sysid_qsys_0.control_slave' start='0x409350' end='0x409358' /><slave name='jtag_uart_0.avalon_jtag_slave' start='0x409358' end='0x409360' /><slave name='genesis_0.s0' start='0x409360' end='0x409364' /><slave name='sdram_0.s1' start='0x800000' end='0x1000000' /><slave name='sram_0.avalon_sram_slave' start='0x1080000' end='0x1100000' /></address-map>]]></parameter>
+  <parameter name="dataSlaveMapParam"><![CDATA[<address-map><slave name='generic_tristate_controller_0.uas' start='0x0' end='0x400000' /><slave name='onchip_memory2_0.s1' start='0x404000' end='0x408000' /><slave name='nios2_qsys_0.jtag_debug_module' start='0x408800' end='0x409000' /><slave name='colour_palette_shifter_0.paletteram' start='0x409000' end='0x409200' /><slave name='ci_copy_rect_0.s0' start='0x409200' end='0x409240' /><slave name='sgdma_0.csr' start='0x409240' end='0x409280' /><slave name='ci_draw_circ_0.s0' start='0x4092A0' end='0x4092C0' /><slave name='spi_0.spi_control_port' start='0x4092C0' end='0x4092E0' /><slave name='ci_draw_line_0.s0' start='0x4092E0' end='0x409300' /><slave name='ci_draw_rect_0.s0' start='0x409300' end='0x409320' /><slave name='timer_0.s1' start='0x409320' end='0x409340' /><slave name='altpll_0.pll_slave' start='0x409340' end='0x409350' /><slave name='sysid_qsys_0.control_slave' start='0x409350' end='0x409358' /><slave name='jtag_uart_0.avalon_jtag_slave' start='0x409358' end='0x409360' /><slave name='video_fb_streamer_0.s0' start='0x409360' end='0x409364' /><slave name='genesis_0.s0' start='0x409364' end='0x409368' /><slave name='sdram_0.s1' start='0x800000' end='0x1000000' /><slave name='sram_0.avalon_sram_slave' start='0x1080000' end='0x1100000' /></address-map>]]></parameter>
   <parameter name="clockFrequency" value="50000000" />
   <parameter name="deviceFamilyName" value="Cyclone II" />
   <parameter name="internalIrqMaskSystemInfo" value="15" />
@@ -895,7 +903,6 @@
    enabled="1"
    name="video_fb_streamer_0">
   <parameter name="SRAM_BUF_START_ADDRESS" value="17301504" />
-  <parameter name="SDRAM_BUF_START_ADDRESS" value="11534336" />
   <parameter name="BITS_PER_PIXEL" value="8" />
   <parameter name="FRAME_WIDTH" value="640" />
   <parameter name="FRAME_HEIGHT" value="480" />
@@ -1666,7 +1673,7 @@
    start="nios2_qsys_0.data_master"
    end="genesis_0.s0">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00409360" />
+  <parameter name="baseAddress" value="0x00409364" />
  </connection>
  <connection
    kind="reset"
@@ -2099,5 +2106,13 @@
    end="sram_0.avalon_sram_slave">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x01080000" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="12.1"
+   start="nios2_qsys_0.data_master"
+   end="video_fb_streamer_0.s0">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00409360" />
  </connection>
 </system>

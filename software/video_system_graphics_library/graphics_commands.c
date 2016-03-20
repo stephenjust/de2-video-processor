@@ -1,20 +1,34 @@
 #include <system.h>
 #include <io.h>
+#include <stdlib.h>
 
 #include "graphics_defs.h"
 #include "graphics_commands.h"
 #include "palettes.h"
 
+void *graphics_sdram_backbuffer;
+
+char graphics_init()
+{
+	graphics_sdram_backbuffer = malloc(640*480);
+	if (graphics_sdram_backbuffer == 0) {
+		return -E_NOMEM;
+	} else {
+		IOWR_32DIRECT(VIDEO_FB_STREAMER_0_BASE, 0, graphics_sdram_backbuffer);
+		return E_SUCCESS;
+	}
+}
 
 void draw_pixel(int x1, int y1, unsigned char color){
-	IOWR_8DIRECT(SDRAM_0_BASE, SDRAM_VIDEO_OFFSET + y1 * 640 + x1, color);
+	unsigned int offset = (unsigned int) graphics_sdram_backbuffer - SDRAM_0_BASE + y1 * 640 + x1;
+	IOWR_8DIRECT(SDRAM_0_BASE, offset, color);
 }
 
 
 
 void draw_rectangle(int x1, int y1, int x2, int y2, unsigned char color)
 {
-	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 0, SDRAM_0_BASE + SDRAM_VIDEO_OFFSET); // Frame address
+	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 0, graphics_sdram_backbuffer); // Frame address
 	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 4, x1); // X1
 	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 8, y1); // Y1
 	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 12, x2); // X2
@@ -25,7 +39,7 @@ void draw_rectangle(int x1, int y1, int x2, int y2, unsigned char color)
 
 void draw_line(int x1, int y1, int x2, int y2, unsigned char color)
 {
-	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 0, SDRAM_0_BASE + SDRAM_VIDEO_OFFSET); // Frame address
+	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 0, graphics_sdram_backbuffer); // Frame address
 	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 4, x1); // X1
 	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 8, y1); // Y1
 	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 12, x2); // X2
@@ -310,7 +324,7 @@ void draw_circle (int cx, int cy, int radius, int color, int filled){
 	//Filled = 1 will fill it, but in software.
 
 	if (!filled){
-		IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 0, SDRAM_0_BASE + SDRAM_VIDEO_OFFSET); // Frame address
+		IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 0, graphics_sdram_backbuffer); // Frame address
 		IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 4, cx); // CX
 		IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 8, cy); // CY
 		IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 12, radius); // Radius
@@ -321,7 +335,7 @@ void draw_circle (int cx, int cy, int radius, int color, int filled){
 	if (filled < 0) {//Interference pattern causes trippy effect. Get the effect by setting filled to be <0.
 		int r = 0;
 		for (r = 1; r < radius; r++) {
-			IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 0, SDRAM_0_BASE + SDRAM_VIDEO_OFFSET); // Frame address
+			IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 0, graphics_sdram_backbuffer); // Frame address
 			IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 4, cx); // CX
 			IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 8, cy); // CY
 			IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 12, r*(-1)*filled); // Radius
@@ -335,7 +349,7 @@ void draw_circle (int cx, int cy, int radius, int color, int filled){
 		//What we need instead is draw a circle, then in software, call the line algorithm a bunch of times to draw a line from
 		//The center to the edges of the circle. It's not as fast as doing it all in hardware, but it should still be relatively
 		//fast since we're not plotting individual pixels in C.
-		IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 0, SDRAM_0_BASE + SDRAM_VIDEO_OFFSET); // Frame address
+		IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 0, graphics_sdram_backbuffer); // Frame address
 		IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 4, cx); // CX
 		IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 8, cy); // CY
 		IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 12, radius); // Radius

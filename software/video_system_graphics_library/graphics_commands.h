@@ -3,9 +3,9 @@
 
 #include "graphics_defs.h"
 
-#define PALETTE_SIZE 256
-#define SDRAM_VIDEO_OFFSET 0x300000
+extern void *graphics_sdram_backbuffer;
 
+char graphics_init();
 
 void draw_rectangle(int x1, int y1, int x2, int y2, unsigned char color);
 

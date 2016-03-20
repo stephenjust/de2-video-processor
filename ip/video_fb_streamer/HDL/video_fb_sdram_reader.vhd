@@ -22,8 +22,7 @@ ENTITY video_fb_sdram_reader IS
 	GENERIC(
 		READ_BURST_SIZE : integer := 64;            -- Read from SDRAM in bursts of 128
 		DATA_SIZE       : integer := 640 * 480;     -- Read this number of bytes
-		READY_THRESHOLD : integer := 32;            -- Assert a flag when the FIFO has this much data
-		SDRAM_BUF_START_ADDRESS : std_logic_vector(31 downto 0) := (others => '0')
+		READY_THRESHOLD : integer := 32             -- Assert a flag when the FIFO has this much data
 	);
 
 	PORT (
@@ -46,7 +45,8 @@ ENTITY video_fb_sdram_reader IS
 
 		-- Control signals
 		copy_trigger        : in     std_logic;
-		copy_done           : buffer std_logic
+		copy_done           : buffer std_logic;
+		sdram_buffer_address: in     std_logic_vector(31 downto 0)
 	);
 
 END video_fb_sdram_reader;
@@ -79,7 +79,7 @@ BEGIN
 						IF copy_trigger = '1' THEN
 							dram_read_count <= (others => '0');
 							dram_read_offset <= (others => '0');
-							dma_address <= SDRAM_BUF_START_ADDRESS;
+							dma_address <= sdram_buffer_address;
 							dma_burstcount <= dram_burst_size;
 							dma_read <= '1';
 							next_state := READ_SDRAM;
@@ -118,7 +118,7 @@ BEGIN
 							next_state := WAIT_FIFO;
 						ELSE
 							dram_read_count <= (others => '0');
-							dma_address <= SDRAM_BUF_START_ADDRESS + dram_read_offset;
+							dma_address <= sdram_buffer_address + dram_read_offset;
 							dma_burstcount <= dram_burst_size;
 							dma_read <= '1';
 							next_state := READ_SDRAM;

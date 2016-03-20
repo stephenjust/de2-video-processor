@@ -13,6 +13,7 @@ int main()
 {
 	unsigned int j = 0;
 
+	graphics_init();
 	printf("Restoring EGA Color Palette \n");
 	switch_palette(&palette_ega);
 

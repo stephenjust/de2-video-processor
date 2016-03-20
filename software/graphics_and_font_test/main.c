@@ -22,6 +22,8 @@ int main()
 {
 	unsigned int i = 0;
 
+	graphics_init();
+
 	alt_putstr("Restoring EGA Color Palette \n");
 	switch_palette(&palette_ega);
 

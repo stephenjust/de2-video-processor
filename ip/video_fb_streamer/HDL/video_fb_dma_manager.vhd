@@ -23,7 +23,6 @@ USE ieee.numeric_std.all;
 ENTITY video_fb_dma_manager IS 
 	GENERIC(
 		SRAM_BUF_START_ADDRESS   : std_logic_vector(31 downto 0) := (others => '0');
-		SDRAM_BUF_START_ADDRESS  : std_logic_vector(31 downto 0) := (others => '0');
 		FRAME_WIDTH              : integer                       := 640;
 		FRAME_HEIGHT             : integer                       := 480
 	);
@@ -35,6 +34,7 @@ ENTITY video_fb_dma_manager IS
 		-- Control Signals
 		swap_trigger         : in     std_logic;
 		swap_done            : buffer std_logic;
+		sdram_buffer_address : in     std_logic_vector(31 downto 0);
 
 		-- FIFO source
 		fifo_startofpacket   : buffer std_logic;
@@ -71,8 +71,7 @@ ARCHITECTURE Behaviour OF video_fb_dma_manager IS
 		GENERIC(
 			READ_BURST_SIZE : integer;
 			DATA_SIZE       : integer;
-			READY_THRESHOLD : integer;
-			SDRAM_BUF_START_ADDRESS : std_logic_vector(31 downto 0)
+			READY_THRESHOLD : integer
 		);
 		PORT (
 			clk                 : in     std_logic;
@@ -94,7 +93,8 @@ ARCHITECTURE Behaviour OF video_fb_dma_manager IS
 
 			-- Control signals
 			copy_trigger        : in     std_logic;
-			copy_done           : buffer std_logic
+			copy_done           : buffer std_logic;
+			sdram_buffer_address: in     std_logic_vector(31 downto 0)
 		);
 	END COMPONENT video_fb_sdram_reader;
 
@@ -251,8 +251,7 @@ BEGIN
 	GENERIC MAP(
 		READ_BURST_SIZE => 64,
 		DATA_SIZE       => FRAME_WIDTH * FRAME_HEIGHT,
-		READY_THRESHOLD => 32,
-		SDRAM_BUF_START_ADDRESS => SDRAM_BUF_START_ADDRESS
+		READY_THRESHOLD => 32
 	)
 	PORT MAP(
 		clk                   => clk,
@@ -271,7 +270,8 @@ BEGIN
 		out_usedw             => open,
 
 		copy_trigger          => swap_trigger,
-		copy_done             => swap_sdram_done
+		copy_done             => swap_sdram_done,
+		sdram_buffer_address  => sdram_buffer_address
 	);
 
 END Behaviour;

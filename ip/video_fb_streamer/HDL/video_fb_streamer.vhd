@@ -11,7 +11,6 @@ USE altera_mf.altera_mf_components.all;
 ENTITY video_fb_streamer IS 
 	GENERIC(
 		SRAM_BUF_START_ADDRESS   : std_logic_vector(31 downto 0) := (others => '0');
-		SDRAM_BUF_START_ADDRESS  : std_logic_vector(31 downto 0) := (others => '0');
 		BITS_PER_PIXEL           : integer                       := 8;
 		FRAME_WIDTH              : integer                       := 640;
 		FRAME_HEIGHT             : integer                       := 480
@@ -32,6 +31,10 @@ ENTITY video_fb_streamer IS
 		aso_source_startofpacket : out    std_logic;
 		aso_source_endofpacket   : out    std_logic;
 		aso_source_valid         : out    std_logic;
+
+		-- Memory-mapped slave for config registers
+		avs_s0_write     : in     std_logic;
+		avs_s0_writedata : in     std_logic_vector(31 downto 0);
 
 		-- DMA Master 0 (for SRAM, Read-write)
 		avm_dma0_readdata        : in     std_logic_vector(15 downto 0);
@@ -85,7 +88,6 @@ ARCHITECTURE Behaviour OF video_fb_streamer IS
 	COMPONENT video_fb_dma_manager IS 
 		GENERIC(
 			SRAM_BUF_START_ADDRESS   : std_logic_vector(31 downto 0) := (others => '0');
-			SDRAM_BUF_START_ADDRESS  : std_logic_vector(31 downto 0) := (others => '0');
 			FRAME_WIDTH              : integer                       := 640;
 			FRAME_HEIGHT             : integer                       := 480
 		);
@@ -96,6 +98,7 @@ ARCHITECTURE Behaviour OF video_fb_streamer IS
 			-- Control Signals
 			swap_trigger         : in     std_logic;
 			swap_done            : buffer std_logic;
+			sdram_buffer_address : in     std_logic_vector(31 downto 0);
 
 			-- FIFO source
 			fifo_startofpacket   : buffer std_logic;
@@ -128,6 +131,8 @@ ARCHITECTURE Behaviour OF video_fb_streamer IS
 	CONSTANT FRAME_ADDR_COUNT        : integer := (FRAME_WIDTH * FRAME_HEIGHT / 2);
 
 	-- Internal Registers
+	SIGNAL sdram_buffer_address      : std_logic_vector(31 downto 0);
+
 	SIGNAL pix                       : integer := 0;
 
 	SIGNAL dma_read_startaddress     : std_logic_vector (31 downto 0);
@@ -152,6 +157,22 @@ ARCHITECTURE Behaviour OF video_fb_streamer IS
 BEGIN
 
 	aso_source_valid           <= not fifo_output_empty;
+
+		-- Update configuration registers
+	-- In the case of drawing a rectangle, we can do some bounds-checking on
+	-- the inputs now. In other cases (such as drawing a line) we might want
+	-- to allow coordinates outside of the frame window, which would be clipped
+	-- during the memory-writing stage of command execution.
+	update_cfg : PROCESS(clk)
+	BEGIN
+		IF rising_edge(clk) THEN
+			IF reset = '1' THEN
+				sdram_buffer_address <= (others => '0');
+			ELSIF avs_s0_write = '1' THEN
+				sdram_buffer_address <= avs_s0_writedata;
+			END IF;
+		END IF;
+	END PROCESS update_cfg;
 
 	-- Instantiate Components
 	f0 : video_fb_fifo
@@ -178,7 +199,6 @@ BEGIN
 	d0 : video_fb_dma_manager 
 	GENERIC MAP (
 		SRAM_BUF_START_ADDRESS   => SRAM_BUF_START_ADDRESS,
-		SDRAM_BUF_START_ADDRESS  => SDRAM_BUF_START_ADDRESS,
 		FRAME_WIDTH              => FRAME_WIDTH,
 		FRAME_HEIGHT             => FRAME_HEIGHT
 	)
@@ -189,6 +209,7 @@ BEGIN
 		-- Control Signals
 		swap_trigger         => coe_ext_trigger,
 		swap_done            => coe_ext_done,
+		sdram_buffer_address => sdram_buffer_address,
 
 		-- FIFO source
 		fifo_startofpacket   => fifo_input_startofpacket,
