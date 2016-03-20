@@ -555,13 +555,66 @@ void draw_triangle (int x1, int y1, int x2, int y2, int x3, int y3, int filled, 
 			//draw_triangle (tx1, ty1, tx3, ty3, tx1, dropdowny, filled, color+1);
 
 
-
 		}
-
-
 	}
-
 }
 
+/**
+ * copy_buffer_area: Copy part of a pixel buffer to another pixel buffer in memory
+ *
+ * Arguments:
+ *     source:
+ *     dest:
+ *     source_area:
+ *     dest_offset:
+ */
+void copy_buffer_area(pixbuf_t *source, pixbuf_t *dest, rect_t *source_area, point_t *dest_offset)
+{
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 0, source->base_address);
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 4, source->width);
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 8, source->height);
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 12, dest->base_address);
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 16, dest->width);
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 20, dest->height);
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 24, source_area->p1.x);
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 28, source_area->p1.y);
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 32, source_area->p2.x);
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 36, source_area->p2.y);
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 40, dest_offset->x);
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 44, dest_offset->y);
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 48, 0);
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 52, 0);
+	ALT_CI_CI_COPY_RECT_0;
+}
 
-
+/**
+ * copy_buffer_area_transparent: Copy part of a pixel buffer to another pixel buffer in memory
+ *
+ * Colors matching t_color will not be copied, leaving whatever color was
+ * previously present at that location
+ *
+ * Arguments:
+ *     source:
+ *     dest:
+ *     source_area:
+ *     dest_offset:
+ *     t_color: Color representing transparent pixels
+ */
+void copy_buffer_area_transparent(pixbuf_t *source, pixbuf_t *dest, rect_t *source_area, point_t *dest_offset, unsigned char t_color)
+{
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 0, source->base_address);
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 4, source->width);
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 8, source->height);
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 12, dest->base_address);
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 16, dest->width);
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 20, dest->height);
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 24, source_area->p1.x);
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 28, source_area->p1.y);
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 32, source_area->p2.x);
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 36, source_area->p2.y);
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 40, dest_offset->x);
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 44, dest_offset->y);
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 48, 1);
+	IOWR_32DIRECT(CI_COPY_RECT_0_BASE, 52, t_color);
+	ALT_CI_CI_COPY_RECT_0;
+}

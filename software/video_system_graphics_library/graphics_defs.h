@@ -29,6 +29,18 @@ typedef struct pixbuf_t
 	unsigned short height;
 } pixbuf_t;
 
+typedef struct point_t
+{
+	short x;
+	short y;
+} point_t;
+
+typedef struct rect_t
+{
+	point_t p1;
+	point_t p2;
+} rect_t;
+
 typedef struct palette_t
 {
 	unsigned short colors[PALETTE_SIZE];
