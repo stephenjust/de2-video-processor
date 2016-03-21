@@ -27,7 +27,8 @@ int main()
 	EmbeddedFileSystem efsl;
 
 	graphics_init();
-	clear_screen();
+
+	graphics_clear_screen();
 
 	// Initialises the filesystem on the SD card, if the filesystem does not
 	// init properly then it displays an error message.
@@ -48,11 +49,7 @@ int main()
 	error = load_bmp(&efsl, "trump.bmp", &test_img_pixbuf);
 
 	printf("Copying image buffer to output buffer\n");
-	pixbuf_t sdram_buf = {
-			.base_address = graphics_sdram_backbuffer,
-			.width = 640,
-			.height = 480
-	};
+	pixbuf_t *sdram_buf = graphics_get_final_buffer();
 
 	rect_t source_rect = {
 			.p1 = {
@@ -73,8 +70,8 @@ int main()
 			.y = 200
 	};
 
-	copy_buffer_area(&test_img_pixbuf, &sdram_buf, &source_rect, &dest_offset_1);
-	copy_buffer_area_transparent(&test_img_pixbuf, &sdram_buf, &source_rect, &dest_offset_2, 223);
+	copy_buffer_area(&test_img_pixbuf, sdram_buf, &source_rect, &dest_offset_1);
+	copy_buffer_area_transparent(&test_img_pixbuf, sdram_buf, &source_rect, &dest_offset_2, 223);
 
 	ALT_CI_CI_FRAME_DONE_0;
 	printf("Done!\n");
