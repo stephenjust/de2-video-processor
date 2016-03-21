@@ -9,6 +9,9 @@
 #include <graphics_commands.h>
 #include <palettes.h>
 
+#include <efsl/efs.h>
+#include <efsl/ls.h>
+
 #include "pong_graphics.h"
 
 #define PALETTE_SIZE 256
@@ -28,13 +31,6 @@ struct Ball{
 	int y;
 	int velocity_x;
 	int velocity_y;
-};
-
-unsigned char color_array[] = {
-		0xE0, 0xEC, 0xF4, 0xF8,
-		0xFC, 0xFA, 0xBE, 0x9D,
-		0x1D, 0x1F, 0x17, 0x13,
-		0x73, 0xFB, 0xF1, 0xE2
 };
 
 struct Ball find_end_point(struct Ball my_ball, struct Paddle p1, struct Paddle p2){
@@ -161,13 +157,50 @@ int main()
 	unsigned int row, col;
 	unsigned int i = 0;
 	unsigned int j = 0;
+	char error1[13];
+	char error2[13];
+	pixbuf_t *pixbuf_background;
 	pixbuf_t *pixbuf;
+	pixbuf_t *bmp_foreground;
+	pixbuf_t *composited_pixbuf;
+
+	/* Read BMP asset from SDcard */
+	char error;
+	EmbeddedFileSystem efsl;
 
 	graphics_init();
-	pixbuf = graphics_get_final_buffer();
+	//clear_screen();
+	printf("Attempting to init filesystem");
+	int ret = efs_init(&efsl, SPI_0_NAME);
+	// Initialize efsl
+	if(ret != 0)
+	{
+		printf("...could not initialize filesystem.\n");
+		return(1);
+	}
+	else
+		printf("...success!\n");
 
-	alt_putstr("Restoring default palette\n");
-	switch_palette(&palette_332);
+	pixbuf_t bmp_spritesheet;
+	error = load_file(&efsl, "small.pal", (void *) COLOUR_PALETTE_SHIFTER_0_BASE, 512);
+	error = load_bmp(&efsl, "small.bmp", &bmp_spritesheet);
+
+	printf("Copying image buffer to output buffer\n");
+	pixbuf_t sdram_buf = {
+			.base_address = graphics_sdram_backbuffer,
+			.width = 640,
+			.height = 480
+	};
+
+
+	//graphics_init();
+
+	pixbuf_background = graphics_layer_get(graphics_layer_add(error1), error2);
+	pixbuf = graphics_layer_get(graphics_layer_add(error1), error2);
+	composited_pixbuf = graphics_get_final_buffer();
+
+	//alt_putstr("Restoring default palette\n");
+	//switch_palette(&palette_332);
 
 	graphics_clear_screen();
 
@@ -386,7 +419,9 @@ int main()
 			struct Ball ball_tprime = find_end_point(ball_doubleprime, paddle1, paddle2);
 
 			/*Draw Everything*/
-			graphics_draw_rectangle(pixbuf, 0, 0, 640-1, 480-1, 0x00);
+			//graphics_draw_rectangle(pixbuf, 0, 0, 640-1, 480-1, 0x00);
+			/* Write grass image to background */
+			draw_grass(&bmp_spritesheet, pixbuf_background);
 			draw_field(pixbuf);
 
 			if (trump_counter > 0)
@@ -430,7 +465,12 @@ int main()
 				p2_score = 0;
 				collision_counter = 0;
 			}
+			/* Composite Frames */
+			graphics_layer_copy(pixbuf_background, composited_pixbuf);
+			graphics_layer_copy_transparent(pixbuf, composited_pixbuf, 0x00);
+
 			ALT_CI_CI_FRAME_DONE_0;
+			//break;
 		}
 
 		else

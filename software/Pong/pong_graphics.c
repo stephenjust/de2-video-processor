@@ -224,17 +224,37 @@ void draw_wall(pixbuf_t *pixbuf){
 	graphics_draw_rectangle(pixbuf, (280), (11), (360), (468), 68);
 	int i, j, k;
 	//Lines slow down the game speed by a fair bit.
-//	for (i = 0; i < 45; i++){
-//		draw_line(280, 20+i*10, 360, 20+i*10, 136);
-//		if (i%2 == 0){
-//			for (j = 0; j < 3; j++)
-//				draw_line(300+j*20, 10+i*10, 300+j*20, 20+i*10, 104);
-//		}
-//		else{
-//			for (j = 0; j < 4; j++)
-//				draw_line(290+j*20, 10+i*10, 290+j*20, 20+i*10, 104);
-//		}
-//	}
+	for (i = 0; i < 45; i++){
+		graphics_draw_line(pixbuf,280, 20+i*10, 360, 20+i*10, 136);
+		if (i%2 == 0){
+			for (j = 0; j < 3; j++)
+				graphics_draw_line(pixbuf, 300+j*20, 10+i*10, 300+j*20, 20+i*10, 104);
+		}
+		else{
+			for (j = 0; j < 4; j++)
+				graphics_draw_line(pixbuf,290+j*20, 10+i*10, 290+j*20, 20+i*10, 104);
+		}
+	}
+}
+
+void draw_grass(pixbuf_t *bmp_asset, pixbuf_t *sdram_buf){
+	rect_t source_rect = {
+			.p1 = {
+					.x = 0,
+					.y = 0
+			},
+			.p2 = {
+					.x = 640 - 1,
+					.y = 480-1
+			}
+	};
+	point_t dest_offset_1 = {
+			.x = 0,
+			.y = 0
+	};
+
+	copy_buffer_area(bmp_asset, sdram_buf, &source_rect, &dest_offset_1);
+	//copy_buffer_area_transparent(&test_img_pixbuf, &sdram_buf, &source_rect, &dest_offset_1, 194);
 }
 
 void end_game(pixbuf_t *pixbuf, int p1_score, int p2_score)
