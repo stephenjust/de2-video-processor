@@ -5,7 +5,7 @@
 
 int scale_input(int x);
 
-void draw_ball(pixbuf_t *pixbuf, int x, int y);
+void draw_ball(pixbuf_t *pixbuf, int x, int y, int color);
 
 void draw_paddle(pixbuf_t *pixbuf, int x, int y);
 

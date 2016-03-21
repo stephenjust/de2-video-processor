@@ -198,6 +198,8 @@ int main()
 	pixbuf_background = graphics_layer_get(graphics_layer_add(error1), error2);
 	pixbuf = graphics_layer_get(graphics_layer_add(error1), error2);
 	composited_pixbuf = graphics_get_final_buffer();
+	/* Write grass image to background */
+	draw_grass(&bmp_spritesheet, pixbuf_background);
 
 	//alt_putstr("Restoring default palette\n");
 	//switch_palette(&palette_332);
@@ -420,8 +422,6 @@ int main()
 
 			/*Draw Everything*/
 			//graphics_draw_rectangle(pixbuf, 0, 0, 640-1, 480-1, 0x00);
-			/* Write grass image to background */
-			draw_grass(&bmp_spritesheet, pixbuf_background);
 			draw_field(pixbuf);
 
 			if (trump_counter > 0)
@@ -439,11 +439,11 @@ int main()
 
 			draw_paddle(pixbuf, paddle1.x, paddle1.y);
 			draw_paddle(pixbuf, paddle2.x, paddle2.y);
-			draw_ball(pixbuf, ball.x, ball.y);
+			draw_ball(pixbuf, ball.x, ball.y, 0x00);
 
 			/* Scores */
-			draw_int(pixbuf, 200,40, p1_score, 0xFF);
-			draw_int(pixbuf, 440,40, p2_score, 0xFF);
+			draw_int(pixbuf, 200,40, p1_score, 0x00);
+			draw_int(pixbuf, 440,40, p2_score, 0x00);
 
 			if (p1_score == 10 || p2_score == 10){
 				end_game(pixbuf, p1_score, p2_score);
@@ -467,7 +467,7 @@ int main()
 			}
 			/* Composite Frames */
 			graphics_layer_copy(pixbuf_background, composited_pixbuf);
-			graphics_layer_copy_transparent(pixbuf, composited_pixbuf, 0x00);
+			graphics_layer_copy_transparent(pixbuf, composited_pixbuf, 0xFF);
 
 			ALT_CI_CI_FRAME_DONE_0;
 			//break;
@@ -513,6 +513,9 @@ int main()
 			}
 
 			draw_table(pixbuf);
+			/* Composite Frames */
+			graphics_layer_copy(pixbuf_background, composited_pixbuf);
+			graphics_layer_copy_transparent(pixbuf, composited_pixbuf, 0xFF);
 			ALT_CI_CI_FRAME_DONE_0;
 
 		}

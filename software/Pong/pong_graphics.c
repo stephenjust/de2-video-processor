@@ -7,35 +7,35 @@ int scale_input(int x){
 	return x / 10;
 }
 
-void draw_ball(pixbuf_t *pixbuf, int x, int y)
+void draw_ball(pixbuf_t *pixbuf, int x, int y, int color)
 {
 	x = scale_input(x);
 	y = scale_input(y);
-	graphics_draw_rectangle(pixbuf, x-1, y+3, x+1, y+3, 0xFF);
-	graphics_draw_rectangle(pixbuf, x-2, y+2, x+2, y+2, 0xFF);
-	graphics_draw_rectangle(pixbuf, x-3, y-1, x+3, y+1, 0xFF);
-	graphics_draw_rectangle(pixbuf, x-2, y-2, x+2, y-2, 0xFF);
-	graphics_draw_rectangle(pixbuf, x-1, y-3, x+1, y-3, 0xFF);
+	graphics_draw_rectangle(pixbuf, x-1, y+3, x+1, y+3, color);
+	graphics_draw_rectangle(pixbuf, x-2, y+2, x+2, y+2, color);
+	graphics_draw_rectangle(pixbuf, x-3, y-1, x+3, y+1, color);
+	graphics_draw_rectangle(pixbuf, x-2, y-2, x+2, y-2, color);
+	graphics_draw_rectangle(pixbuf, x-1, y-3, x+1, y-3, color);
 }
 
 void draw_paddle(pixbuf_t *pixbuf, int x, int y)
 {
 	x = scale_input(x);
 	y = scale_input(y);
-	graphics_draw_rectangle(pixbuf, x-5, y-18, x+5, y+18, 0xFF);
+	graphics_draw_rectangle(pixbuf, x-5, y-18, x+5, y+18, 0x00);
 }
 
 void draw_field(pixbuf_t *pixbuf)
 {
 	//black background
-	graphics_draw_rectangle(pixbuf, 0, 0, 640-1, 480-1, 0x00);
+	graphics_draw_rectangle(pixbuf, 0, 0, 640-1, 480-1, 0xFF);
 	//Top and bottom white walls
-	graphics_draw_rectangle(pixbuf, 0, 0, 640-1, 10, 0xFF);
-	graphics_draw_rectangle(pixbuf, 0, 480-11, 640-1, 480-1, 0xFF);
+	graphics_draw_rectangle(pixbuf, 0, 0, 640-1, 10, 0x00);
+	graphics_draw_rectangle(pixbuf, 0, 480-11, 640-1, 480-1, 0x00);
 	//dashed line down center court
 	int i;
 	for (i = 0; i < 16; i++){
-		graphics_draw_rectangle(pixbuf, 317, i*30 + 13, 321, i*30 + 17, 0xFF);
+		graphics_draw_rectangle(pixbuf, 317, i*30 + 13, 321, i*30 + 17, 0x00);
 	}
 }
 
