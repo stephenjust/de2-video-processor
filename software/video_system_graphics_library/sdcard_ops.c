@@ -28,6 +28,11 @@
 #define BMP_HEIGHT_OFFSET 0x16
 #define BMP_BITS_OFFSET 0x1C
 
+static int min(int a, int b) {
+	if (a < b) return a;
+	else return b;
+}
+
 
 /**
  * load_bmp: Read a bitmap file from SD card to SDRAM
