@@ -13,6 +13,8 @@ static pixbuf_t sdram_backbuffer;
 char graphics_init()
 {
 	sdram_backbuffer.base_address = alt_uncached_malloc(FRAME_WIDTH * FRAME_HEIGHT);
+	sdram_backbuffer.width = FRAME_WIDTH;
+	sdram_backbuffer.height = FRAME_HEIGHT;
 	if (sdram_backbuffer.base_address == 0) {
 		return -E_NOMEM;
 	} else {
