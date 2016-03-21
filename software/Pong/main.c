@@ -169,7 +169,7 @@ int main()
 	alt_putstr("Restoring default palette\n");
 	switch_palette(&palette_332);
 
-	graphics_clear_buffer(pixbuf);
+	graphics_clear_screen();
 
 	while(1){
 		/* Pong Mode */

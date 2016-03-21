@@ -59,10 +59,15 @@ void graphics_draw_line(pixbuf_t *pixbuf, int x1, int y1, int x2, int y2, unsign
 }
 
 
+void graphics_clear_screen()
+{
+	graphics_draw_rectangle(graphics_get_final_buffer(), 0, 0, 640-1, 480-1, 0x00);
+	ALT_CI_CI_FRAME_DONE_0;
+}
+
 void graphics_clear_buffer(pixbuf_t *pixbuf)
 {
 	graphics_draw_rectangle(pixbuf, 0, 0, 640-1, 480-1, 0x00);
-	ALT_CI_CI_FRAME_DONE_0;
 }
 
 //Fonts:

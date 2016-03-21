@@ -19,6 +19,8 @@ void graphics_draw_circle(pixbuf_t *pixbuf, int cx, int cy, int radius, int colo
 
 void graphics_draw_rounded_rect(pixbuf_t *pixbuf, int x1, int y1, int x2, int y2, int radius, int filled, unsigned char color);
 
+void graphics_clear_screen();
+
 void graphics_clear_buffer(pixbuf_t *pixbuf);
 
 
