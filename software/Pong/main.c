@@ -161,12 +161,15 @@ int main()
 	unsigned int row, col;
 	unsigned int i = 0;
 	unsigned int j = 0;
+	pixbuf_t *pixbuf;
 
 	graphics_init();
+	pixbuf = graphics_get_final_buffer();
+
 	alt_putstr("Restoring default palette\n");
 	switch_palette(&palette_332);
 
-	clear_screen();
+	graphics_clear_buffer(pixbuf);
 
 	while(1){
 		/* Pong Mode */
@@ -383,32 +386,32 @@ int main()
 			struct Ball ball_tprime = find_end_point(ball_doubleprime, paddle1, paddle2);
 
 			/*Draw Everything*/
-			draw_rectangle(0, 0, 640-1, 480-1, 0x00);
-			draw_field();
+			graphics_draw_rectangle(pixbuf, 0, 0, 640-1, 480-1, 0x00);
+			draw_field(pixbuf);
 
 			if (trump_counter > 0)
-				draw_wall();
+				draw_wall(pixbuf);
 
 			/* Draw markers to determine where ball is going */
 			if (toggle_raytracing){
-				draw_line(scale_input(ball.x), scale_input(ball.y),
+				graphics_draw_line(pixbuf, scale_input(ball.x), scale_input(ball.y),
 						scale_input(ball_prime.x), scale_input(ball_prime.y), 79);
-				draw_line(scale_input(ball_prime.x), scale_input(ball_prime.y),
+				graphics_draw_line(pixbuf, scale_input(ball_prime.x), scale_input(ball_prime.y),
 						scale_input(ball_doubleprime.x), scale_input(ball_doubleprime.y), 103);
-				draw_line(scale_input(ball_doubleprime.x), scale_input(ball_doubleprime.y),
+				graphics_draw_line(pixbuf, scale_input(ball_doubleprime.x), scale_input(ball_doubleprime.y),
 						scale_input(ball_tprime.x), scale_input(ball_tprime.y), 163);
 			}
 
-			draw_paddle(paddle1.x, paddle1.y);
-			draw_paddle(paddle2.x, paddle2.y);
-			draw_ball(ball.x, ball.y);
+			draw_paddle(pixbuf, paddle1.x, paddle1.y);
+			draw_paddle(pixbuf, paddle2.x, paddle2.y);
+			draw_ball(pixbuf, ball.x, ball.y);
 
 			/* Scores */
-			draw_int(200,40, p1_score, 0xFF);
-			draw_int(440,40, p2_score, 0xFF);
+			draw_int(pixbuf, 200,40, p1_score, 0xFF);
+			draw_int(pixbuf, 440,40, p2_score, 0xFF);
 
 			if (p1_score == 10 || p2_score == 10){
-				end_game(p1_score, p2_score);
+				end_game(pixbuf, p1_score, p2_score);
 				end_game_bool = 1;
 			}
 
@@ -469,7 +472,7 @@ int main()
 					paddle1.x = 6350;
 			}
 
-			draw_table();
+			draw_table(pixbuf);
 			ALT_CI_CI_FRAME_DONE_0;
 
 		}

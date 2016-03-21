@@ -1,20 +1,20 @@
 #ifndef __PONGGFX_H_
 #define __PONGGFX_H_
 
-//#define SDRAM_VIDEO_OFFSET 0x300000
+#include <graphics_defs.h>
 
 int scale_input(int x);
 
-void draw_ball(int x, int y);
+void draw_ball(pixbuf_t *pixbuf, int x, int y);
 
-void draw_paddle(int x, int y);
+void draw_paddle(pixbuf_t *pixbuf, int x, int y);
 
-void draw_field();
+void draw_field(pixbuf_t *pixbuf);
 
-void draw_int(int x, int y, int value, int color);
+void draw_int(pixbuf_t *pixbuf, int x, int y, int value, int color);
 
-void draw_wall();
+void draw_wall(pixbuf_t *pixbuf);
 
-void end_game(int p1_score, int p2_score);
+void end_game(pixbuf_t *pixbuf, int p1_score, int p2_score);
 
 #endif /* __PONGGFX_H_ */
