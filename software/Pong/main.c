@@ -235,11 +235,11 @@ int main()
 					paddle1.x = 50;
 			}
 			if ( (controller_value & (1 << 3)) && (controller_value & (1 << 5)) ){
-				if (paddle1.x < 6350){
+				if (paddle1.x < 3200){
 					paddle1.x += paddle1_speed;
 				}
 				else
-					paddle1.x = 6350;
+					paddle1.x = 3200;
 			}
 
 			/* Slow other player down */
@@ -285,11 +285,11 @@ int main()
 			}
 			/* Move Horizontally */
 			if ( (controller_value & (1 << 12)) && (controller_value & (1 << 15)) ){
-				if (paddle2.x > 50){
+				if (paddle2.x > 3200){
 					paddle2.x -= paddle2_speed;
 				}
-				else
-					paddle2.x = 50;
+				else if (paddle2.x < 3200)
+					paddle2.x = 3200;
 			}
 			if ( (controller_value & (1 << 13)) && (controller_value & (1 << 15)) ){
 				if (paddle2.x < 6350){
