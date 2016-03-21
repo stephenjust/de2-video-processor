@@ -8,10 +8,27 @@
 #include <sys/alt_cache.h>
 
 #include "graphics_defs.h"
+#include "graphics_commands.h"
 
 #define MAX_LAYERS 3
 static pixbuf_t layer_buffers[MAX_LAYERS];
 static unsigned short allocated_layers = 0;
+
+static const rect_t frame_rect = {
+		.p1 = {
+				.x = 0,
+				.y = 0
+		},
+		.p2 = {
+				.x = FRAME_WIDTH - 1,
+				.y = FRAME_HEIGHT - 1
+		}
+};
+
+static const point_t zero_point = {
+		.x = 0,
+		.y = 0
+};
 
 unsigned short graphics_layer_add(char *error)
 {
@@ -46,4 +63,14 @@ pixbuf_t *graphics_layer_get(unsigned short index, char *error)
 		*error = -E_INVALID_ARG;
 		return 0;
 	}
+}
+
+void graphics_layer_copy(pixbuf_t *source, pixbuf_t *dest)
+{
+	copy_buffer_area(source, dest, &frame_rect, &zero_point);
+}
+
+void graphics_layer_copy_transparent(pixbuf_t *source, pixbuf_t *dest, unsigned char t_color)
+{
+	copy_buffer_area_transparent(source, dest, &frame_rect, &zero_point, t_color);
 }
