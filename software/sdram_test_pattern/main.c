@@ -21,13 +21,13 @@ int main()
 	int col = 0;
 	int color;
 	int invert = 0;
+	pixbuf_t *pixbuf;
 
 	graphics_init();
+	pixbuf = graphics_get_final_buffer();
 
 	alt_putstr("Restoring default palette\n");
 	switch_palette(&palette_332);
-
-	unsigned int buffer_offset = graphics_sdram_backbuffer - SDRAM_0_BASE;
 
 	while (1)
 	{
@@ -36,6 +36,7 @@ int main()
 		{
 			for (col = 0; col < 640; col = col + 4)
 			{
+				int *pixel_group_address = (int *) (pixbuf->base_address + row * 640 + col);
 				color = ((row + col) % 256) << 0 | ((row + col) % 256) << 8 | ((row + col) % 256) << 16 | ((row + col) % 256) << 24;
 				if (invert)
 				{
@@ -43,19 +44,19 @@ int main()
 				}
 				if (row == 0 || row == 479)
 				{
-					IOWR_32DIRECT(SDRAM_0_BASE, buffer_offset + row * 640 + col, 0xFFFFFFFF);
+					*pixel_group_address = 0xFFFFFFFF;
 				}
 				else if (col == 0)
 				{
-					IOWR_32DIRECT(SDRAM_0_BASE, buffer_offset + row * 640 + col, 0x000000FF | color);
+					*pixel_group_address = 0x000000FF | color;
 				}
 				else if (col == 636)
 				{
-					IOWR_32DIRECT(SDRAM_0_BASE, buffer_offset + row * 640 + col, 0xFF000000 | color);
+					*pixel_group_address = 0xFF000000 | color;
 				}
 				else
 				{
-					IOWR_32DIRECT(SDRAM_0_BASE, buffer_offset + row * 640 + col, color);
+					*pixel_group_address = color;
 				}
 			}
 		}
