@@ -10,11 +10,11 @@
 
 #include "graphics_defs.h"
 
-extern palette_t palette_ega;
-extern palette_t palette_332;
-extern palette_t palette_magenta;
-extern palette_t palette_bunch_o_blues;
-extern palette_t palette_bunch_o_reds;
+extern const palette_t palette_ega;
+extern const palette_t palette_332;
+extern const palette_t palette_magenta;
+extern const palette_t palette_bunch_o_blues;
+extern const palette_t palette_bunch_o_reds;
 
 /**
  * Switch the palette loaded in the palette shifter.

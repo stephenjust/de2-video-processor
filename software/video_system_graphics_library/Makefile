@@ -173,6 +173,7 @@ C_SRCS += efsl/time.c
 C_SRCS += efsl/ui.c
 C_SRCS += sdcard_ops.c
 C_SRCS += palettes.c
+C_SRCS += graphics_layers.c
 CXX_SRCS :=
 ASM_SRCS :=
 

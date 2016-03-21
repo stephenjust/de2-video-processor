@@ -16,8 +16,11 @@
 #define E_IO 2
 #define E_INVALID_BMP 3
 #define E_NOMEM 4
+#define E_ILLEGAL_OP 5
 
 #define PALETTE_SIZE 256
+#define FRAME_WIDTH 640
+#define FRAME_HEIGHT 480
 
 /*
  * Data structure definitions

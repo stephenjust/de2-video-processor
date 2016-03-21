@@ -1,34 +1,44 @@
 #include <system.h>
 #include <io.h>
 #include <stdlib.h>
+#include <sys/alt_cache.h>
 
 #include "graphics_defs.h"
 #include "graphics_commands.h"
 #include "palettes.h"
 
 void *graphics_sdram_backbuffer;
+static pixbuf_t sdram_backbuffer;
 
 char graphics_init()
 {
-	graphics_sdram_backbuffer = malloc(640*480);
-	if (graphics_sdram_backbuffer == 0) {
+	sdram_backbuffer.base_address = alt_uncached_malloc(FRAME_WIDTH * FRAME_HEIGHT);
+	if (sdram_backbuffer.base_address == 0) {
 		return -E_NOMEM;
 	} else {
-		IOWR_32DIRECT(VIDEO_FB_STREAMER_0_BASE, 0, graphics_sdram_backbuffer);
+		IOWR_32DIRECT(VIDEO_FB_STREAMER_0_BASE, 0, sdram_backbuffer.base_address);
+		graphics_sdram_backbuffer = sdram_backbuffer.base_address; // FIXME: Remove this
 		return E_SUCCESS;
 	}
 }
 
-void draw_pixel(int x1, int y1, unsigned char color){
-	unsigned int offset = (unsigned int) graphics_sdram_backbuffer - SDRAM_0_BASE + y1 * 640 + x1;
-	IOWR_8DIRECT(SDRAM_0_BASE, offset, color);
+pixbuf_t *graphics_get_final_buffer()
+{
+	return &sdram_backbuffer;
+}
+
+
+void graphics_draw_pixel(pixbuf_t *pixbuf, int x, int y, unsigned char color)
+{
+	unsigned char *pixel = (unsigned char *) (pixbuf->base_address + x + y * pixbuf->width);
+	*pixel = color;
 }
 
 
 
-void draw_rectangle(int x1, int y1, int x2, int y2, unsigned char color)
+void graphics_draw_rectangle(pixbuf_t *pixbuf, int x1, int y1, int x2, int y2, unsigned char color)
 {
-	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 0, graphics_sdram_backbuffer); // Frame address
+	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 0, pixbuf->base_address); // Frame address
 	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 4, x1); // X1
 	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 8, y1); // Y1
 	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 12, x2); // X2
@@ -37,9 +47,9 @@ void draw_rectangle(int x1, int y1, int x2, int y2, unsigned char color)
 	ALT_CI_CI_DRAW_RECT_0;
 }
 
-void draw_line(int x1, int y1, int x2, int y2, unsigned char color)
+void graphics_draw_line(pixbuf_t *pixbuf, int x1, int y1, int x2, int y2, unsigned char color)
 {
-	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 0, graphics_sdram_backbuffer); // Frame address
+	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 0, pixbuf->base_address); // Frame address
 	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 4, x1); // X1
 	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 8, y1); // Y1
 	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 12, x2); // X2
@@ -49,8 +59,9 @@ void draw_line(int x1, int y1, int x2, int y2, unsigned char color)
 }
 
 
-void clear_screen(){
-	draw_rectangle(0, 0, 640-1, 480-1, 0x00);
+void graphics_clear_buffer(pixbuf_t *pixbuf)
+{
+	graphics_draw_rectangle(pixbuf, 0, 0, 640-1, 480-1, 0x00);
 	ALT_CI_CI_FRAME_DONE_0;
 }
 
@@ -270,7 +281,7 @@ char font8x8_block[32][8] = {
 };
 
 
-void draw_letter(int y1, int x1, int color, int pixel_size, char* letter){
+void draw_letter(pixbuf_t *pixbuf, int y1, int x1, int color, int pixel_size, char* letter){
 
 	//x1 and y1 are the top left corner of the letter.
 
@@ -282,11 +293,11 @@ void draw_letter(int y1, int x1, int color, int pixel_size, char* letter){
             set = letter[x] & 1 << y;
             	if (set) {
             		if (pixel_size > 1) {
-            			draw_rectangle(y1 + y*pixel_size, x1 + x*pixel_size, y1 + (y*pixel_size)+pixel_size, x1 + (x*pixel_size)+pixel_size, color);
+            			graphics_draw_rectangle(pixbuf, y1 + y*pixel_size, x1 + x*pixel_size, y1 + (y*pixel_size)+pixel_size, x1 + (x*pixel_size)+pixel_size, color);
             		} else {
             			//Drawing individual pixels faster than drawing a rectangle?
             			//draw_rectangle(y1 + y, x1 + x, y1 + y, x1 + x, color);
-            			draw_pixel(y, x, color);
+            			graphics_draw_pixel(pixbuf, y, x, color);
             		}
             	}
             //alt_printf("%c", set ? 'X' : ' ');
@@ -297,7 +308,7 @@ void draw_letter(int y1, int x1, int color, int pixel_size, char* letter){
 
 }
 
-void print2screen(int x1, int y1, int color, int pixel_size, char* string){
+void print2screen(pixbuf_t *pixbuf, int x1, int y1, int color, int pixel_size, char* string){
 
 	int i = 0;
 
@@ -305,7 +316,7 @@ void print2screen(int x1, int y1, int color, int pixel_size, char* string){
 
 	while (string[i] != '\0'){
 		//printf("%c %d", string[i], (int)string[i]);
-		draw_letter(x1 + (i* 8 * pixel_size /* letters are 8 wide */) + (i ? 1 : 0)*spacing,
+		draw_letter(pixbuf, x1 + (i* 8 * pixel_size /* letters are 8 wide */) + (i ? 1 : 0)*spacing,
 					y1, /* y shouldn't change, we are writing on a line */
 					color,
 					pixel_size,
@@ -318,13 +329,13 @@ void print2screen(int x1, int y1, int color, int pixel_size, char* string){
 
 }
 
-void draw_circle (int cx, int cy, int radius, int color, int filled){
+void graphics_draw_circle(pixbuf_t *pixbuf, int cx, int cy, int radius, int color, int filled){
 
 	//Filled = 0 only draws the border
 	//Filled = 1 will fill it, but in software.
 
 	if (!filled){
-		IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 0, graphics_sdram_backbuffer); // Frame address
+		IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 0, pixbuf->base_address); // Frame address
 		IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 4, cx); // CX
 		IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 8, cy); // CY
 		IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 12, radius); // Radius
@@ -335,7 +346,7 @@ void draw_circle (int cx, int cy, int radius, int color, int filled){
 	if (filled < 0) {//Interference pattern causes trippy effect. Get the effect by setting filled to be <0.
 		int r = 0;
 		for (r = 1; r < radius; r++) {
-			IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 0, graphics_sdram_backbuffer); // Frame address
+			IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 0, pixbuf->base_address); // Frame address
 			IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 4, cx); // CX
 			IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 8, cy); // CY
 			IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 12, r*(-1)*filled); // Radius
@@ -349,7 +360,7 @@ void draw_circle (int cx, int cy, int radius, int color, int filled){
 		//What we need instead is draw a circle, then in software, call the line algorithm a bunch of times to draw a line from
 		//The center to the edges of the circle. It's not as fast as doing it all in hardware, but it should still be relatively
 		//fast since we're not plotting individual pixels in C.
-		IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 0, graphics_sdram_backbuffer); // Frame address
+		IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 0, pixbuf->base_address); // Frame address
 		IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 4, cx); // CX
 		IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 8, cy); // CY
 		IOWR_32DIRECT(CI_DRAW_CIRC_0_BASE, 12, radius); // Radius
@@ -373,10 +384,10 @@ void draw_circle (int cx, int cy, int radius, int color, int filled){
 
 		  while( y <= x )
 		  {
-			draw_line(cx+x, cy+y, cx-x, cy+y, color);
-			draw_line(cx+y, cy+x, cx-y, cy+x, color);
-			draw_line(cx+x, cy-y, cx-x, cy-y, color);
-			draw_line(cx+y, cy-x, cx-y, cy-x, color);
+			graphics_draw_line(pixbuf, cx+x, cy+y, cx-x, cy+y, color);
+			graphics_draw_line(pixbuf, cx+y, cy+x, cx-y, cy+x, color);
+			graphics_draw_line(pixbuf, cx+x, cy-y, cx-x, cy-y, color);
+			graphics_draw_line(pixbuf, cx+y, cy-x, cx-y, cy-x, color);
 
 		    y++;
 		    if (decisionOver2<=0)
@@ -393,32 +404,32 @@ void draw_circle (int cx, int cy, int radius, int color, int filled){
 }
 
 //Rounded Rectangle (filled)
-void draw_rounded_rect(int x1, int y1, int x2, int y2, int radius, int filled, unsigned char color){
+void graphics_draw_rounded_rect(pixbuf_t *pixbuf, int x1, int y1, int x2, int y2, int radius, int filled, unsigned char color){
 
 	if (radius == 0){
 		//Regular unfilled rectangle. Draw with 4 lines.
-		draw_line(x1, y1, x2, y1, color); //Top
-		draw_line(x1, y1, x1, y2, color); //Left
-		draw_line(x2, y1, x2, y2, color); //Right
-		draw_line(x1, y2, x2, y2, color); //Bottom
+		graphics_draw_line(pixbuf, x1, y1, x2, y1, color); //Top
+		graphics_draw_line(pixbuf, x1, y1, x1, y2, color); //Left
+		graphics_draw_line(pixbuf, x2, y1, x2, y2, color); //Right
+		graphics_draw_line(pixbuf, x1, y2, x2, y2, color); //Bottom
 
 		if (filled == 1) {
-			draw_rectangle(x1, y1, x2, y1, color);
+			graphics_draw_rectangle(pixbuf, x1, y1, x2, y1, color);
 		}
 	} else {
-		draw_circle (x1 + radius, y1 + radius, radius, color, 1); //TL
-		draw_circle (x2 - radius, y1 + radius, radius, color, 1); //TR
-		draw_circle (x1 + radius, y2 - radius, radius, color, 1); //BL
-		draw_circle (x2 - radius, y2 - radius, radius, color, 1); //BR
+		graphics_draw_circle(pixbuf, x1 + radius, y1 + radius, radius, color, 1); //TL
+		graphics_draw_circle(pixbuf, x2 - radius, y1 + radius, radius, color, 1); //TR
+		graphics_draw_circle(pixbuf, x1 + radius, y2 - radius, radius, color, 1); //BL
+		graphics_draw_circle(pixbuf, x2 - radius, y2 - radius, radius, color, 1); //BR
 
 		if (filled == 1){
-			draw_rectangle(x1 + radius, y1 + radius, x2 - radius, y2 - radius, color); //Center
+			graphics_draw_rectangle(pixbuf, x1 + radius, y1 + radius, x2 - radius, y2 - radius, color); //Center
 		}
 
-		draw_rectangle(x1 + radius, y1, x2 - radius, y1 + radius, color); //top
-		draw_rectangle(x1, y1 + radius, x1 + radius, y2 - radius, color); //left
-		draw_rectangle(x2 - radius, y1 + radius, x2, y2 - radius, color); //right
-		draw_rectangle(x1 + radius, y2 - radius, x2 - radius, y2, color); //bottom
+		graphics_draw_rectangle(pixbuf, x1 + radius, y1, x2 - radius, y1 + radius, color); //top
+		graphics_draw_rectangle(pixbuf, x1, y1 + radius, x1 + radius, y2 - radius, color); //left
+		graphics_draw_rectangle(pixbuf, x2 - radius, y1 + radius, x2, y2 - radius, color); //right
+		graphics_draw_rectangle(pixbuf, x1 + radius, y2 - radius, x2 - radius, y2, color); //bottom
 	}
 
 
@@ -433,13 +444,13 @@ void draw_rounded_rect(int x1, int y1, int x2, int y2, int radius, int filled, u
 //If no flat sides, then need to plot 2 triangles. Make a flat one, then recurse into self :)
 
 
-void draw_triangle (int x1, int y1, int x2, int y2, int x3, int y3, int filled, int color){
+void graphics_draw_triangle(pixbuf_t *pixbuf, int x1, int y1, int x2, int y2, int x3, int y3, int filled, int color){
 
 	if (filled == 0) {
 		//Easiest base case
-		draw_line(x1, y1, x2, y2, color);
-		draw_line(x2, y2, x3, y3, color);
-		draw_line(x1, y1, x3, y3, color);
+		graphics_draw_line(pixbuf, x1, y1, x2, y2, color);
+		graphics_draw_line(pixbuf, x2, y2, x3, y3, color);
+		graphics_draw_line(pixbuf, x1, y1, x3, y3, color);
 	} else {
 
 		//0 for no flat sides. 1 for flat side in x direction opposite point 1, -1 for flat
@@ -493,37 +504,37 @@ void draw_triangle (int x1, int y1, int x2, int y2, int x3, int y3, int filled, 
 
 		if (flatside == 1){
 			for (i = x2 ; i < x3; i++){
-				draw_line(x1, y1, i, y2, color);
+				graphics_draw_line(pixbuf, x1, y1, i, y2, color);
 			}
 			return;
 		}
 		if (flatside == -1){
 			for (i = y2 ; i < y3; i++){
-				draw_line(x1, y1, x2, i, color);
+				graphics_draw_line(pixbuf, x1, y1, x2, i, color);
 			}
 			return;
 		}
 		if (flatside == 2){
 			for (i = y1 ; i < y3; i++){
-				draw_line(x2, y2, i, y3, color);
+				graphics_draw_line(pixbuf, x2, y2, i, y3, color);
 			}
 			return;
 		}
 		if (flatside == -2){
 			for (i = y1 ; i < y3; i++){
-				draw_line(x2, y2, x1, i, color);
+				graphics_draw_line(pixbuf, x2, y2, x1, i, color);
 			}
 			return;
 		}
 		if (flatside == 3) {
 			for (i = x1 ; i < x2; i++){
-				draw_line(x3, y3, i, y2, color);
+				graphics_draw_line(pixbuf, x3, y3, i, y2, color);
 			}
 			return;
 		}
 		if (flatside == -3){
 			for (i = x1 ; i < y2; i++){
-				draw_line(x3, y3, y1, i, color);
+				graphics_draw_line(pixbuf, x3, y3, y1, i, color);
 			}
 			return;
 		}
@@ -564,7 +575,7 @@ void draw_triangle (int x1, int y1, int x2, int y2, int x3, int y3, int filled, 
 			dropdowny = ty1 + ((ty2 < ty3) ? ty2 : ty3) + dy_offset;
 
 			//left
-			draw_triangle (tx1, ty1, tx2, ty2, tx1, dropdowny, filled, color);
+			graphics_draw_triangle(pixbuf, tx1, ty1, tx2, ty2, tx1, dropdowny, filled, color);
 			//right
 			//draw_triangle (tx1, ty1, tx3, ty3, tx1, dropdowny, filled, color+1);
 
