@@ -28,7 +28,7 @@ void draw_paddle(pixbuf_t *pixbuf, int x, int y)
 void draw_field(pixbuf_t *pixbuf)
 {
 	//black background
-	graphics_draw_rectangle(pixbuf, 0, 0, 640-1, 480-1, 0xFF);
+	//graphics_draw_rectangle(pixbuf, 0, 0, 640-1, 480-1, 0xFF);
 	//Top and bottom white walls
 	graphics_draw_rectangle(pixbuf, 0, 0, 640-1, 10, 0x00);
 	graphics_draw_rectangle(pixbuf, 0, 480-11, 640-1, 480-1, 0x00);
@@ -220,24 +220,24 @@ void draw_int(pixbuf_t *pixbuf, int x, int y, int value, int color){
 }
 
 void draw_wall(pixbuf_t *pixbuf){
-	//136 = brown, 219 = grey, 73=dark grey
-	graphics_draw_rectangle(pixbuf, (280), (11), (360), (468), 68);
+	//138 = brown, 14 = grey, 120=dark grey
+	graphics_draw_rectangle(pixbuf, (280), (11), (360), (468), 14);
 	int i, j, k;
 	//Lines slow down the game speed by a fair bit.
 	for (i = 0; i < 45; i++){
-		graphics_draw_line(pixbuf,280, 20+i*10, 360, 20+i*10, 136);
+		graphics_draw_line(pixbuf,280, 20+i*10, 360, 20+i*10, 138);
 		if (i%2 == 0){
 			for (j = 0; j < 3; j++)
-				graphics_draw_line(pixbuf, 300+j*20, 10+i*10, 300+j*20, 20+i*10, 104);
+				graphics_draw_line(pixbuf, 300+j*20, 10+i*10, 300+j*20, 20+i*10, 120);
 		}
 		else{
 			for (j = 0; j < 4; j++)
-				graphics_draw_line(pixbuf,290+j*20, 10+i*10, 290+j*20, 20+i*10, 104);
+				graphics_draw_line(pixbuf,290+j*20, 10+i*10, 290+j*20, 20+i*10, 120);
 		}
 	}
 }
 
-void draw_grass(pixbuf_t *bmp_asset, pixbuf_t *sdram_buf){
+void draw_grass(pixbuf_t *bmp_asset, pixbuf_t *sdram_buf, int p1_score, int p2_score){
 	rect_t source_rect = {
 			.p1 = {
 					.x = 0,
@@ -254,7 +254,9 @@ void draw_grass(pixbuf_t *bmp_asset, pixbuf_t *sdram_buf){
 	};
 
 	copy_buffer_area(bmp_asset, sdram_buf, &source_rect, &dest_offset_1);
-	//copy_buffer_area_transparent(&test_img_pixbuf, &sdram_buf, &source_rect, &dest_offset_1, 194);
+	draw_field(sdram_buf);
+	draw_int(sdram_buf, 200,40, p1_score, 0x00);
+	draw_int(sdram_buf, 440,40, p2_score, 0x00);
 }
 
 void draw_trump(pixbuf_t *bmp_asset, pixbuf_t *sdram_buf, int player){
@@ -278,7 +280,6 @@ void draw_trump(pixbuf_t *bmp_asset, pixbuf_t *sdram_buf, int player){
 	}
 
 	copy_buffer_area_transparent(bmp_asset, sdram_buf, &source_rect, &dest_offset_1, 175);
-	//copy_buffer_area_transparent(bmp_asset, sdram_buf, &source_rect, &dest_offset_1, 194);
 }
 
 void end_game(pixbuf_t *pixbuf, pixbuf_t *composited_pixbuf, int p1_score, int p2_score)

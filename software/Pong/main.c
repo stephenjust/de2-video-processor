@@ -19,82 +19,6 @@
 #define PALETTE_SIZE 256
 
 #define COLLISION_COUNT 5
-//#define MAX_BALL_SPEED 20//10
-
-//struct Paddle{
-//	int x;
-//	int y;
-//	int velocity_x;
-//	int velocity_y;
-//};
-//
-//struct Ball{
-//	int x;
-//	int y;
-//	int velocity_x;
-//	int velocity_y;
-//};
-//
-//struct Ball find_end_point(struct Ball my_ball, struct Paddle p1, struct Paddle p2){
-//	int x_endleft = p1.x + 50;
-//	int x_endright = p2.x - 50;
-//	int y_steps, x_steps, new_x, new_y;
-//	if (my_ball.velocity_y < 0)
-//		y_steps = (130 - my_ball.y) / my_ball.velocity_y;
-//	if (my_ball.velocity_y > 0)
-//		y_steps = (4660 - my_ball.y) / my_ball.velocity_y;
-//	if (my_ball.velocity_x > 0)
-//		x_steps = (x_endright - my_ball.x) / my_ball.velocity_x;
-//	if (my_ball.velocity_x < 0)
-//		x_steps = (x_endleft - my_ball.x) / my_ball.velocity_x;
-//	if (x_steps > y_steps){
-//		new_y = y_steps*my_ball.velocity_y + my_ball.y;
-//		new_x = y_steps*my_ball.velocity_x + my_ball.x;
-//		struct Ball ball = {.y = new_y, .x = new_x,
-//				.velocity_x = my_ball.velocity_x, .velocity_y = my_ball.velocity_y*-1};
-//		return ball;
-//	}
-//	else {
-//		new_y = x_steps*my_ball.velocity_y + my_ball.y;
-//		new_x = x_steps*my_ball.velocity_x + my_ball.x;
-//		struct Ball ball = {.y = new_y, .x = new_x,
-//				.velocity_x = my_ball.velocity_x*-1, .velocity_y = my_ball.velocity_y};
-//		return ball;
-//	}
-//}
-//
-//int flip_sign(int x)
-//{
-//	if (x > 0)
-//		return -1;
-//	else
-//		return 1;
-//}
-//
-//int find_sign(int x)
-//{
-//	if (x > 0)
-//		return 1;
-//	else
-//		return -1;
-//}
-//
-//struct Ball reflect_ball(struct Paddle paddle, struct Ball ball)
-//{
-//	int delta = ball.y - paddle.y;
-//
-//	ball.velocity_y = delta * abs(ball.velocity_x) / 18;
-//
-//	if (abs(ball.velocity_x) < MAX_BALL_SPEED)
-//		ball.velocity_x = (abs(ball.velocity_x) + 1) * flip_sign(ball.velocity_x);
-//	else
-//		ball.velocity_x = ( abs(ball.velocity_x) ) * flip_sign(ball.velocity_x);
-//
-//	if (abs(ball.velocity_y) > abs(ball.velocity_x))
-//		ball.velocity_y = find_sign(ball.velocity_y) * abs(ball.velocity_x);
-//
-//	return ball;
-//}
 
 int main()
 {
@@ -122,7 +46,7 @@ int main()
 	char error2[13];
 	pixbuf_t *pixbuf_background;
 	pixbuf_t *pixbuf;
-	pixbuf_t *bmp_foreground;
+	//pixbuf_t *bmp_foreground;
 	pixbuf_t *composited_pixbuf;
 	Controller player1;
 	Controller player2;
@@ -155,18 +79,11 @@ int main()
 			.height = 480
 	};
 
-
-	//graphics_init();
-
 	pixbuf_background = graphics_layer_get(graphics_layer_add(error1), error2);
 	pixbuf = graphics_layer_get(graphics_layer_add(error1), error2);
-	bmp_foreground = graphics_layer_get(graphics_layer_add(error1), error2);
+	//bmp_foreground = graphics_layer_get(graphics_layer_add(error1), error2);
 	composited_pixbuf = graphics_get_final_buffer();
-	/* Write grass image to background */
-	draw_grass(&bmp_spritesheet, pixbuf_background);
-
-	//alt_putstr("Restoring default palette\n");
-	//switch_palette(&palette_332);
+	draw_grass(&bmp_spritesheet, pixbuf_background, p1_score, p2_score);
 
 	graphics_clear_screen();
 
@@ -354,6 +271,7 @@ int main()
 				ball.velocity_y = ball_speed;
 				p2_score+=1;
 				trump_counter = 2;
+				draw_grass(pixbuf_background, composited_pixbuf, p1_score, p2_score);
 			}
 			if (ball.x > 6350)
 			{
@@ -362,6 +280,7 @@ int main()
 				ball.velocity_y = ball_speed;
 				p1_score+=1;
 				trump_counter = 2;
+				draw_grass(pixbuf_background, composited_pixbuf, p1_score, p2_score);
 			}
 
 			/* Decrement Counters */
@@ -382,13 +301,15 @@ int main()
 			Ball ball_tprime = find_end_point(ball_doubleprime, paddle1, paddle2);
 
 			/*Draw Everything*/
-			//graphics_draw_rectangle(pixbuf, 0, 0, 640-1, 480-1, 0x00);
-			draw_field(pixbuf);
+			//draw_field(pixbuf);
 
 			if (trump_counter > 2)
 				draw_wall(pixbuf);
 			else if (trump_counter == 1)
-				draw_grass(&bmp_spritesheet, pixbuf_background);
+				draw_grass(&bmp_spritesheet, pixbuf_background, p1_score, p2_score);
+
+			//TODO: Make this fix conditional for raytracing...
+			graphics_draw_rectangle(pixbuf, 0, 0, 640-1, 480-1, 0xFF);
 
 			/* Draw markers to determine where ball is going */
 			if (toggle_raytracing){
@@ -400,13 +321,10 @@ int main()
 						scale_input(ball_tprime.x), scale_input(ball_tprime.y), 163);
 			}
 
+
 			draw_paddle(pixbuf, paddle1.x, paddle1.y);
 			draw_paddle(pixbuf, paddle2.x, paddle2.y);
 			draw_ball(pixbuf, ball.x, ball.y, 0x00);
-
-			/* Scores */
-			draw_int(pixbuf, 200,40, p1_score, 0x00);
-			draw_int(pixbuf, 440,40, p2_score, 0x00);
 
 			if (p1_score == 10 || p2_score == 10){
 				end_game(pixbuf, composited_pixbuf, p1_score, p2_score);
