@@ -197,6 +197,7 @@ int main()
 
 	pixbuf_background = graphics_layer_get(graphics_layer_add(error1), error2);
 	pixbuf = graphics_layer_get(graphics_layer_add(error1), error2);
+	bmp_foreground = graphics_layer_get(graphics_layer_add(error1), error2);
 	composited_pixbuf = graphics_get_final_buffer();
 	/* Write grass image to background */
 	draw_grass(&bmp_spritesheet, pixbuf_background);
@@ -266,7 +267,7 @@ int main()
 					!(2800 < ball.x && 3600 > ball.x))
 			{
 				trump_counter = 500;
-				//Draw appropriate BMP somehow...
+				draw_trump(&bmp_spritesheet, pixbuf_background, 1);
 			}
 
 			/*player 2*/
@@ -326,7 +327,7 @@ int main()
 					!(2800 < ball.x && 3600 > ball.x))
 			{
 				trump_counter = 500;
-				//Draw appropriate BMP somehow...
+				draw_trump(&bmp_spritesheet, pixbuf_background, 2);
 			}
 
 			/*ball*/
@@ -392,7 +393,7 @@ int main()
 				ball.velocity_x = -ball_speed;
 				ball.velocity_y = ball_speed;
 				p2_score+=1;
-				trump_counter = 0;
+				trump_counter = 2;
 			}
 			if (ball.x > 6350)
 			{
@@ -400,7 +401,7 @@ int main()
 				ball.velocity_x = ball_speed;
 				ball.velocity_y = ball_speed;
 				p1_score+=1;
-				trump_counter = 0;
+				trump_counter = 2;
 			}
 
 			/* Decrement Counters */
@@ -424,8 +425,10 @@ int main()
 			//graphics_draw_rectangle(pixbuf, 0, 0, 640-1, 480-1, 0x00);
 			draw_field(pixbuf);
 
-			if (trump_counter > 0)
+			if (trump_counter > 2)
 				draw_wall(pixbuf);
+			else if (trump_counter == 1)
+				draw_grass(&bmp_spritesheet, pixbuf_background);
 
 			/* Draw markers to determine where ball is going */
 			if (toggle_raytracing){
@@ -468,6 +471,7 @@ int main()
 			/* Composite Frames */
 			graphics_layer_copy(pixbuf_background, composited_pixbuf);
 			graphics_layer_copy_transparent(pixbuf, composited_pixbuf, 0xFF);
+			//graphics_layer_copy_transparent(bmp_foreground, composited_pixbuf, 194);
 
 			ALT_CI_CI_FRAME_DONE_0;
 			//break;

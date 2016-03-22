@@ -241,11 +241,11 @@ void draw_grass(pixbuf_t *bmp_asset, pixbuf_t *sdram_buf){
 	rect_t source_rect = {
 			.p1 = {
 					.x = 0,
-					.y = 0
+					.y = 480
 			},
 			.p2 = {
 					.x = 640 - 1,
-					.y = 480-1
+					.y = 480*2-1
 			}
 	};
 	point_t dest_offset_1 = {
@@ -255,6 +255,61 @@ void draw_grass(pixbuf_t *bmp_asset, pixbuf_t *sdram_buf){
 
 	copy_buffer_area(bmp_asset, sdram_buf, &source_rect, &dest_offset_1);
 	//copy_buffer_area_transparent(&test_img_pixbuf, &sdram_buf, &source_rect, &dest_offset_1, 194);
+}
+
+void draw_trump(pixbuf_t *bmp_asset, pixbuf_t *sdram_buf, int player){
+	rect_t source_rect = {
+			.p1 = {
+					.x = 110,
+					.y = 960
+			},
+			.p2 = {
+					.x = 250,
+					.y = 1125
+			}
+	};
+	point_t dest_offset_1 = {
+			.x = 40,
+			.y = 294
+	};
+	/*TODO: For some reason, the method below doesn't seem to assign things correctly...*/
+//	rect_t source_rect;
+//	point_t dest_offset_1;
+//	if (player == 1){
+//		rect_t source_rect = {
+//				.p1 = {
+//						.x = 110,
+//						.y = 960
+//				},
+//				.p2 = {
+//						.x = 250,
+//						.y = 1125
+//				}
+//		};
+//		point_t dest_offset_1 = {
+//				.x = 40,
+//				.y = 294
+//		};
+//	}
+//	else{
+//		rect_t source_rect = {
+//				.p1 = {
+//						.x = 250,
+//						.y = 960
+//				},
+//				.p2 = {
+//						.x = 390,
+//						.y = 1125
+//				}
+//		};
+//		point_t dest_offset_1 = {
+//				.x = 549,
+//				.y = 304
+//		};
+//	}
+
+	copy_buffer_area_transparent(bmp_asset, sdram_buf, &source_rect, &dest_offset_1, 194);
+	//copy_buffer_area_transparent(bmp_asset, sdram_buf, &source_rect, &dest_offset_1, 194);
 }
 
 void end_game(pixbuf_t *pixbuf, int p1_score, int p2_score)
