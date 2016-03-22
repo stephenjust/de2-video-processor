@@ -248,13 +248,16 @@ void draw_grass(pixbuf_t *bmp_asset, pixbuf_t *sdram_buf, int p1_score, int p2_s
 					.y = 480*1-1
 			}
 	};
-	point_t dest_offset_1 = {
+	point_t dest_offset = {
 			.x = 0,
 			.y = 0
 	};
 
-	copy_buffer_area(bmp_asset, sdram_buf, &source_rect, &dest_offset_1);
+	copy_buffer_area(bmp_asset, sdram_buf, &source_rect, &dest_offset);
 	draw_field(sdram_buf);
+	/*Fancy numbers!*/
+	draw_int(sdram_buf, 200+2,40-1, p1_score, 0xFF);
+	draw_int(sdram_buf, 440+2,40-1, p2_score, 0xFF);
 	draw_int(sdram_buf, 200,40, p1_score, 0x00);
 	draw_int(sdram_buf, 440,40, p2_score, 0x00);
 }

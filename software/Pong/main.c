@@ -314,11 +314,11 @@ int main()
 			/* Draw markers to determine where ball is going */
 			if (toggle_raytracing){
 				graphics_draw_line(pixbuf, scale_input(ball.x), scale_input(ball.y),
-						scale_input(ball_prime.x), scale_input(ball_prime.y), 79);
+						scale_input(ball_prime.x), scale_input(ball_prime.y), 181);
 				graphics_draw_line(pixbuf, scale_input(ball_prime.x), scale_input(ball_prime.y),
-						scale_input(ball_doubleprime.x), scale_input(ball_doubleprime.y), 103);
+						scale_input(ball_doubleprime.x), scale_input(ball_doubleprime.y), 180);
 				graphics_draw_line(pixbuf, scale_input(ball_doubleprime.x), scale_input(ball_doubleprime.y),
-						scale_input(ball_tprime.x), scale_input(ball_tprime.y), 163);
+						scale_input(ball_tprime.x), scale_input(ball_tprime.y), 236);
 			}
 
 
