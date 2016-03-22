@@ -147,6 +147,7 @@ int main()
 			{
 				trump_counter = 500;
 				draw_trump(&bmp_spritesheet, pixbuf_background, 1);
+				draw_wall(pixbuf_background);
 			}
 
 			/*player 2*/
@@ -205,6 +206,7 @@ int main()
 			{
 				trump_counter = 500;
 				draw_trump(&bmp_spritesheet, pixbuf_background, 2);
+				draw_wall(pixbuf_background);
 			}
 
 			/*ball*/
@@ -303,9 +305,7 @@ int main()
 			/*Draw Everything*/
 			//draw_field(pixbuf);
 
-			if (trump_counter > 2)
-				draw_wall(pixbuf);
-			else if (trump_counter == 1)
+			if (trump_counter == 1)
 				draw_grass(&bmp_spritesheet, pixbuf_background, p1_score, p2_score);
 
 			//TODO: Make this fix conditional for raytracing...
@@ -357,6 +357,38 @@ int main()
 		else
 		{
 			/* Demo Mode for primitives */
+			graphics_draw_rectangle(pixbuf_background, 0, 0, 640-1, 480-1, 0xFF);
+			graphics_draw_rectangle(pixbuf, 0, 0, 640-1, 480-1, 0xFF);
+			graphics_layer_copy(pixbuf, composited_pixbuf);
+
+			print2screen(composited_pixbuf, 110, 200, 6, 4, "Tearing Test");
+			Controller player1 = get_player1();
+			Controller player2 = get_player2();
+			ALT_CI_CI_FRAME_DONE_0;
+
+			while(1){
+				player1 = get_player1();
+				player2 = get_player2();
+				if (player1.a || player1.b || player1.c || player2.a || player2.b || player2.c)
+					break;
+			}
+
+			graphics_layer_copy(pixbuf_background, composited_pixbuf);
+
+			int position = 0;
+			while (1)
+			{
+				if (position == 0) {
+					graphics_draw_line(composited_pixbuf, 640-8, 0, 640-8, 479, 0xFF);
+				} else {
+					graphics_draw_line(composited_pixbuf, position-8, 0, position-8, 479, 0xFF);
+				}
+				graphics_draw_line(composited_pixbuf, position, 0, position, 479, 0x00);
+
+				position = (position + 8) % 640;
+				ALT_CI_CI_FRAME_DONE_0;
+			}
+
 
 		}
 
