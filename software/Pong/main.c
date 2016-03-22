@@ -13,6 +13,7 @@
 #include <efsl/ls.h>
 
 #include "pong_graphics.h"
+#include "genesis.h"
 
 #define PALETTE_SIZE 256
 
@@ -163,6 +164,8 @@ int main()
 	pixbuf_t *pixbuf;
 	pixbuf_t *bmp_foreground;
 	pixbuf_t *composited_pixbuf;
+	Controller player1;
+	Controller player2;
 
 	/* Read BMP asset from SDcard */
 	char error;
@@ -212,17 +215,18 @@ int main()
 		if (game_mode_bool == 0)
 		{
 			/* Read From Controllers*/
-			controller_value = IORD_32DIRECT(GENESIS_0_BASE, 0);
+			player1 = get_player1();
+			player2 = get_player2();
 			/*player 1*/
 			/* Move Vertically */
-			if (controller_value & (1 << 0)){
+			if (player1.up){
 				if (paddle1.y > 290){
 					paddle1.y -= paddle1_speed;
 				}
 				else
 					paddle1.y = 290;
 			}
-			if (controller_value & (1 << 1)){
+			if (player1.down){
 				if (paddle1.y < 4500){
 					paddle1.y += paddle1_speed;
 				}
@@ -230,14 +234,14 @@ int main()
 					paddle1.y = 4500;
 			}
 			/* Move Horizontally */
-			if ( (controller_value & (1 << 2)) && (controller_value & (1 << 5)) ){
+			if ( player1.left && player1.b ){
 				if (paddle1.x > 50){
 					paddle1.x -= paddle1_speed;
 				}
 				else
 					paddle1.x = 50;
 			}
-			if ( (controller_value & (1 << 3)) && (controller_value & (1 << 5)) ){
+			if ( player1.right && player1.b ){
 				if (paddle1.x < 3200){
 					paddle1.x += paddle1_speed;
 				}
@@ -246,8 +250,7 @@ int main()
 			}
 
 			/* Slow other player down */
-			if ( !(controller_value & (1 << 4)) && (controller_value & (1 << 5))
-					&& (controller_value & (1 << 6)) && paddle_counter == 0){
+			if ( !player1.a && player1.b && player1.c && paddle_counter == 0){
 				if (paddle2_speed > 4)
 				{
 					paddle_counter = 50;
@@ -256,15 +259,14 @@ int main()
 			}
 
 			/*Toggle Raytracing*/
-			if ( (controller_value & (1 << 4)) && !(controller_value & (1 << 5)) && toggle_counter == 0){
+			if ( player1.a && !player1.b && toggle_counter == 0){
 				toggle_raytracing = !toggle_raytracing;
-				toggle_counter = 30;
+				toggle_counter = 10;
 			}
 
 			/* Active Trump Tower */
-			if ((controller_value & (1 << 4)) && (controller_value & (1 << 5))
-					&& (controller_value & (1 << 6)) && toggle_counter == 0 &&
-					!(2800 < ball.x && 3600 > ball.x))
+			if (player1.a && player1.b && player1.c && toggle_counter == 0
+					&& !(2800 < ball.x && 3600 > ball.x) )
 			{
 				trump_counter = 500;
 				draw_trump(&bmp_spritesheet, pixbuf_background, 1);
@@ -272,14 +274,14 @@ int main()
 
 			/*player 2*/
 			/* Move Vertically */
-			if (controller_value & (1 << 10)){
+			if (player2.up){
 				if (paddle2.y > 290){
 					paddle2.y -= paddle2_speed;
 				}
 				else
 					paddle2.y = 290;
 			}
-			if (controller_value & (1 << 11)){
+			if (player2.down){
 				if (paddle2.y < 4500){
 					paddle2.y += paddle2_speed;
 				}
@@ -287,14 +289,14 @@ int main()
 					paddle2.y = 4500;
 			}
 			/* Move Horizontally */
-			if ( (controller_value & (1 << 12)) && (controller_value & (1 << 15)) ){
+			if ( player2.left && player2.b ){
 				if (paddle2.x > 3200){
 					paddle2.x -= paddle2_speed;
 				}
 				else if (paddle2.x < 3200)
 					paddle2.x = 3200;
 			}
-			if ( (controller_value & (1 << 13)) && (controller_value & (1 << 15)) ){
+			if ( player2.right && player2.b ){
 				if (paddle2.x < 6350){
 					paddle2.x += paddle2_speed;
 				}
@@ -302,8 +304,7 @@ int main()
 					paddle2.x = 6350;
 			}
 			/* Slow other player down */
-			if ( !(controller_value & (1 << 14)) && (controller_value & (1 << 15))
-					&& (controller_value & (1 << 16)) && paddle_counter == 0){
+			if ( !player2.a && player2.b && player2.c && paddle_counter == 0){
 				if (paddle1_speed > 4)
 				{
 					paddle_counter = 50;
@@ -311,20 +312,19 @@ int main()
 				}
 			}
 			/* Toggle Raytracing */
-			if ( (controller_value & (1 << 14)) && !(controller_value & (1 << 15)) && toggle_counter == 0){
+			if ( player2.a && !player2.b && toggle_counter == 0){
 				toggle_raytracing = !toggle_raytracing;
-				toggle_counter = 30;
+				toggle_counter = 10;
 			}
 			/* Toggle Game Mode */
-			if ( (controller_value & (1 << 17)) || (controller_value & (1 << 7))){
+			if ( player1.start || player2.start){
 				//TODO: Debounce that button press...
 				game_mode_bool = 1;
 			}
 
 			/* Active Trump Tower */
-			if ((controller_value & (1 << 14)) && (controller_value & (1 << 15))
-					&& (controller_value & (1 << 16)) && toggle_counter == 0 &&
-					!(2800 < ball.x && 3600 > ball.x))
+			if (player2.a && player2.b && player2.c && toggle_counter == 0
+					&& !(2800 < ball.x && 3600 > ball.x))
 			{
 				trump_counter = 500;
 				draw_trump(&bmp_spritesheet, pixbuf_background, 2);
@@ -340,7 +340,7 @@ int main()
 			{
 				ball = reflect_ball(paddle1, ball);
 				/*Rocket the ball back horizontally if A&B held during collision*/
-				if ( (controller_value & (1 << 4)) && (controller_value & (1 << 5)) && paddle_counter == 0){
+				if ( player1.a && player1.b && paddle_counter == 0){
 					ball.velocity_x = find_sign(ball.velocity_x)*MAX_BALL_SPEED;
 					ball.velocity_y = 0;
 				}
@@ -352,7 +352,7 @@ int main()
 			{
 				ball = reflect_ball(paddle2, ball);
 				/*Rocket the ball back horizontally if A&B held during collision*/
-				if ( (controller_value & (1 << 14)) && (controller_value & (1 << 15)) && paddle_counter == 0){
+				if ( player2.a && player2.b && paddle_counter == 0){
 					ball.velocity_x = find_sign(ball.velocity_x)*MAX_BALL_SPEED;
 					ball.velocity_y = 0;
 				}
