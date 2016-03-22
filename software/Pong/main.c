@@ -14,127 +14,87 @@
 
 #include "pong_graphics.h"
 #include "genesis.h"
+#include "pong_helpers.h"
 
 #define PALETTE_SIZE 256
 
 #define COLLISION_COUNT 5
-#define MAX_BALL_SPEED 20//10
+//#define MAX_BALL_SPEED 20//10
 
-struct Paddle{
-	int x;
-	int y;
-	int velocity_x;
-	int velocity_y;
-};
-
-struct Ball{
-	int x;
-	int y;
-	int velocity_x;
-	int velocity_y;
-};
-
-struct Ball find_end_point(struct Ball my_ball, struct Paddle p1, struct Paddle p2){
-	int x_endleft = p1.x + 50;
-	int x_endright = p2.x - 50;
-	int y_steps, x_steps, new_x, new_y;
-	if (my_ball.velocity_y < 0)
-		y_steps = (130 - my_ball.y) / my_ball.velocity_y;
-	if (my_ball.velocity_y > 0)
-		y_steps = (4660 - my_ball.y) / my_ball.velocity_y;
-	if (my_ball.velocity_x > 0)
-		x_steps = (x_endright - my_ball.x) / my_ball.velocity_x;
-	if (my_ball.velocity_x < 0)
-		x_steps = (x_endleft - my_ball.x) / my_ball.velocity_x;
-	if (x_steps > y_steps){
-		new_y = y_steps*my_ball.velocity_y + my_ball.y;
-		new_x = y_steps*my_ball.velocity_x + my_ball.x;
-		struct Ball ball = {.y = new_y, .x = new_x,
-				.velocity_x = my_ball.velocity_x, .velocity_y = my_ball.velocity_y*-1};
-		return ball;
-	}
-	else {
-		new_y = x_steps*my_ball.velocity_y + my_ball.y;
-		new_x = x_steps*my_ball.velocity_x + my_ball.x;
-		struct Ball ball = {.y = new_y, .x = new_x,
-				.velocity_x = my_ball.velocity_x*-1, .velocity_y = my_ball.velocity_y};
-		return ball;
-	}
-}
-
-int flip_sign(int x)
-{
-	if (x > 0)
-		return -1;
-	else
-		return 1;
-}
-
-int find_sign(int x)
-{
-	if (x > 0)
-		return 1;
-	else
-		return -1;
-}
-
-struct Ball reflect_ball(struct Paddle paddle, struct Ball ball)
-{
-	int delta = ball.y - paddle.y;
-
-	ball.velocity_y = delta * abs(ball.velocity_x) / 18;
-
-	if (abs(ball.velocity_x) < MAX_BALL_SPEED)
-		ball.velocity_x = (abs(ball.velocity_x) + 1) * flip_sign(ball.velocity_x);
-	else
-		ball.velocity_x = ( abs(ball.velocity_x) ) * flip_sign(ball.velocity_x);
-
-	if (abs(ball.velocity_y) > abs(ball.velocity_x))
-		ball.velocity_y = find_sign(ball.velocity_y) * abs(ball.velocity_x);
-
-	return ball;
-}
-
-struct Ball reflect_puck(struct Ball puck, struct Paddle p1, struct Paddle p2 )
-{
-	int p1_d = (puck.x - p1.x)*(puck.x - p1.x) + (puck.y - p1.y)*(puck.y - p1.y);
-	int p2_d = (puck.x - p2.x)*(puck.x - p2.x) + (puck.y - p2.y)*(puck.y - p2.y);
-	int top_d = (puck.y - 100)*(puck.y - 100);
-	int bottom_d = (puck.y - 4700)*(puck.y - 4700);
-	//This might be a shady way of handling walls, need to account for goal corners
-	int left_d = (puck.x - 100)*(puck.x - 100);
-	int right_d = (puck.x - 6300)*(puck.x - 6300);
-	/* Goal Corners */
-	int top_left_d = (puck.x - 100)*(puck.x - 100) + (puck.y - 1600)*(puck.y - 1600);
-	int bottom_left_d = (puck.x - 100)*(puck.x - 100) + (puck.y - 3200)*(puck.y - 3200);
-	int top_right_d = (puck.x - 6300)*(puck.x - 6300) + (puck.y - 1600)*(puck.y - 1600);
-	int bottom_right_d = (puck.x - 6300)*(puck.x - 6300) + (puck.y - 3200)*(puck.y - 3200);
-	int circle_radius_squared = 270400; //(104/2*10)^2
-
-	if (p1_d < circle_radius_squared){
-		/* TODO: Calculate new velocity for puck based on position and velocity of puck and p1 */
-	}
-
-	if (p2_d < circle_radius_squared){
-		/* TODO: Calculate new velocity for puck based on position and velocity of puck and p2 */
-	}
-
-	if (top_d < circle_radius_squared || bottom_d < circle_radius_squared){
-		puck.velocity_y *=-1;
-	}
-
-	if ( top_right_d < circle_radius_squared || bottom_right_d < circle_radius_squared
-			|| top_left_d < circle_radius_squared || bottom_left_d < circle_radius_squared){
-		puck.velocity_y *= -1;
-		puck.velocity_x *= -1;
-	}
-
-	else if ( left_d < circle_radius_squared || right_d < circle_radius_squared)
-		puck.velocity_x *= -1;
-	else{}
-
-	return puck;
-}
+//struct Paddle{
+//	int x;
+//	int y;
+//	int velocity_x;
+//	int velocity_y;
+//};
+//
+//struct Ball{
+//	int x;
+//	int y;
+//	int velocity_x;
+//	int velocity_y;
+//};
+//
+//struct Ball find_end_point(struct Ball my_ball, struct Paddle p1, struct Paddle p2){
+//	int x_endleft = p1.x + 50;
+//	int x_endright = p2.x - 50;
+//	int y_steps, x_steps, new_x, new_y;
+//	if (my_ball.velocity_y < 0)
+//		y_steps = (130 - my_ball.y) / my_ball.velocity_y;
+//	if (my_ball.velocity_y > 0)
+//		y_steps = (4660 - my_ball.y) / my_ball.velocity_y;
+//	if (my_ball.velocity_x > 0)
+//		x_steps = (x_endright - my_ball.x) / my_ball.velocity_x;
+//	if (my_ball.velocity_x < 0)
+//		x_steps = (x_endleft - my_ball.x) / my_ball.velocity_x;
+//	if (x_steps > y_steps){
+//		new_y = y_steps*my_ball.velocity_y + my_ball.y;
+//		new_x = y_steps*my_ball.velocity_x + my_ball.x;
+//		struct Ball ball = {.y = new_y, .x = new_x,
+//				.velocity_x = my_ball.velocity_x, .velocity_y = my_ball.velocity_y*-1};
+//		return ball;
+//	}
+//	else {
+//		new_y = x_steps*my_ball.velocity_y + my_ball.y;
+//		new_x = x_steps*my_ball.velocity_x + my_ball.x;
+//		struct Ball ball = {.y = new_y, .x = new_x,
+//				.velocity_x = my_ball.velocity_x*-1, .velocity_y = my_ball.velocity_y};
+//		return ball;
+//	}
+//}
+//
+//int flip_sign(int x)
+//{
+//	if (x > 0)
+//		return -1;
+//	else
+//		return 1;
+//}
+//
+//int find_sign(int x)
+//{
+//	if (x > 0)
+//		return 1;
+//	else
+//		return -1;
+//}
+//
+//struct Ball reflect_ball(struct Paddle paddle, struct Ball ball)
+//{
+//	int delta = ball.y - paddle.y;
+//
+//	ball.velocity_y = delta * abs(ball.velocity_x) / 18;
+//
+//	if (abs(ball.velocity_x) < MAX_BALL_SPEED)
+//		ball.velocity_x = (abs(ball.velocity_x) + 1) * flip_sign(ball.velocity_x);
+//	else
+//		ball.velocity_x = ( abs(ball.velocity_x) ) * flip_sign(ball.velocity_x);
+//
+//	if (abs(ball.velocity_y) > abs(ball.velocity_x))
+//		ball.velocity_y = find_sign(ball.velocity_y) * abs(ball.velocity_x);
+//
+//	return ball;
+//}
 
 int main()
 {
@@ -142,9 +102,9 @@ int main()
 	int toggle_raytracing = 0;
 	int toggle_counter = 0;
 	int end_game_bool = 0;
-	struct Paddle paddle1 = {.x = 200, .y = 2400, .velocity_x = 40, .velocity_y = 40};
-	struct Paddle paddle2 = {.x = 6200, .y = 2400, .velocity_x = 40, .velocity_y = 40};
-	struct Ball ball = {.y = 2400, .x = 3200, .velocity_x = ball_speed, .velocity_y = ball_speed};
+	Paddle paddle1 = {.x = 200, .y = 2400, .velocity_x = 40, .velocity_y = 40};
+	Paddle paddle2 = {.x = 6200, .y = 2400, .velocity_x = 40, .velocity_y = 40};
+	Ball ball = {.y = 2400, .x = 3200, .velocity_x = ball_speed, .velocity_y = ball_speed};
 	//TODO: Replace paddle1_speed/paddle2_speed with structure velocity references
 	int paddle1_speed = 40;
 	int paddle2_speed = 40;
@@ -417,9 +377,9 @@ int main()
 			ball.y = ball.y + ball_speed*ball.velocity_y;
 
 			/* Determine next 2 ball locations */
-			struct Ball ball_prime = find_end_point(ball, paddle1, paddle2);
-			struct Ball ball_doubleprime = find_end_point(ball_prime, paddle1, paddle2);
-			struct Ball ball_tprime = find_end_point(ball_doubleprime, paddle1, paddle2);
+			Ball ball_prime = find_end_point(ball, paddle1, paddle2);
+			Ball ball_doubleprime = find_end_point(ball_prime, paddle1, paddle2);
+			Ball ball_tprime = find_end_point(ball_doubleprime, paddle1, paddle2);
 
 			/*Draw Everything*/
 			//graphics_draw_rectangle(pixbuf, 0, 0, 640-1, 480-1, 0x00);
@@ -458,9 +418,9 @@ int main()
 				toggle_raytracing = 0;
 				toggle_counter = 0;
 				end_game_bool = 0;
-				paddle1 = (struct Paddle){.y = 2400, .x = 200};
-				paddle2 = (struct Paddle){.y = 2400, .x = 6200};
-				ball = (struct Ball){.y = 2400, .x = 3200, .velocity_x = ball_speed, .velocity_y = ball_speed};
+				paddle1 = (Paddle){.y = 2400, .x = 200};
+				paddle2 = (Paddle){.y = 2400, .x = 6200};
+				ball = (Ball){.y = 2400, .x = 3200, .velocity_x = ball_speed, .velocity_y = ball_speed};
 				paddle1_speed = 40;
 				paddle2_speed = 40;
 				paddle_counter = 0;
@@ -474,53 +434,11 @@ int main()
 			//graphics_layer_copy_transparent(bmp_foreground, composited_pixbuf, 194);
 
 			ALT_CI_CI_FRAME_DONE_0;
-			//break;
 		}
 
 		else
 		{
-			/* Air Hockey Mode */
-			/* Read From Controllers*/
-			controller_value = IORD_32DIRECT(GENESIS_0_BASE, 0);
-			/*player 1*/
-			/* Move Vertically */
-			//Padle is 104x104 px, Rings are 150x150, puck is 104x104
-			if (controller_value & (1 << 0)){
-				if (paddle1.y > 100 + 104/2*10){
-					paddle1.y -= paddle1_speed;
-				}
-				else
-					paddle1.y = 100 + 104/2*10;
-			}
-			//TODO: Update values for air hockey
-			if (controller_value & (1 << 1)){
-				if (paddle1.y < 4500){
-					paddle1.y += paddle1_speed;
-				}
-				else
-					paddle1.y = 4500;
-			}
-			/* Move Horizontally */
-			if ( (controller_value & (1 << 2)) && (controller_value & (1 << 5)) ){
-				if (paddle1.x > 50){
-					paddle1.x -= paddle1_speed;
-				}
-				else
-					paddle1.x = 50;
-			}
-			if ( (controller_value & (1 << 3)) && (controller_value & (1 << 5)) ){
-				if (paddle1.x < 6350){
-					paddle1.x += paddle1_speed;
-				}
-				else
-					paddle1.x = 6350;
-			}
-
-			draw_table(pixbuf);
-			/* Composite Frames */
-			graphics_layer_copy(pixbuf_background, composited_pixbuf);
-			graphics_layer_copy_transparent(pixbuf, composited_pixbuf, 0xFF);
-			ALT_CI_CI_FRAME_DONE_0;
+			/* Demo Mode for primitives */
 
 		}
 
