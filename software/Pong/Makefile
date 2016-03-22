@@ -144,6 +144,8 @@ ELF := Pong.elf
 # Paths to C, C++, and assembly source files.
 C_SRCS += main.c
 C_SRCS += pong_graphics.c
+C_SRCS += genesis.c
+C_SRCS += pong_helpers.c
 CXX_SRCS :=
 ASM_SRCS :=
 
