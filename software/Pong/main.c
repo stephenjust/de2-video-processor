@@ -449,7 +449,7 @@ int main()
 			draw_int(pixbuf, 440,40, p2_score, 0x00);
 
 			if (p1_score == 10 || p2_score == 10){
-				end_game(pixbuf, p1_score, p2_score);
+				end_game(pixbuf, composited_pixbuf, p1_score, p2_score);
 				end_game_bool = 1;
 			}
 

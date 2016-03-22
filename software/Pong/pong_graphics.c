@@ -241,11 +241,11 @@ void draw_grass(pixbuf_t *bmp_asset, pixbuf_t *sdram_buf){
 	rect_t source_rect = {
 			.p1 = {
 					.x = 0,
-					.y = 480
+					.y = 0
 			},
 			.p2 = {
 					.x = 640 - 1,
-					.y = 480*2-1
+					.y = 480*1-1
 			}
 	};
 	point_t dest_offset_1 = {
@@ -258,61 +258,30 @@ void draw_grass(pixbuf_t *bmp_asset, pixbuf_t *sdram_buf){
 }
 
 void draw_trump(pixbuf_t *bmp_asset, pixbuf_t *sdram_buf, int player){
-	rect_t source_rect = {
-			.p1 = {
-					.x = 110,
-					.y = 960
-			},
-			.p2 = {
-					.x = 250,
-					.y = 1125
-			}
-	};
-	point_t dest_offset_1 = {
-			.x = 40,
-			.y = 294
-	};
-	/*TODO: For some reason, the method below doesn't seem to assign things correctly...*/
-//	rect_t source_rect;
-//	point_t dest_offset_1;
-//	if (player == 1){
-//		rect_t source_rect = {
-//				.p1 = {
-//						.x = 110,
-//						.y = 960
-//				},
-//				.p2 = {
-//						.x = 250,
-//						.y = 1125
-//				}
-//		};
-//		point_t dest_offset_1 = {
-//				.x = 40,
-//				.y = 294
-//		};
-//	}
-//	else{
-//		rect_t source_rect = {
-//				.p1 = {
-//						.x = 250,
-//						.y = 960
-//				},
-//				.p2 = {
-//						.x = 390,
-//						.y = 1125
-//				}
-//		};
-//		point_t dest_offset_1 = {
-//				.x = 549,
-//				.y = 304
-//		};
-//	}
+	rect_t source_rect;
+	point_t dest_offset_1;
+	if (player == 1){
+		source_rect.p1.x = 110;
+		source_rect.p1.y = 960;
+		source_rect.p2.x = 250;
+		source_rect.p2.y = 1125;
+		dest_offset_1.x = 0;
+		dest_offset_1.y = 303;
+	}
+	else{
+		source_rect.p1.x = 250;
+		source_rect.p1.y = 960;
+		source_rect.p2.x = 389;
+		source_rect.p2.y = 1125;
+		dest_offset_1.x = 490;
+		dest_offset_1.y = 303;
+	}
 
-	copy_buffer_area_transparent(bmp_asset, sdram_buf, &source_rect, &dest_offset_1, 194);
+	copy_buffer_area_transparent(bmp_asset, sdram_buf, &source_rect, &dest_offset_1, 175);
 	//copy_buffer_area_transparent(bmp_asset, sdram_buf, &source_rect, &dest_offset_1, 194);
 }
 
-void end_game(pixbuf_t *pixbuf, int p1_score, int p2_score)
+void end_game(pixbuf_t *pixbuf, pixbuf_t *composited_pixbuf, int p1_score, int p2_score)
 {
 	int controller_value;
 	while (1){
@@ -323,6 +292,8 @@ void end_game(pixbuf_t *pixbuf, int p1_score, int p2_score)
 		else
 			print2screen(pixbuf, 90, 200, 0xFF, 4, "Player 2 Wins!");
 		print2screen(pixbuf, 140, 400, 0xFF, 2, "Press A to Continue");
+
+		graphics_layer_copy(pixbuf, composited_pixbuf);
 		ALT_CI_CI_FRAME_DONE_0;
 
 		if ((controller_value & (1 << 4)) || (controller_value & (1 << 14)))
