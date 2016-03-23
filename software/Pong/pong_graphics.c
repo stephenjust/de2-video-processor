@@ -39,22 +39,6 @@ void draw_field(pixbuf_t *pixbuf)
 	}
 }
 
-void draw_table(pixbuf_t *pixbuf)
-{
-	//white background
-	graphics_draw_rectangle(pixbuf, 0, 0, 640-1, 480-1, 0xFF);
-	//walls on table
-	graphics_draw_rectangle(pixbuf, 0, 0, 640-1, 10, 139);
-	graphics_draw_rectangle(pixbuf, 0, 480-11, 640-1, 480-1, 139);
-	graphics_draw_rectangle(pixbuf, 0, 11, 10, 159, 139);
-	graphics_draw_rectangle(pixbuf, 0, 320, 10, 479, 139);
-	graphics_draw_rectangle(pixbuf, 620, 11, 639, 159, 139);
-	graphics_draw_rectangle(pixbuf, 620, 320, 639, 479, 139);
-
-	//center of board
-	graphics_draw_rectangle(pixbuf, 310, 11, 330, 469, 192);
-}
-
 void draw_int(pixbuf_t *pixbuf, int x, int y, int value, int color){
 	/*
 	 * Fonts based on https://saelaenx.files.wordpress.com/2012/10/emon-font-size-04-01.png
@@ -278,7 +262,7 @@ void draw_trump(pixbuf_t *bmp_asset, pixbuf_t *sdram_buf, int player){
 		source_rect.p1.y = 960;
 		source_rect.p2.x = 389;
 		source_rect.p2.y = 1125;
-		dest_offset_1.x = 490;
+		dest_offset_1.x = 500;
 		dest_offset_1.y = 303;
 	}
 

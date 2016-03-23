@@ -142,7 +142,7 @@ int main()
 			}
 
 			/* Active Trump Tower */
-			if (player1.a && player1.b && player1.c && toggle_counter == 0
+			if (player1.a && player1.b && player1.c && trump_counter == 0
 					&& !(2800 < ball.x && 3600 > ball.x) )
 			{
 				trump_counter = 500;
@@ -201,7 +201,7 @@ int main()
 			}
 
 			/* Active Trump Tower */
-			if (player2.a && player2.b && player2.c && toggle_counter == 0
+			if (player2.a && player2.b && player2.c && trump_counter == 0
 					&& !(2800 < ball.x && 3600 > ball.x))
 			{
 				trump_counter = 500;
