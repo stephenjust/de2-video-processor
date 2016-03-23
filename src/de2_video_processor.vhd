@@ -40,7 +40,7 @@ entity de2_video_processor is
 		FL_CE_N     :  out   std_logic_vector (0 downto 0);
 		FL_OE_N     :  out   std_logic_vector (0 downto 0);
 		FL_DQ       :  inout std_logic_vector (7 downto 0);
-		FL_RST_N    :  out   std_logic_vector (0 downto 0) := (others => '0');
+		FL_RST_N    :  out   std_logic_vector (0 downto 0) := (others => '1');
 		FL_WE_N     :  out   std_logic_vector (0 downto 0);
 
 		-- SD Card Interface
