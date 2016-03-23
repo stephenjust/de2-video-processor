@@ -56,7 +56,7 @@ int main()
 	EmbeddedFileSystem efsl;
 
 	graphics_init();
-	//clear_screen();
+	graphics_clear_screen();
 	printf("Attempting to init filesystem");
 	int ret = efs_init(&efsl, SPI_0_NAME);
 	// Initialize efsl
