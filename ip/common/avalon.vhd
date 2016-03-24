@@ -59,4 +59,29 @@ PACKAGE avalon IS
 	);
 	END COMPONENT avalon_copy_sequential;
 
+	COMPONENT avalon_copy_sequential_16 IS
+	PORT(
+		clk              : in     std_logic;
+		reset            : in     std_logic;
+
+		-- Control Signals
+		s_address_start  : in     std_logic_vector(31 downto 0);
+		s_address_end    : in     std_logic_vector(31 downto 0);
+		d_address_start  : in     std_logic_vector(31 downto 0);
+		start            : in     std_logic;
+		done             : out    std_logic;
+
+		-- Avalon-MM Master
+		avm_read         : out    std_logic;
+		avm_readdata     : in     std_logic_vector(15 downto 0);
+		avm_readdatavalid: in     std_logic;
+		avm_write        : out    std_logic;
+		avm_writedata    : out    std_logic_vector(15 downto 0);
+		avm_burstcount   : out    std_logic_vector(7 downto 0);
+		avm_address      : buffer std_logic_vector(31 downto 0);
+		avm_byteenable   : buffer std_logic_vector(1 downto 0) := B"11";
+		avm_waitrequest  : in     std_logic
+	);
+	END COMPONENT avalon_copy_sequential_16;
+
 END PACKAGE;
