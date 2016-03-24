@@ -8,12 +8,12 @@
 #include <string.h>
 #include <graphics_commands.h>
 #include <palettes.h>
+#include <genesis.h>
 
 #include <efsl/efs.h>
 #include <efsl/ls.h>
 
 #include "pong_graphics.h"
-#include "genesis.h"
 #include "pong_helpers.h"
 
 #define PALETTE_SIZE 256
@@ -48,13 +48,13 @@ int main()
 	pixbuf_t *pixbuf;
 	//pixbuf_t *bmp_foreground;
 	pixbuf_t *composited_pixbuf;
-	Controller player1;
-	Controller player2;
+	genesis_controller_t player1, player2;
 
 	/* Read BMP asset from SDcard */
 	char error;
 	EmbeddedFileSystem efsl;
 
+	genesis_open_dev(GENESIS_0_NAME);
 	graphics_init();
 	graphics_clear_screen();
 	printf("Attempting to init filesystem");
@@ -92,8 +92,8 @@ int main()
 		if (game_mode_bool == 0)
 		{
 			/* Read From Controllers*/
-			player1 = get_player1();
-			player2 = get_player2();
+			player1 = genesis_get(1);
+			player2 = genesis_get(2);
 			/*player 1*/
 			/* Move Vertically */
 			if (player1.up){
@@ -362,13 +362,14 @@ int main()
 			graphics_layer_copy(pixbuf, composited_pixbuf);
 
 			print2screen(composited_pixbuf, 110, 200, 6, 4, "Tearing Test");
-			Controller player1 = get_player1();
-			Controller player2 = get_player2();
+			genesis_controller_t player1, player2;
+			player1 = genesis_get(1);
+			player2 = genesis_get(2);
 			ALT_CI_CI_FRAME_DONE_0;
 
 			while(1){
-				player1 = get_player1();
-				player2 = get_player2();
+				player1 = genesis_get(1);
+				player2 = genesis_get(2);
 				if (player1.a || player1.b || player1.c || player2.a || player2.b || player2.c)
 					break;
 			}
