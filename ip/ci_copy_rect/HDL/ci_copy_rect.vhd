@@ -32,7 +32,7 @@ ENTITY ci_copy_rect IS
 		avs_s0_writedata : in     std_logic_vector(31 downto 0);
 		avs_s0_address   : in     std_logic_vector(3 downto 0);
 
-		-- Memory-mapped master for DMA read/write
+		-- Memory-mapped master for DMA read/write, 8-bit interface
 		avm_m0_read        : buffer std_logic;
 		avm_m0_readdata    : in     std_logic_vector(7 downto 0);
 		avm_m0_readdatavalid:in     std_logic;
@@ -40,7 +40,18 @@ ENTITY ci_copy_rect IS
 		avm_m0_writedata   : buffer std_logic_vector(7 downto 0);
 		avm_m0_burstcount  : buffer std_logic_vector(7 downto 0);
 		avm_m0_address     : buffer std_logic_vector(31 downto 0);
-		avm_m0_waitrequest : in     std_logic
+		avm_m0_waitrequest : in     std_logic;
+
+		-- Memory-mapped master for DMA read/write, 16-bit interface
+		avm_m1_read        : buffer std_logic;
+		avm_m1_readdata    : in     std_logic_vector(15 downto 0);
+		avm_m1_readdatavalid:in     std_logic;
+		avm_m1_write       : buffer std_logic;
+		avm_m1_writedata   : buffer std_logic_vector(15 downto 0);
+		avm_m1_burstcount  : buffer std_logic_vector(7 downto 0);
+		avm_m1_address     : buffer std_logic_vector(31 downto 0);
+		avm_m1_byteenable  : buffer std_logic_vector(1 downto 0);
+		avm_m1_waitrequest : in     std_logic
 	);
 END ENTITY;
 
@@ -68,7 +79,7 @@ ARCHITECTURE Behavioral OF ci_copy_rect IS
 
 	-- Copy Control Signals
 	SIGNAL copy_src_address_start, copy_src_address_end, copy_dest_address_start : std_logic_vector (31 downto 0);
-	SIGNAL copy_start, copy_done : std_logic;
+	SIGNAL copy_8_start, copy_16_start, copy_8_done, copy_16_done : std_logic;
 
 	-- Configuration registers
 	SIGNAL source_buffer : pixbuf_t;
@@ -99,15 +110,29 @@ BEGIN
 					copy_src_address_start <= std_logic_vector(pixbuf_pixel_address(source_buffer, source_rect.p1));
 					copy_src_address_end <= std_logic_vector(pixbuf_pixel_address(source_buffer, source_rect.p1) + source_rect_width - to_unsigned(1, 16));
 					copy_dest_address_start <= std_logic_vector(pixbuf_pixel_address(dest_buffer, dest_rect.p1));
-					copy_start <= '1';
+
+					-- Choose whether to start the 8-bit or 16-bit copier
+					-- 16-bit copier requires all transfers to be 16-bit aligned
+					IF source_buffer.address(0) = '0'
+					AND dest_buffer.address(0) = '0'
+					AND source_buffer.rect.p2.x(0) = '0'
+					AND source_rect.p1.x(0) = '0'
+					AND source_rect.p2.x(0) = '1'
+					AND dest_rect.p1.x(0) = '0'
+					AND trans_enable = '0' THEN
+						copy_16_start <= '1';
+					ELSE
+						copy_8_start <= '1';
+					END IF;
 				ELSE
 					current_state <= IDLE;
 				END IF;
 			ELSIF current_state = RUNNING THEN
 				next_point := current_point;
 				next_dest_point := current_dest_point;
-				copy_start <= '0';
-				IF copy_done = '1' THEN
+				copy_8_start <= '0';
+				copy_16_start <= '0';
+				IF copy_8_done = '1' OR copy_16_done = '1' THEN
 					IF current_point.y >= source_rect.p2.y THEN
 						-- Write completed
 						current_state <= IDLE;
@@ -119,7 +144,20 @@ BEGIN
 						copy_src_address_start <= std_logic_vector(pixbuf_pixel_address(source_buffer, next_point));
 						copy_src_address_end <= std_logic_vector(pixbuf_pixel_address(source_buffer, next_point) + source_rect_width - to_unsigned(1, 16));
 						copy_dest_address_start <= std_logic_vector(pixbuf_pixel_address(dest_buffer, next_dest_point));
-						copy_start <= '1';
+
+						-- Choose whether to start the 8-bit or 16-bit copier
+						-- 16-bit copier requires all transfers to be 16-bit aligned
+						IF source_buffer.address(0) = '0'
+						AND dest_buffer.address(0) = '0'
+						AND source_buffer.rect.p2.x(0) = '0'
+						AND source_rect.p1.x(0) = '0'
+						AND source_rect.p2.x(0) = '1'
+						AND dest_rect.p1.x(0) = '0'
+						AND trans_enable = '0' THEN
+							copy_16_start <= '1';
+						ELSE
+							copy_8_start <= '1';
+						END IF;
 					END IF;
 				END IF;
 				current_point <= next_point;
@@ -193,8 +231,8 @@ BEGIN
 		d_address_start  => copy_dest_address_start,
 		skip_byte_en     => trans_enable,
 		skip_byte_value  => trans_color,
-		start            => copy_start,
-		done             => copy_done,
+		start            => copy_8_start,
+		done             => copy_8_done,
 
 		-- Avalon-MM Master
 		avm_read         => avm_m0_read,
@@ -205,5 +243,29 @@ BEGIN
 		avm_burstcount   => avm_m0_burstcount,
 		avm_address      => avm_m0_address,
 		avm_waitrequest  => avm_m0_waitrequest
+	);
+
+	writer_16: avalon_copy_sequential_16
+	PORT MAP (
+		clk              => ncs_ci_clk,
+		reset            => ncs_ci_reset,
+
+		-- Control Signals
+		s_address_start  => copy_src_address_start,
+		s_address_end    => copy_src_address_end,
+		d_address_start  => copy_dest_address_start,
+		start            => copy_16_start,
+		done             => copy_16_done,
+
+		-- Avalon-MM Master
+		avm_read         => avm_m1_read,
+		avm_readdata     => avm_m1_readdata,
+		avm_readdatavalid=> avm_m1_readdatavalid,
+		avm_write        => avm_m1_write,
+		avm_writedata    => avm_m1_writedata,
+		avm_burstcount   => avm_m1_burstcount,
+		avm_address      => avm_m1_address,
+		avm_byteenable   => avm_m1_byteenable,
+		avm_waitrequest  => avm_m1_waitrequest
 	);
 END ARCHITECTURE;
