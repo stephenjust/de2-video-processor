@@ -152,7 +152,6 @@ LIB_NAME := video_system_graphics_library
 
 # Paths to C, C++, and assembly source files.
 C_SRCS += graphics_commands.c
-C_SRCS += graphics_benchmark.c
 C_SRCS += efsl/debug.c
 C_SRCS += efsl/dir.c
 C_SRCS += efsl/disc.c
