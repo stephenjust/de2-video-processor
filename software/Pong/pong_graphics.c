@@ -241,9 +241,9 @@ void draw_grass(pixbuf_t *bmp_asset, pixbuf_t *sdram_buf, int p1_score, int p2_s
 	draw_field(sdram_buf);
 	/*Fancy numbers!*/
 	draw_int(sdram_buf, 200+2,40-1, p1_score, 0xFF);
-	draw_int(sdram_buf, 440+2,40-1, p2_score, 0xFF);
+	draw_int(sdram_buf, 430+2,40-1, p2_score, 0xFF);
 	draw_int(sdram_buf, 200,40, p1_score, 0x00);
-	draw_int(sdram_buf, 440,40, p2_score, 0x00);
+	draw_int(sdram_buf, 430,40, p2_score, 0x00);
 }
 
 void draw_trump(pixbuf_t *bmp_asset, pixbuf_t *sdram_buf, int player){
