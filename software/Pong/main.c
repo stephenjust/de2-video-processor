@@ -10,8 +10,16 @@
 #include <palettes.h>
 #include <genesis.h>
 
+#define USE_FLASH
+
+#ifdef USE_FLASH
+#include <flash_ops.h>
+#else
 #include <efsl/efs.h>
 #include <efsl/ls.h>
+
+#include <sdcard_ops.h>
+#endif
 
 #include "pong_graphics.h"
 #include "pong_helpers.h"
@@ -19,6 +27,7 @@
 #define PALETTE_SIZE 256
 
 #define COLLISION_COUNT 5
+
 
 int main()
 {
@@ -49,15 +58,21 @@ int main()
 	//pixbuf_t *bmp_foreground;
 	pixbuf_t *composited_pixbuf;
 	genesis_controller_t player1, player2;
-
-	/* Read BMP asset from SDcard */
+	pixbuf_t bmp_spritesheet;
 	char error;
-	EmbeddedFileSystem efsl;
 
 	genesis_open_dev(GENESIS_0_NAME);
 	graphics_init();
 	graphics_clear_screen();
+
 	printf("Attempting to init filesystem");
+#ifdef USE_FLASH
+	/* Read BMP assets from Flash */
+	error = load_flash_file("/mnt/rozipfs/small.pal", (void *) COLOUR_PALETTE_SHIFTER_0_BASE, 512);
+	error = load_flash_bmp("/mnt/rozipfs/small.bmp", &bmp_spritesheet);
+#else
+	/* Read BMP asset from SDcard */
+	EmbeddedFileSystem efsl;
 	int ret = efs_init(&efsl, SPI_0_NAME);
 	// Initialize efsl
 	if(ret != 0)
@@ -68,9 +83,9 @@ int main()
 	else
 		printf("...success!\n");
 
-	pixbuf_t bmp_spritesheet;
 	error = load_file(&efsl, "small.pal", (void *) COLOUR_PALETTE_SHIFTER_0_BASE, 512);
 	error = load_bmp(&efsl, "small.bmp", &bmp_spritesheet);
+#endif
 
 	printf("Copying image buffer to output buffer\n");
 	pixbuf_t sdram_buf = {
