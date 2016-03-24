@@ -24,6 +24,8 @@ PORT(
 	s_address_start  : in     std_logic_vector(31 downto 0);
 	s_address_end    : in     std_logic_vector(31 downto 0);
 	d_address_start  : in     std_logic_vector(31 downto 0);
+	skip_byte_en     : in     std_logic;
+	skip_byte_value  : in     std_logic_vector(7 downto 0);
 	start            : in     std_logic;
 	done             : out    std_logic;
 
@@ -140,7 +142,10 @@ BEGIN
 	END PROCESS control;
 
 	avm_write <= '1' WHEN current_state = RUNNING AND do_write = '1' ELSE '0';
-	avm_byteenable <= B"11";
+	avm_byteenable <= B"00" WHEN skip_byte_en = '1' AND avm_write = '1' AND skip_byte_value = avm_writedata(15 downto 8) AND skip_byte_value = avm_writedata(7 downto 0)
+		ELSE B"01" WHEN skip_byte_en = '1' AND avm_write = '1' AND skip_byte_value = avm_writedata(15 downto 8)
+		ELSE B"10" WHEN skip_byte_en = '1' AND avm_write = '1' AND skip_byte_value = avm_writedata(7 downto 0)
+		ELSE B"11";
 
 	fifo_write <= avm_readdatavalid and not fifo_full;
 	fifo_read <= (avm_write and not avm_waitrequest) and not fifo_empty;

@@ -149,11 +149,10 @@ BEGIN
 						-- 16-bit copier requires all transfers to be 16-bit aligned
 						IF source_buffer.address(0) = '0'
 						AND dest_buffer.address(0) = '0'
-						AND source_buffer.rect.p2.x(0) = '0'
+						AND source_buffer.rect.p2.x(0) = '1'
 						AND source_rect.p1.x(0) = '0'
 						AND source_rect.p2.x(0) = '1'
-						AND dest_rect.p1.x(0) = '0'
-						AND trans_enable = '0' THEN
+						AND dest_rect.p1.x(0) = '0' THEN
 							copy_16_start <= '1';
 						ELSE
 							copy_8_start <= '1';
@@ -254,6 +253,8 @@ BEGIN
 		s_address_start  => copy_src_address_start,
 		s_address_end    => copy_src_address_end,
 		d_address_start  => copy_dest_address_start,
+		skip_byte_en     => trans_enable,
+		skip_byte_value  => trans_color,
 		start            => copy_16_start,
 		done             => copy_16_done,
 
