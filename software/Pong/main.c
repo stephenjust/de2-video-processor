@@ -370,7 +370,7 @@ int main()
 			while(1){
 				player1 = genesis_get(1);
 				player2 = genesis_get(2);
-				if (player1.a || player1.b || player1.c || player2.a || player2.b || player2.c)
+				if (player1.a || player2.a )
 					break;
 			}
 
@@ -379,6 +379,11 @@ int main()
 			int position = 0;
 			while (1)
 			{
+				player1 = genesis_get(1);
+				player2 = genesis_get(2);
+				if (player1.b || player2.b )
+					break;
+
 				if (position == 0) {
 					graphics_draw_line(composited_pixbuf, 640-8, 0, 640-8, 479, 0xFF);
 				} else {
@@ -389,7 +394,57 @@ int main()
 				position = (position + 8) % 640;
 				ALT_CI_CI_FRAME_DONE_0;
 			}
+			graphics_draw_rectangle(composited_pixbuf, 0, 0, 640-1, 480-1, 0xFF);
+			print2screen(composited_pixbuf, 110, 200, 6, 3, "Cat with Primitives");
+			ALT_CI_CI_FRAME_DONE_0;
 
+			while(1){
+				player1 = genesis_get(1);
+				player2 = genesis_get(2);
+				if (player1.a|| player2.a)
+					break;
+			}
+			graphics_draw_rectangle(composited_pixbuf, 0, 0, 640-1, 480-1, 0xFF);
+
+
+			/* Torso */
+			graphics_draw_rounded_rect(composited_pixbuf, 10, 380, 330, 410, 15, 1, 120);
+			graphics_draw_circle(composited_pixbuf, 280, 380, 180, 1, 1);
+			graphics_draw_rectangle(composited_pixbuf, 310, 90, 460, 480-1, 0xFF);
+			graphics_draw_rectangle(composited_pixbuf, 100, 410, 460, 480-1, 0xFF);
+			graphics_draw_rounded_rect(composited_pixbuf, 300, 280, 330, 450, 15, 1, 120);
+			graphics_draw_rounded_rect(composited_pixbuf, 280, 200, 350, 400, 30, 1, 0);
+
+
+			graphics_draw_triangle(composited_pixbuf, 280, 200, 350, 200, 300, 100, 1, 120);
+			graphics_draw_triangle(composited_pixbuf, 420, 200, 350, 200, 400, 100, 1, 120);//ears
+			graphics_draw_circle(composited_pixbuf, 350, 200, 70, 14, 1);//head
+
+			graphics_draw_triangle(composited_pixbuf, 340, 210, 360, 210, 350, 220, 1, 79); //nose
+
+			graphics_draw_circle(composited_pixbuf, 330, 190, 10, 5, 1);//eye
+			graphics_draw_circle(composited_pixbuf, 370, 190, 10, 5, 1);//eye
+			graphics_draw_triangle(composited_pixbuf, 325, 190, 335, 190, 330, 180, 1, 235);//pupil
+			graphics_draw_triangle(composited_pixbuf, 325, 190, 335, 190, 330, 200, 1, 235);//pupil
+			graphics_draw_triangle(composited_pixbuf, 365, 190, 375, 190, 370, 180, 1, 235);//pupil
+			graphics_draw_triangle(composited_pixbuf, 365, 190, 375, 190, 370, 200, 1, 235);//pupil
+
+			graphics_draw_circle(composited_pixbuf, 356, 240, 6, 81, 0);//mouth
+			graphics_draw_circle(composited_pixbuf, 344, 240, 6, 81, 0);//mouth
+			graphics_draw_rectangle(composited_pixbuf, 338,234,362,239,14);//mouth
+			graphics_draw_line(composited_pixbuf,350,240,350,220,81);//mouth
+
+
+
+
+			ALT_CI_CI_FRAME_DONE_0;
+
+			while(1){
+				player1 = genesis_get(1);
+				player2 = genesis_get(2);
+				if (player1.c|| player2.c)
+					break;
+			}
 
 		}
 
