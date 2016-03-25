@@ -45,8 +45,8 @@ int main()
 	int p1_score = 0;
 	int p2_score = 0;
 	int collision_counter = 0;
-	int game_mode = 0;
-	int game_mode_counter;
+	int game_mode = 2;
+	int game_mode_counter = 20;
 	int trump_counter = 0;
 	unsigned int controller_value;
 	unsigned int row, col;
@@ -98,7 +98,7 @@ int main()
 	pixbuf = graphics_layer_get(graphics_layer_add(error1), error2);
 	//bmp_foreground = graphics_layer_get(graphics_layer_add(error1), error2);
 	composited_pixbuf = graphics_get_final_buffer();
-	draw_grass(&bmp_spritesheet, pixbuf_background, p1_score, p2_score);
+	//draw_grass(&bmp_spritesheet, pixbuf_background, p1_score, p2_score);
 
 	graphics_clear_screen();
 
