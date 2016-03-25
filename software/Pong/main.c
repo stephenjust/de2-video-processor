@@ -45,7 +45,8 @@ int main()
 	int p1_score = 0;
 	int p2_score = 0;
 	int collision_counter = 0;
-	int game_mode_bool = 0;
+	int game_mode = 0;
+	int game_mode_counter;
 	int trump_counter = 0;
 	unsigned int controller_value;
 	unsigned int row, col;
@@ -55,7 +56,6 @@ int main()
 	char error2[13];
 	pixbuf_t *pixbuf_background;
 	pixbuf_t *pixbuf;
-	//pixbuf_t *bmp_foreground;
 	pixbuf_t *composited_pixbuf;
 	genesis_controller_t player1, player2;
 	pixbuf_t bmp_spritesheet;
@@ -103,8 +103,29 @@ int main()
 	graphics_clear_screen();
 
 	while(1){
+		if (game_mode == 0)
+		{
+			graphics_draw_rectangle(pixbuf_background, 0, 0, 640-1, 480-1, 0xFF);
+			graphics_draw_rectangle(pixbuf, 0, 0, 640-1, 480-1, 0xFF);
+			graphics_layer_copy(pixbuf, composited_pixbuf);
+
+			print2screen(composited_pixbuf, 160, 200, 6, 10, "PONG");
+			player1 = genesis_get(1);
+			player2 = genesis_get(2);
+			if (game_mode_counter != 0)
+				game_mode_counter--;
+			/* Toggle Game Mode */
+			if ( ( player1.start || player2.start ) && game_mode_counter == 0){
+				game_mode = 1;
+				game_mode_counter = 20;
+				draw_grass(&bmp_spritesheet, pixbuf_background, p1_score, p2_score);
+			}
+			ALT_CI_CI_FRAME_DONE_0;
+		}
+
+
 		/* Pong Mode */
-		if (game_mode_bool == 0)
+		else if (game_mode == 1)
 		{
 			/* Read From Controllers*/
 			player1 = genesis_get(1);
@@ -210,9 +231,9 @@ int main()
 				toggle_counter = 10;
 			}
 			/* Toggle Game Mode */
-			if ( player1.start || player2.start){
-				//TODO: Debounce that button press...
-				game_mode_bool = 1;
+			if ( ( player1.start || player2.start ) && game_mode_counter == 0){
+				game_mode = 2;
+				game_mode_counter = 20;
 			}
 
 			/* Active Trump Tower */
@@ -268,6 +289,7 @@ int main()
 			}
 
 			/* Test if ball will hit trump's wall */
+			//TODO: widen parameters to see if improve ball-wall collision (2800/3600 originally)
 			if (trump_counter > 0)
 			{
 				if (ball.x > 2800 && ball.x < 3600){
@@ -307,6 +329,8 @@ int main()
 				paddle_counter--;
 			if (trump_counter != 0)
 				trump_counter--;
+			if (game_mode_counter != 0)
+				game_mode_counter--;
 
 			/* Update ball location */
 			ball.x = ball.x + ball_speed*ball.velocity_x;
@@ -369,26 +393,29 @@ int main()
 			ALT_CI_CI_FRAME_DONE_0;
 		}
 
-		else
+		else if (game_mode == 2)
 		{
-			/* Demo Mode for primitives */
 			graphics_draw_rectangle(pixbuf_background, 0, 0, 640-1, 480-1, 0xFF);
 			graphics_draw_rectangle(pixbuf, 0, 0, 640-1, 480-1, 0xFF);
 			graphics_layer_copy(pixbuf, composited_pixbuf);
 
-			print2screen(composited_pixbuf, 110, 200, 6, 4, "Tearing Test");
-			genesis_controller_t player1, player2;
+			print2screen(composited_pixbuf, 30, 220, 6, 6, "Tearing Test");
+
 			player1 = genesis_get(1);
 			player2 = genesis_get(2);
+
 			ALT_CI_CI_FRAME_DONE_0;
 
-			while(1){
-				player1 = genesis_get(1);
-				player2 = genesis_get(2);
-				if (player1.a || player2.a )
-					break;
+			if (game_mode_counter != 0)
+				game_mode_counter--;
+			if ( ( player1.start || player2.start ) && game_mode_counter == 0 ){
+				game_mode = 3;
+				game_mode_counter = 20;
 			}
+		}
 
+		else if (game_mode == 3)
+		{
 			graphics_layer_copy(pixbuf_background, composited_pixbuf);
 
 			int position = 0;
@@ -396,8 +423,13 @@ int main()
 			{
 				player1 = genesis_get(1);
 				player2 = genesis_get(2);
-				if (player1.b || player2.b )
+				if (game_mode_counter != 0)
+					game_mode_counter--;
+				if ( ( player1.start || player2.start ) && game_mode_counter == 0 ){
+					game_mode = 4;
+					game_mode_counter = 20;
 					break;
+				}
 
 				if (position == 0) {
 					graphics_draw_line(composited_pixbuf, 640-8, 0, 640-8, 479, 0xFF);
@@ -409,18 +441,28 @@ int main()
 				position = (position + 8) % 640;
 				ALT_CI_CI_FRAME_DONE_0;
 			}
+		}
+
+		else if (game_mode == 4)
+		{
 			graphics_draw_rectangle(composited_pixbuf, 0, 0, 640-1, 480-1, 0xFF);
-			print2screen(composited_pixbuf, 110, 200, 6, 3, "Cat with Primitives");
+			print2screen(composited_pixbuf, 15, 200, 6, 4, "Cat with Primitives");
 			ALT_CI_CI_FRAME_DONE_0;
 
-			while(1){
-				player1 = genesis_get(1);
-				player2 = genesis_get(2);
-				if (player1.a|| player2.a)
-					break;
+			player1 = genesis_get(1);
+			player2 = genesis_get(2);
+			if (game_mode_counter != 0)
+				game_mode_counter--;
+			if ( ( player1.start || player2.start ) && game_mode_counter == 0 ){
+				game_mode = 5;
+				game_mode_counter = 20;
 			}
-			graphics_draw_rectangle(composited_pixbuf, 0, 0, 640-1, 480-1, 0xFF);
 
+		}
+
+		else if (game_mode == 5)
+		{
+			graphics_draw_rectangle(composited_pixbuf, 0, 0, 640-1, 480-1, 0xFF);
 
 			/* Torso */
 			graphics_draw_rounded_rect(composited_pixbuf, 10, 400, 340, 420, 10, 1, 14);//tail
@@ -464,17 +506,19 @@ int main()
 			graphics_draw_rounded_rect(composited_pixbuf, 430, 30, 620, 120, 20, 1, 0);//speech bubble
 			graphics_draw_triangle(composited_pixbuf, 480, 120, 540, 120, 430, 180, 1, 0);
 
-			print2screen(composited_pixbuf, 445, 70, 148, 2, "Thank You!");
+			print2screen(composited_pixbuf, 460, 70, 148, 2, "Meow!!!");
 
 
 
 			ALT_CI_CI_FRAME_DONE_0;
 
-			while(1){
-				player1 = genesis_get(1);
-				player2 = genesis_get(2);
-				if (player1.c|| player2.c)
-					break;
+			player1 = genesis_get(1);
+			player2 = genesis_get(2);
+			if (game_mode_counter != 0)
+				game_mode_counter--;
+			if ( ( player1.start || player2.start ) && game_mode_counter == 0 ){
+				game_mode = 0;
+				game_mode_counter = 20;
 			}
 
 		}
