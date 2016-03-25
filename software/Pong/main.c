@@ -31,16 +31,16 @@
 
 int main()
 {
-	int ball_speed = 4;
+	int ball_speed = 6;//was 4 at 10 scale
 	int toggle_raytracing = 0;
 	int toggle_counter = 0;
 	int end_game_bool = 0;
-	Paddle paddle1 = {.x = 200, .y = 2400, .velocity_x = 40, .velocity_y = 40};
-	Paddle paddle2 = {.x = 6200, .y = 2400, .velocity_x = 40, .velocity_y = 40};
-	Ball ball = {.y = 2400, .x = 3200, .velocity_x = ball_speed, .velocity_y = ball_speed};
+	Paddle paddle1 = {.x = 320, .y = 3840, .velocity_x = 64, .velocity_y = 64};
+	Paddle paddle2 = {.x = 9920, .y = 3840, .velocity_x = 64, .velocity_y = 64};
+	Ball ball = {.y = 3840, .x = 5120, .velocity_x = ball_speed, .velocity_y = ball_speed};
 	//TODO: Replace paddle1_speed/paddle2_speed with structure velocity references
-	int paddle1_speed = 40;
-	int paddle2_speed = 40;
+	int paddle1_speed = 64;
+	int paddle2_speed = 64;
 	int paddle_counter = 0;
 	int p1_score = 0;
 	int p2_score = 0;
@@ -133,33 +133,33 @@ int main()
 			/*player 1*/
 			/* Move Vertically */
 			if (player1.up){
-				if (paddle1.y > 290){
+				if (paddle1.y > 464){
 					paddle1.y -= paddle1_speed;
 				}
 				else
-					paddle1.y = 290;
+					paddle1.y = 464;
 			}
 			if (player1.down){
-				if (paddle1.y < 4500){
+				if (paddle1.y < 7200){
 					paddle1.y += paddle1_speed;
 				}
 				else
-					paddle1.y = 4500;
+					paddle1.y = 7200;
 			}
 			/* Move Horizontally */
 			if ( player1.left && player1.b ){
-				if (paddle1.x > 50){
+				if (paddle1.x > 80){
 					paddle1.x -= paddle1_speed;
 				}
 				else
-					paddle1.x = 50;
+					paddle1.x = 80;
 			}
 			if ( player1.right && player1.b ){
-				if (paddle1.x < 3200){
+				if (paddle1.x < 5120){
 					paddle1.x += paddle1_speed;
 				}
 				else
-					paddle1.x = 3200;
+					paddle1.x = 5120;
 			}
 
 			/* Slow other player down */
@@ -179,7 +179,7 @@ int main()
 
 			/* Active Trump Tower */
 			if (player1.a && player1.b && player1.c && trump_counter == 0
-					&& !(2800 < ball.x && 3600 > ball.x) )
+					&& !(4480 < ball.x && 5760 > ball.x) )
 			{
 				trump_counter = 500;
 				draw_trump(&bmp_spritesheet, pixbuf_background, 1);
@@ -189,33 +189,33 @@ int main()
 			/*player 2*/
 			/* Move Vertically */
 			if (player2.up){
-				if (paddle2.y > 290){
+				if (paddle2.y > 464){
 					paddle2.y -= paddle2_speed;
 				}
 				else
-					paddle2.y = 290;
+					paddle2.y = 464;
 			}
 			if (player2.down){
-				if (paddle2.y < 4500){
+				if (paddle2.y < 7200){
 					paddle2.y += paddle2_speed;
 				}
 				else
-					paddle2.y = 4500;
+					paddle2.y = 7200;
 			}
 			/* Move Horizontally */
 			if ( player2.left && player2.b ){
-				if (paddle2.x > 3200){
+				if (paddle2.x > 5120){
 					paddle2.x -= paddle2_speed;
 				}
-				else if (paddle2.x < 3200)
-					paddle2.x = 3200;
+				else if (paddle2.x < 5120)
+					paddle2.x = 5120;
 			}
 			if ( player2.right && player2.b ){
-				if (paddle2.x < 6350){
+				if (paddle2.x < 10160){
 					paddle2.x += paddle2_speed;
 				}
 				else
-					paddle2.x = 6350;
+					paddle2.x = 10160;
 			}
 			/* Slow other player down */
 			if ( !player2.a && player2.b && player2.c && paddle_counter == 0){
@@ -250,8 +250,8 @@ int main()
 			if (collision_counter != 0)
 				collision_counter--;
 
-			if (paddle1.x - 100 < ball.x && paddle1.x + 100 > ball.x && collision_counter == 0
-					&& paddle1.y + 180 > ball.y && paddle1.y - 180 < ball.y)
+			if (paddle1.x - 160 < ball.x && paddle1.x + 160 > ball.x && collision_counter == 0
+					&& paddle1.y + 288 > ball.y && paddle1.y - 288 < ball.y)
 			{
 				ball = reflect_ball(paddle1, ball);
 				/*Rocket the ball back horizontally if A&B held during collision*/
@@ -262,8 +262,8 @@ int main()
 				collision_counter = COLLISION_COUNT;
 			}
 
-			if (paddle2.x + 100 > ball.x && paddle2.x - 100 < ball.x && collision_counter == 0
-					&& paddle2.y + 180 > ball.y && paddle2.y - 180 < ball.y)
+			if (paddle2.x + 160 > ball.x && paddle2.x - 160 < ball.x && collision_counter == 0
+					&& paddle2.y + 288 > ball.y && paddle2.y - 288 < ball.y)
 			{
 				ball = reflect_ball(paddle2, ball);
 				/*Rocket the ball back horizontally if A&B held during collision*/
@@ -275,15 +275,15 @@ int main()
 			}
 
 			/*Test if ball is touching top/bottom wall*/
-			if ( (ball.y <= 150 || ball.y >= 4650) && collision_counter == 0)
+			if ( (ball.y <= 240 || ball.y >= 7440) && collision_counter == 0)
 			{
 				ball.velocity_y *= -1;
 
 				/*Stop ball getting stuck in wall*/
-				if (ball.y < 150)
-					ball.y = 150;
-				else if (ball.y > 4650)
-					ball.y = 4650;
+				if (ball.y < 240)
+					ball.y = 240;
+				else if (ball.y > 7440)
+					ball.y = 7440;
 
 				collision_counter = COLLISION_COUNT;
 			}
@@ -292,29 +292,29 @@ int main()
 			//TODO: widen parameters to see if improve ball-wall collision (2800/3600 originally)
 			if (trump_counter > 0)
 			{
-				if (ball.x > 2800 && ball.x < 3600){
+				if (ball.x > 4480 && ball.x < 5760){
 					ball.velocity_x*=-1;
 
-					if (ball.x < 3000)
-						ball.x = 2750;
-					if (ball.x > 3400)
-						ball.x = 3650;
+					if (ball.x < 4800)
+						ball.x = 4400;
+					if (ball.x > 5440)
+						ball.x = 5840;
 				}
 			}
 
 			/* Test if ball is going to score */
-			if (ball.x < 50)
+			if (ball.x < 80)
 			{
-				ball.x = 3200;
+				ball.x = 5120;
 				ball.velocity_x = -ball_speed;
 				ball.velocity_y = ball_speed;
 				p2_score+=1;
 				trump_counter = 2;
 				draw_grass(pixbuf_background, composited_pixbuf, p1_score, p2_score);
 			}
-			if (ball.x > 6350)
+			if (ball.x > 10160)
 			{
-				ball.x = 3200;
+				ball.x = 5120;
 				ball.velocity_x = ball_speed;
 				ball.velocity_y = ball_speed;
 				p1_score+=1;
@@ -375,15 +375,16 @@ int main()
 				toggle_raytracing = 0;
 				toggle_counter = 0;
 				end_game_bool = 0;
-				paddle1 = (Paddle){.y = 2400, .x = 200};
-				paddle2 = (Paddle){.y = 2400, .x = 6200};
-				ball = (Ball){.y = 2400, .x = 3200, .velocity_x = ball_speed, .velocity_y = ball_speed};
-				paddle1_speed = 40;
-				paddle2_speed = 40;
+				paddle1 = (Paddle){.y = 3840, .x = 320};
+				paddle2 = (Paddle){.y = 3840, .x = 9920};
+				ball = (Ball){.y = 3840, .x = 5120, .velocity_x = ball_speed, .velocity_y = ball_speed};
+				paddle1_speed = 64;
+				paddle2_speed = 64;
 				paddle_counter = 0;
 				p1_score = 0;
 				p2_score = 0;
 				collision_counter = 0;
+				draw_grass(&bmp_spritesheet, pixbuf_background, p1_score, p2_score);
 			}
 			/* Composite Frames */
 			graphics_layer_copy(pixbuf_background, composited_pixbuf);

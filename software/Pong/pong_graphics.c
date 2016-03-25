@@ -4,7 +4,7 @@
 #include <graphics_commands.h>
 
 int scale_input(int x){
-	return x / 10;
+	return x / 16;
 }
 
 void draw_ball(pixbuf_t *pixbuf, int x, int y, int color)
