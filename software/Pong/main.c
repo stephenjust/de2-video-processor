@@ -423,16 +423,21 @@ int main()
 
 
 			/* Torso */
-			graphics_draw_rounded_rect(composited_pixbuf, 10, 380, 330, 410, 15, 1, 120);
-			graphics_draw_circle(composited_pixbuf, 280, 380, 180, 1, 1);
+			graphics_draw_rounded_rect(composited_pixbuf, 10, 400, 340, 420, 10, 1, 14);//tail
+			graphics_draw_circle(composited_pixbuf, 280, 380, 180, 121, 1);
 			graphics_draw_rectangle(composited_pixbuf, 310, 90, 460, 480-1, 0xFF);
 			graphics_draw_rectangle(composited_pixbuf, 100, 410, 460, 480-1, 0xFF);
-			graphics_draw_rounded_rect(composited_pixbuf, 300, 280, 330, 450, 15, 1, 120);
-			graphics_draw_rounded_rect(composited_pixbuf, 280, 200, 350, 400, 30, 1, 0);
+			graphics_draw_rounded_rect(composited_pixbuf, 320, 280, 350, 430, 15, 1, 120);//back leg
+			graphics_draw_rounded_rect(composited_pixbuf, 300, 280, 330, 430, 15, 1, 14);//front leg
+			graphics_draw_rounded_rect(composited_pixbuf, 280, 200, 370, 350, 30, 1, 121);
+			graphics_draw_rounded_rect(composited_pixbuf, 100, 400, 300, 430, 15, 1, 81);//hind leg
+			graphics_draw_circle(composited_pixbuf, 120, 400, 30, 81, 1);
 
 
 			graphics_draw_triangle(composited_pixbuf, 280, 200, 350, 200, 300, 100, 1, 120);
 			graphics_draw_triangle(composited_pixbuf, 420, 200, 350, 200, 400, 100, 1, 120);//ears
+			graphics_draw_triangle(composited_pixbuf, 290, 200, 340, 200, 310, 120, 1, 79);//inner ear
+			graphics_draw_triangle(composited_pixbuf, 410, 200, 360, 200, 390, 120, 1, 79);//inner ear
 			graphics_draw_circle(composited_pixbuf, 350, 200, 70, 14, 1);//head
 
 			graphics_draw_triangle(composited_pixbuf, 340, 210, 360, 210, 350, 220, 1, 79); //nose
@@ -449,6 +454,17 @@ int main()
 			graphics_draw_rectangle(composited_pixbuf, 338,234,362,239,14);//mouth
 			graphics_draw_line(composited_pixbuf,350,240,350,220,81);//mouth
 
+			graphics_draw_line(composited_pixbuf,360,215,430,200,0);//whisker
+			graphics_draw_line(composited_pixbuf,360,220,430,220,0);//whisker
+			graphics_draw_line(composited_pixbuf,360,225,430,240,0);//whisker
+			graphics_draw_line(composited_pixbuf,340,215,270,200,0);//whisker
+			graphics_draw_line(composited_pixbuf,340,220,270,220,0);//whisker
+			graphics_draw_line(composited_pixbuf,340,225,270,240,0);//whisker
+
+			graphics_draw_rounded_rect(composited_pixbuf, 430, 30, 620, 120, 20, 1, 0);//speech bubble
+			graphics_draw_triangle(composited_pixbuf, 480, 120, 540, 120, 430, 180, 1, 0);
+
+			print2screen(composited_pixbuf, 445, 70, 148, 2, "Thank You!");
 
 
 
