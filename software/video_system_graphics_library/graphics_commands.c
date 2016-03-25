@@ -10,6 +10,18 @@
 void *graphics_sdram_backbuffer;
 static pixbuf_t sdram_backbuffer;
 
+static int min(int a, int b)
+{
+	if (a < b) return a;
+	else return b;
+}
+
+static int max(int a, int b)
+{
+	if (a > b) return a;
+	else return b;
+}
+
 char graphics_init()
 {
 	sdram_backbuffer.base_address = alt_uncached_malloc(FRAME_WIDTH * FRAME_HEIGHT);
@@ -37,21 +49,42 @@ void graphics_draw_pixel(pixbuf_t *pixbuf, int x, int y, unsigned char color)
 }
 
 
-
+/**
+ * graphcis_draw_rectangle: Draw a filled rectangle between two points
+ *
+ * Arguments:
+ *     pixbuf: The pixel buffer to draw to
+ *     x1: X-coordinate of the first point
+ *     y1: Y-coordinate of the first point
+ *     x2: X-coordinate of the second point
+ *     y2: Y-coordinate of the second point
+ *     color: Color of the rectangle
+ */
 void graphics_draw_rectangle(pixbuf_t *pixbuf, int x1, int y1, int x2, int y2, unsigned char color)
 {
-	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 0, pixbuf->base_address); // Frame address
-	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 4, x1); // X1
-	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 8, y1); // Y1
-	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 12, x2); // X2
-	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 16, y2); // Y2
+	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 0, (int) pixbuf->base_address); // Frame address
+	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 4, min(x1, x2)); // X1
+	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 8, min(y1, y2)); // Y1
+	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 12, max(x1, x2)); // X2
+	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 16, max(y1, y2)); // Y2
 	IOWR_32DIRECT(CI_DRAW_RECT_0_BASE, 20, color); // Color
 	ALT_CI_CI_DRAW_RECT_0;
 }
 
+/**
+ * graphcis_draw_line: Draw a line between two points on the screen
+ *
+ * Arguments:
+ *     pixbuf: The pixel buffer to draw to
+ *     x1: X-coordinate of the start of the line
+ *     y1: Y-coordinate of the start of the line
+ *     x2: X-coordinate of the end of the line
+ *     y2: Y-coordinate of the end of the line
+ *     color: Color of the line
+ */
 void graphics_draw_line(pixbuf_t *pixbuf, int x1, int y1, int x2, int y2, unsigned char color)
 {
-	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 0, pixbuf->base_address); // Frame address
+	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 0, (int) pixbuf->base_address); // Frame address
 	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 4, x1); // X1
 	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 8, y1); // Y1
 	IOWR_32DIRECT(CI_DRAW_LINE_0_BASE, 12, x2); // X2
@@ -60,16 +93,24 @@ void graphics_draw_line(pixbuf_t *pixbuf, int x1, int y1, int x2, int y2, unsign
 	ALT_CI_CI_DRAW_LINE_0;
 }
 
-
+/**
+ * graphics_clear_screen: Clear the SDRAM back-buffer, and copy it to SRAM
+ */
 void graphics_clear_screen()
 {
-	graphics_draw_rectangle(graphics_get_final_buffer(), 0, 0, 640-1, 480-1, 0x00);
+	graphics_draw_rectangle(&sdram_backbuffer, 0, 0, sdram_backbuffer.width-1, sdram_backbuffer.height-1, 0x00);
 	ALT_CI_CI_FRAME_DONE_0;
 }
 
+/**
+ * graphics_clear_buffer: Set all of the pixels in a buffer to zero
+ *
+ * Arguments:
+ *     pixbuf: Buffer to clear
+ */
 void graphics_clear_buffer(pixbuf_t *pixbuf)
 {
-	graphics_draw_rectangle(pixbuf, 0, 0, 640-1, 480-1, 0x00);
+	graphics_draw_rectangle(pixbuf, 0, 0, pixbuf->width-1, pixbuf->height-1, 0x00);
 }
 
 //Fonts:
