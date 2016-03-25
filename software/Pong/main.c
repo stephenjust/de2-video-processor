@@ -436,8 +436,8 @@ int main()
 
 			graphics_draw_triangle(composited_pixbuf, 280, 200, 350, 200, 300, 100, 1, 120);
 			graphics_draw_triangle(composited_pixbuf, 420, 200, 350, 200, 400, 100, 1, 120);//ears
-			graphics_draw_triangle(composited_pixbuf, 290, 200, 340, 200, 310, 120, 1, 79);//inner ear
-			graphics_draw_triangle(composited_pixbuf, 410, 200, 360, 200, 390, 120, 1, 79);//inner ear
+			graphics_draw_triangle(composited_pixbuf, 290, 200, 340, 200, 305, 120, 1, 79);//inner ear
+			graphics_draw_triangle(composited_pixbuf, 410, 200, 360, 200, 395, 120, 1, 79);//inner ear
 			graphics_draw_circle(composited_pixbuf, 350, 200, 70, 14, 1);//head
 
 			graphics_draw_triangle(composited_pixbuf, 340, 210, 360, 210, 350, 220, 1, 79); //nose
