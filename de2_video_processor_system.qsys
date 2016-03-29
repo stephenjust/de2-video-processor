@@ -29,7 +29,7 @@
    {
       datum _sortIndex
       {
-         value = "15";
+         value = "16";
          type = "int";
       }
       datum sopceditor_expanded
@@ -42,7 +42,7 @@
    {
       datum baseAddress
       {
-         value = "4232024";
+         value = "4232056";
          type = "String";
       }
    }
@@ -116,7 +116,7 @@
    {
       datum _sortIndex
       {
-         value = "14";
+         value = "15";
          type = "int";
       }
       datum sopceditor_expanded
@@ -129,7 +129,7 @@
    {
       datum _sortIndex
       {
-         value = "17";
+         value = "18";
          type = "int";
       }
    }
@@ -137,7 +137,7 @@
    {
       datum baseAddress
       {
-         value = "4232016";
+         value = "4232048";
          type = "String";
       }
    }
@@ -153,7 +153,7 @@
    {
       datum _sortIndex
       {
-         value = "21";
+         value = "22";
          type = "int";
       }
       datum sopceditor_expanded
@@ -166,7 +166,7 @@
    {
       datum _sortIndex
       {
-         value = "12";
+         value = "13";
          type = "int";
       }
    }
@@ -182,7 +182,7 @@
    {
       datum _sortIndex
       {
-         value = "13";
+         value = "14";
          type = "int";
       }
       datum sopceditor_expanded
@@ -224,15 +224,39 @@
    {
       datum baseAddress
       {
-         value = "4232000";
+         value = "4232032";
          type = "String";
       }
    }
-   element ci_draw_rect_0.s0
+   element video_fb_streamer_0.s0
+   {
+      datum baseAddress
+      {
+         value = "4232064";
+         type = "String";
+      }
+   }
+   element genesis_0.s0
+   {
+      datum baseAddress
+      {
+         value = "4232068";
+         type = "String";
+      }
+   }
+   element ci_draw_line_0.s0
    {
       datum baseAddress
       {
          value = "4231936";
+         type = "String";
+      }
+   }
+   element ci_draw_circ_0.s0
+   {
+      datum baseAddress
+      {
+         value = "4231872";
          type = "String";
       }
    }
@@ -244,35 +268,19 @@
          type = "String";
       }
    }
-   element ci_draw_line_0.s0
+   element ci_draw_rect_0.s0
    {
       datum baseAddress
       {
-         value = "4231904";
+         value = "4231968";
          type = "String";
       }
    }
-   element ci_draw_circ_0.s0
+   element timer_timestamp.s1
    {
       datum baseAddress
       {
          value = "4231840";
-         type = "String";
-      }
-   }
-   element genesis_0.s0
-   {
-      datum baseAddress
-      {
-         value = "4232036";
-         type = "String";
-      }
-   }
-   element video_fb_streamer_0.s0
-   {
-      datum baseAddress
-      {
-         value = "4232032";
          type = "String";
       }
    }
@@ -301,7 +309,7 @@
    {
       datum baseAddress
       {
-         value = "4231968";
+         value = "4232000";
          type = "String";
       }
    }
@@ -322,7 +330,7 @@
    {
       datum _sortIndex
       {
-         value = "25";
+         value = "26";
          type = "int";
       }
    }
@@ -330,7 +338,7 @@
    {
       datum _sortIndex
       {
-         value = "24";
+         value = "25";
          type = "int";
       }
    }
@@ -338,7 +346,7 @@
    {
       datum baseAddress
       {
-         value = "4231872";
+         value = "4231904";
          type = "String";
       }
    }
@@ -354,7 +362,7 @@
    {
       datum _sortIndex
       {
-         value = "20";
+         value = "21";
          type = "int";
       }
       datum sopceditor_expanded
@@ -372,15 +380,23 @@
       }
       datum sopceditor_expanded
       {
-         value = "0";
+         value = "1";
          type = "boolean";
+      }
+   }
+   element timer_timestamp
+   {
+      datum _sortIndex
+      {
+         value = "12";
+         type = "int";
       }
    }
    element tristate_conduit_bridge_0
    {
       datum _sortIndex
       {
-         value = "22";
+         value = "23";
          type = "int";
       }
       datum sopceditor_expanded
@@ -393,7 +409,7 @@
    {
       datum _sortIndex
       {
-         value = "23";
+         value = "24";
          type = "int";
       }
       datum sopceditor_expanded
@@ -419,7 +435,7 @@
    {
       datum _sortIndex
       {
-         value = "16";
+         value = "17";
          type = "int";
       }
    }
@@ -427,7 +443,7 @@
    {
       datum _sortIndex
       {
-         value = "18";
+         value = "19";
          type = "int";
       }
    }
@@ -435,7 +451,7 @@
    {
       datum _sortIndex
       {
-         value = "19";
+         value = "20";
          type = "int";
       }
    }
@@ -454,7 +470,7 @@
  <parameter name="projectName">de2_video_processor.qpf</parameter>
  <parameter name="sopcBorderPoints" value="false" />
  <parameter name="systemHash" value="1" />
- <parameter name="timeStamp" value="1458687592216" />
+ <parameter name="timeStamp" value="1458775484911" />
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
  <interface name="clk" internal="clk_0.clk_in" type="clock" dir="end" />
@@ -593,8 +609,8 @@
   <parameter name="tightlyCoupledInstructionMaster1AddrWidth" value="1" />
   <parameter name="tightlyCoupledInstructionMaster2AddrWidth" value="1" />
   <parameter name="tightlyCoupledInstructionMaster3AddrWidth" value="1" />
-  <parameter name="instSlaveMapParam"><![CDATA[<address-map><slave name='onchip_memory2_0.s1' start='0x404000' end='0x408000' /><slave name='nios2_qsys_0.jtag_debug_module' start='0x408800' end='0x409000' /><slave name='spi_0.spi_control_port' start='0x4092C0' end='0x4092E0' /><slave name='sdram_0.s1' start='0x800000' end='0x1000000' /><slave name='sram_0.avalon_sram_slave' start='0x1080000' end='0x1100000' /></address-map>]]></parameter>
-  <parameter name="dataSlaveMapParam"><![CDATA[<address-map><slave name='generic_tristate_controller_0.uas' start='0x0' end='0x400000' /><slave name='onchip_memory2_0.s1' start='0x404000' end='0x408000' /><slave name='nios2_qsys_0.jtag_debug_module' start='0x408800' end='0x409000' /><slave name='colour_palette_shifter_0.paletteram' start='0x409000' end='0x409200' /><slave name='ci_copy_rect_0.s0' start='0x409200' end='0x409240' /><slave name='sgdma_0.csr' start='0x409240' end='0x409280' /><slave name='ci_draw_circ_0.s0' start='0x4092A0' end='0x4092C0' /><slave name='spi_0.spi_control_port' start='0x4092C0' end='0x4092E0' /><slave name='ci_draw_line_0.s0' start='0x4092E0' end='0x409300' /><slave name='ci_draw_rect_0.s0' start='0x409300' end='0x409320' /><slave name='timer_0.s1' start='0x409320' end='0x409340' /><slave name='altpll_0.pll_slave' start='0x409340' end='0x409350' /><slave name='sysid_qsys_0.control_slave' start='0x409350' end='0x409358' /><slave name='jtag_uart_0.avalon_jtag_slave' start='0x409358' end='0x409360' /><slave name='video_fb_streamer_0.s0' start='0x409360' end='0x409364' /><slave name='genesis_0.s0' start='0x409364' end='0x409368' /><slave name='sdram_0.s1' start='0x800000' end='0x1000000' /><slave name='sram_0.avalon_sram_slave' start='0x1080000' end='0x1100000' /></address-map>]]></parameter>
+  <parameter name="instSlaveMapParam"><![CDATA[<address-map><slave name='onchip_memory2_0.s1' start='0x404000' end='0x408000' /><slave name='nios2_qsys_0.jtag_debug_module' start='0x408800' end='0x409000' /><slave name='spi_0.spi_control_port' start='0x4092E0' end='0x409300' /><slave name='sdram_0.s1' start='0x800000' end='0x1000000' /><slave name='sram_0.avalon_sram_slave' start='0x1080000' end='0x1100000' /></address-map>]]></parameter>
+  <parameter name="dataSlaveMapParam"><![CDATA[<address-map><slave name='generic_tristate_controller_0.uas' start='0x0' end='0x400000' /><slave name='onchip_memory2_0.s1' start='0x404000' end='0x408000' /><slave name='nios2_qsys_0.jtag_debug_module' start='0x408800' end='0x409000' /><slave name='colour_palette_shifter_0.paletteram' start='0x409000' end='0x409200' /><slave name='ci_copy_rect_0.s0' start='0x409200' end='0x409240' /><slave name='sgdma_0.csr' start='0x409240' end='0x409280' /><slave name='timer_timestamp.s1' start='0x4092A0' end='0x4092C0' /><slave name='ci_draw_circ_0.s0' start='0x4092C0' end='0x4092E0' /><slave name='spi_0.spi_control_port' start='0x4092E0' end='0x409300' /><slave name='ci_draw_line_0.s0' start='0x409300' end='0x409320' /><slave name='ci_draw_rect_0.s0' start='0x409320' end='0x409340' /><slave name='timer_0.s1' start='0x409340' end='0x409360' /><slave name='altpll_0.pll_slave' start='0x409360' end='0x409370' /><slave name='sysid_qsys_0.control_slave' start='0x409370' end='0x409378' /><slave name='jtag_uart_0.avalon_jtag_slave' start='0x409378' end='0x409380' /><slave name='video_fb_streamer_0.s0' start='0x409380' end='0x409384' /><slave name='genesis_0.s0' start='0x409384' end='0x409388' /><slave name='sdram_0.s1' start='0x800000' end='0x1000000' /><slave name='sram_0.avalon_sram_slave' start='0x1080000' end='0x1100000' /></address-map>]]></parameter>
   <parameter name="clockFrequency" value="75000000" />
   <parameter name="deviceFamilyName" value="Cyclone II" />
   <parameter name="internalIrqMaskSystemInfo" value="15" />
@@ -1226,6 +1242,22 @@
  <module kind="ci_copy_rect" version="1.0" enabled="1" name="ci_copy_rect_0">
   <parameter name="AUTO_CLOCK_CLOCK_RATE" value="75000000" />
  </module>
+ <module
+   kind="altera_avalon_timer"
+   version="12.1"
+   enabled="1"
+   name="timer_timestamp">
+  <parameter name="alwaysRun" value="false" />
+  <parameter name="counterSize" value="32" />
+  <parameter name="fixedPeriod" value="false" />
+  <parameter name="period" value="1" />
+  <parameter name="periodUnits" value="MSEC" />
+  <parameter name="resetOutput" value="false" />
+  <parameter name="snapshot" value="true" />
+  <parameter name="systemFrequency" value="75000000" />
+  <parameter name="timeoutPulseOutput" value="false" />
+  <parameter name="timerPreset" value="CUSTOM" />
+ </module>
  <connection
    kind="avalon"
    version="12.1"
@@ -1278,7 +1310,7 @@
    start="nios2_qsys_0.data_master"
    end="altpll_0.pll_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00409340" />
+  <parameter name="baseAddress" value="0x00409360" />
  </connection>
  <connection
    kind="clock"
@@ -1317,7 +1349,7 @@
    start="nios2_qsys_0.data_master"
    end="timer_0.s1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00409320" />
+  <parameter name="baseAddress" value="0x00409340" />
  </connection>
  <connection
    kind="avalon"
@@ -1376,7 +1408,7 @@
    start="nios2_qsys_0.data_master"
    end="jtag_uart_0.avalon_jtag_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00409358" />
+  <parameter name="baseAddress" value="0x00409378" />
  </connection>
  <connection
    kind="avalon"
@@ -1422,7 +1454,7 @@
    start="nios2_qsys_0.data_master"
    end="sysid_qsys_0.control_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00409350" />
+  <parameter name="baseAddress" value="0x00409370" />
  </connection>
  <connection
    kind="reset"
@@ -1673,7 +1705,7 @@
    start="nios2_qsys_0.data_master"
    end="genesis_0.s0">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00409364" />
+  <parameter name="baseAddress" value="0x00409384" />
  </connection>
  <connection
    kind="reset"
@@ -1810,7 +1842,7 @@
    start="nios2_qsys_0.data_master"
    end="ci_draw_rect_0.s0">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00409300" />
+  <parameter name="baseAddress" value="0x00409320" />
  </connection>
  <connection
    kind="avalon"
@@ -1850,7 +1882,7 @@
    start="nios2_qsys_0.data_master"
    end="ci_draw_line_0.s0">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x004092e0" />
+  <parameter name="baseAddress" value="0x00409300" />
  </connection>
  <connection
    kind="avalon"
@@ -1878,7 +1910,7 @@
    start="nios2_qsys_0.data_master"
    end="spi_0.spi_control_port">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x004092c0" />
+  <parameter name="baseAddress" value="0x004092e0" />
  </connection>
  <connection
    kind="avalon"
@@ -1886,7 +1918,7 @@
    start="nios2_qsys_0.instruction_master"
    end="spi_0.spi_control_port">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x004092c0" />
+  <parameter name="baseAddress" value="0x004092e0" />
  </connection>
  <connection
    kind="interrupt"
@@ -1996,7 +2028,7 @@
    start="nios2_qsys_0.data_master"
    end="ci_draw_circ_0.s0">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x004092a0" />
+  <parameter name="baseAddress" value="0x004092c0" />
  </connection>
  <connection
    kind="avalon"
@@ -2113,6 +2145,34 @@
    start="nios2_qsys_0.data_master"
    end="video_fb_streamer_0.s0">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00409360" />
+  <parameter name="baseAddress" value="0x00409380" />
  </connection>
+ <connection
+   kind="reset"
+   version="12.1"
+   start="clk_27M.clk_reset"
+   end="timer_timestamp.reset" />
+ <connection
+   kind="reset"
+   version="12.1"
+   start="nios2_qsys_0.jtag_debug_module_reset"
+   end="timer_timestamp.reset" />
+ <connection
+   kind="reset"
+   version="12.1"
+   start="clk_0.clk_reset"
+   end="timer_timestamp.reset" />
+ <connection
+   kind="avalon"
+   version="12.1"
+   start="nios2_qsys_0.data_master"
+   end="timer_timestamp.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x004092a0" />
+ </connection>
+ <connection
+   kind="clock"
+   version="12.1"
+   start="altpll_0.c1"
+   end="timer_timestamp.clk" />
 </system>

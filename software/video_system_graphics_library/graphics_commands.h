@@ -23,6 +23,8 @@ void graphics_clear_screen();
 
 void graphics_clear_buffer(pixbuf_t *pixbuf);
 
+void graphics_draw_triangle(pixbuf_t *pixbuf, int x1, int y1, int x2, int y2, int x3, int y3, int filled, int color);
+
 
 /* Fonts */
 extern char font8x8_block[][8];
