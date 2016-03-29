@@ -8,6 +8,7 @@
 #include <sys/alt_stdio.h>
 
 #define MAX_BALL_SPEED 20
+#define SCALE_FACTOR 16
 
 typedef struct Paddle{
 	int x;
@@ -24,13 +25,13 @@ typedef struct Ball{
 }Ball;
 
 Ball find_end_point(struct Ball my_ball, struct Paddle p1, struct Paddle p2){
-	int x_endleft = p1.x + 50;
-	int x_endright = p2.x - 50;
+	int x_endleft = p1.x + 5*SCALE_FACTOR;
+	int x_endright = p2.x - 5*SCALE_FACTOR;
 	int y_steps, x_steps, new_x, new_y;
 	if (my_ball.velocity_y < 0)
-		y_steps = (130 - my_ball.y) / my_ball.velocity_y;
+		y_steps = (13*SCALE_FACTOR - my_ball.y) / my_ball.velocity_y;
 	if (my_ball.velocity_y > 0)
-		y_steps = (4660 - my_ball.y) / my_ball.velocity_y;
+		y_steps = (466*SCALE_FACTOR - my_ball.y) / my_ball.velocity_y;
 	if (my_ball.velocity_x > 0)
 		x_steps = (x_endright - my_ball.x) / my_ball.velocity_x;
 	if (my_ball.velocity_x < 0)
@@ -69,9 +70,9 @@ int find_sign(int x)
 
 Ball reflect_ball(Paddle paddle, Ball ball)
 {
-	int delta = ball.y - paddle.y;
+	int delta = (ball.y - paddle.y)/16;
 
-	ball.velocity_y = delta * abs(ball.velocity_x) / 18;
+	ball.velocity_y = delta * abs(ball.velocity_x) / 10;//18 came from original height in pixels.
 
 	if (abs(ball.velocity_x) < MAX_BALL_SPEED)
 		ball.velocity_x = (abs(ball.velocity_x) + 1) * flip_sign(ball.velocity_x);

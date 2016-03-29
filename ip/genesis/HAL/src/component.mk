@@ -1,0 +1,3 @@
+C_LIB_SRCS += genesis.c
+ASM_LIB_SRCS +=
+INCLUDE_PATH += 

@@ -2,9 +2,15 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>hal</BspType>
         <BspVersion>default</BspVersion>
+<<<<<<< HEAD
         <BspGeneratedTimeStamp>Mar 23, 2016 6:42:28 PM</BspGeneratedTimeStamp>
         <BspGeneratedUnixTimeStamp>1458780148242</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>/home/stefan/CapstoneWork/de2-video-processor/software/video_system_bsp</BspGeneratedLocation>
+=======
+        <BspGeneratedTimeStamp>Mar 24, 2016 4:56:21 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1458860181913</BspGeneratedUnixTimeStamp>
+        <BspGeneratedLocation>/home/stephen/school/ECE492/de2-video-processor/software/video_system_bsp</BspGeneratedLocation>
+>>>>>>> 9b2eb429b40d62837c96c15c43e2dbbaef312420
         <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>../../de2_video_processor_system.sopcinfo</SopcDesignFile>
         <JdiFile>default</JdiFile>
@@ -839,6 +845,42 @@
                 <Group>none</Group>
         </Setting>
         <Setting>
+                <SettingName>altera_ro_zipfs.ro_zipfs_name</SettingName>
+                <Identifier>ALTERA_RO_ZIPFS_NAME</Identifier>
+                <Type>QuotedString</Type>
+                <Value>/mnt/rozipfs</Value>
+                <DefaultValue>/mnt/rozipfs</DefaultValue>
+                <DestinationFile>system_h_define</DestinationFile>
+                <Description>Mount point</Description>
+                <Restrictions>none</Restrictions>
+                <Enabled>false</Enabled>
+                <Group xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        </Setting>
+        <Setting>
+                <SettingName>altera_ro_zipfs.ro_zipfs_offset</SettingName>
+                <Identifier>ALTERA_RO_ZIPFS_OFFSET</Identifier>
+                <Type>HexNumber</Type>
+                <Value>0x100000</Value>
+                <DefaultValue>0x100000</DefaultValue>
+                <DestinationFile>system_h_define</DestinationFile>
+                <Description>Offset of file system from base of flash</Description>
+                <Restrictions>none</Restrictions>
+                <Enabled>false</Enabled>
+                <Group xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        </Setting>
+        <Setting>
+                <SettingName>altera_ro_zipfs.ro_zipfs_base</SettingName>
+                <Identifier>ALTERA_RO_ZIPFS_BASE</Identifier>
+                <Type>HexNumber</Type>
+                <Value>0x0</Value>
+                <DefaultValue>0x0</DefaultValue>
+                <DestinationFile>system_h_define</DestinationFile>
+                <Description>Base address of flash memory device</Description>
+                <Restrictions>none</Restrictions>
+                <Enabled>false</Enabled>
+                <Group xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        </Setting>
+        <Setting>
                 <SettingName>altera_avalon_jtag_uart_driver.enable_small_driver</SettingName>
                 <Identifier>ALTERA_AVALON_JTAG_UART_SMALL</Identifier>
                 <Type>BooleanDefineOnly</Type>
@@ -870,19 +912,24 @@
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>ci_copy_rect_0</slaveDescriptor>
-                <addressRange>0x00409200 - 0x0040923F</addressRange>
-                <addressSpan>64</addressSpan>
-                <attributes/>
-        </MemoryMap>
-        <MemoryMap>
-                <slaveDescriptor>sgdma_0</slaveDescriptor>
                 <addressRange>0x00409240 - 0x0040927F</addressRange>
                 <addressSpan>64</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
+                <slaveDescriptor>sgdma_0</slaveDescriptor>
+                <addressRange>0x00409280 - 0x004092BF</addressRange>
+                <addressSpan>64</addressSpan>
+                <attributes/>
+        </MemoryMap>
+        <MemoryMap>
+<<<<<<< HEAD
                 <slaveDescriptor>timer_timestamp</slaveDescriptor>
                 <addressRange>0x004092A0 - 0x004092BF</addressRange>
+=======
+                <slaveDescriptor>ci_draw_circ_0</slaveDescriptor>
+                <addressRange>0x004092E0 - 0x004092FF</addressRange>
+>>>>>>> 9b2eb429b40d62837c96c15c43e2dbbaef312420
                 <addressSpan>32</addressSpan>
                 <attributes>timer</attributes>
         </MemoryMap>
@@ -894,55 +941,91 @@
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>spi_0</slaveDescriptor>
+<<<<<<< HEAD
                 <addressRange>0x004092E0 - 0x004092FF</addressRange>
+=======
+                <addressRange>0x00409300 - 0x0040931F</addressRange>
+>>>>>>> 9b2eb429b40d62837c96c15c43e2dbbaef312420
                 <addressSpan>32</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>ci_draw_line_0</slaveDescriptor>
+<<<<<<< HEAD
                 <addressRange>0x00409300 - 0x0040931F</addressRange>
+=======
+                <addressRange>0x00409320 - 0x0040933F</addressRange>
+>>>>>>> 9b2eb429b40d62837c96c15c43e2dbbaef312420
                 <addressSpan>32</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>ci_draw_rect_0</slaveDescriptor>
+<<<<<<< HEAD
                 <addressRange>0x00409320 - 0x0040933F</addressRange>
+=======
+                <addressRange>0x00409340 - 0x0040935F</addressRange>
+>>>>>>> 9b2eb429b40d62837c96c15c43e2dbbaef312420
                 <addressSpan>32</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>timer_0</slaveDescriptor>
+<<<<<<< HEAD
                 <addressRange>0x00409340 - 0x0040935F</addressRange>
+=======
+                <addressRange>0x00409360 - 0x0040937F</addressRange>
+>>>>>>> 9b2eb429b40d62837c96c15c43e2dbbaef312420
                 <addressSpan>32</addressSpan>
                 <attributes>timer</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>altpll_0</slaveDescriptor>
+<<<<<<< HEAD
                 <addressRange>0x00409360 - 0x0040936F</addressRange>
+=======
+                <addressRange>0x00409380 - 0x0040938F</addressRange>
+>>>>>>> 9b2eb429b40d62837c96c15c43e2dbbaef312420
                 <addressSpan>16</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>sysid_qsys_0</slaveDescriptor>
+<<<<<<< HEAD
                 <addressRange>0x00409370 - 0x00409377</addressRange>
+=======
+                <addressRange>0x00409390 - 0x00409397</addressRange>
+>>>>>>> 9b2eb429b40d62837c96c15c43e2dbbaef312420
                 <addressSpan>8</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>jtag_uart_0</slaveDescriptor>
+<<<<<<< HEAD
                 <addressRange>0x00409378 - 0x0040937F</addressRange>
+=======
+                <addressRange>0x00409398 - 0x0040939F</addressRange>
+>>>>>>> 9b2eb429b40d62837c96c15c43e2dbbaef312420
                 <addressSpan>8</addressSpan>
                 <attributes>printable</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>video_fb_streamer_0</slaveDescriptor>
+<<<<<<< HEAD
                 <addressRange>0x00409380 - 0x00409383</addressRange>
+=======
+                <addressRange>0x004093A0 - 0x004093A3</addressRange>
+>>>>>>> 9b2eb429b40d62837c96c15c43e2dbbaef312420
                 <addressSpan>4</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>genesis_0</slaveDescriptor>
+<<<<<<< HEAD
                 <addressRange>0x00409384 - 0x00409387</addressRange>
+=======
+                <addressRange>0x004093A4 - 0x004093A7</addressRange>
+>>>>>>> 9b2eb429b40d62837c96c15c43e2dbbaef312420
                 <addressSpan>4</addressSpan>
                 <attributes/>
         </MemoryMap>
@@ -982,4 +1065,8 @@
                 <sectionName>.stack</sectionName>
                 <regionName>sdram_0</regionName>
         </LinkerSection>
+        <SoftwarePackageInfo>
+                <name>altera_ro_zipfs</name>
+                <version>default</version>
+        </SoftwarePackageInfo>
 </sch:Settings>
