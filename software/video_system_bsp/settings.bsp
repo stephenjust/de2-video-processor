@@ -2,9 +2,9 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>hal</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>Mar 29, 2016 4:18:37 PM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1459289917796</BspGeneratedUnixTimeStamp>
-        <BspGeneratedLocation>/home/stefan/CapstoneWork/de2-video-processor/software/video_system_bsp</BspGeneratedLocation>
+        <BspGeneratedTimeStamp>Mar 30, 2016 3:28:56 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1459373336109</BspGeneratedUnixTimeStamp>
+        <BspGeneratedLocation>/home/stephen/school/ECE492/de2-video-processor/software/video_system_bsp</BspGeneratedLocation>
         <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>../../de2_video_processor_system.sopcinfo</SopcDesignFile>
         <JdiFile>default</JdiFile>
@@ -839,6 +839,42 @@
                 <Group>none</Group>
         </Setting>
         <Setting>
+                <SettingName>altera_ro_zipfs.ro_zipfs_name</SettingName>
+                <Identifier>ALTERA_RO_ZIPFS_NAME</Identifier>
+                <Type>QuotedString</Type>
+                <Value>/mnt/rozipfs</Value>
+                <DefaultValue>/mnt/rozipfs</DefaultValue>
+                <DestinationFile>system_h_define</DestinationFile>
+                <Description>Mount point</Description>
+                <Restrictions>none</Restrictions>
+                <Enabled>false</Enabled>
+                <Group xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        </Setting>
+        <Setting>
+                <SettingName>altera_ro_zipfs.ro_zipfs_offset</SettingName>
+                <Identifier>ALTERA_RO_ZIPFS_OFFSET</Identifier>
+                <Type>HexNumber</Type>
+                <Value>0x100000</Value>
+                <DefaultValue>0x100000</DefaultValue>
+                <DestinationFile>system_h_define</DestinationFile>
+                <Description>Offset of file system from base of flash</Description>
+                <Restrictions>none</Restrictions>
+                <Enabled>false</Enabled>
+                <Group xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        </Setting>
+        <Setting>
+                <SettingName>altera_ro_zipfs.ro_zipfs_base</SettingName>
+                <Identifier>ALTERA_RO_ZIPFS_BASE</Identifier>
+                <Type>HexNumber</Type>
+                <Value>0x0</Value>
+                <DefaultValue>0x0</DefaultValue>
+                <DestinationFile>system_h_define</DestinationFile>
+                <Description>Base address of flash memory device</Description>
+                <Restrictions>none</Restrictions>
+                <Enabled>false</Enabled>
+                <Group xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        </Setting>
+        <Setting>
                 <SettingName>altera_avalon_jtag_uart_driver.enable_small_driver</SettingName>
                 <Identifier>ALTERA_AVALON_JTAG_UART_SMALL</Identifier>
                 <Type>BooleanDefineOnly</Type>
@@ -982,4 +1018,8 @@
                 <sectionName>.stack</sectionName>
                 <regionName>sdram_0</regionName>
         </LinkerSection>
+        <SoftwarePackageInfo>
+                <name>altera_ro_zipfs</name>
+                <version>default</version>
+        </SoftwarePackageInfo>
 </sch:Settings>
