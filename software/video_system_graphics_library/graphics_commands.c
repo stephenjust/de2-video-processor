@@ -336,8 +336,8 @@ void draw_letter(pixbuf_t *pixbuf, int y1, int x1, int color, int pixel_size, ch
     int x,y;
     int set;
     int mask;
-    for (x=0; x < 8; x++) { //++x might be faster?
-        for (y=0; y < 8; y++) { //++y might be faster??
+    for (x=0; x < 8; ++x) {
+        for (y=0; y < 8; ++y) {
             set = letter[x] & 1 << y;
             	if (set) {
             		if (pixel_size > 1) {
@@ -360,7 +360,7 @@ void print2screen(pixbuf_t *pixbuf, int x1, int y1, int color, int pixel_size, c
 
 	int i = 0;
 
-	int spacing = 1.5 * pixel_size;
+	int spacing = (3 * pixel_size) / 2;
 
 	while (string[i] != '\0'){
 		//printf("%c %d", string[i], (int)string[i]);
