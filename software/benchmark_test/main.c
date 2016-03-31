@@ -62,6 +62,21 @@ alt_u32 palette_switch_time(alt_u32 timer_overhead)
 	return time_end - time_start - timer_overhead;
 }
 
+alt_u32 draw_rectangle_software_time(alt_u32 timer_overhead)
+{
+	alt_u32 time_start, time_end;
+	time_start = alt_timestamp();
+	unsigned int i;
+	void *buffer = graphics_get_final_buffer()->base_address;
+	for (i = 0; i < 640 * 480; i += 4)
+	{
+		*((int *) buffer) = 0x00000000;
+		buffer += 4;
+	}
+	time_end = alt_timestamp();
+	return time_end - time_start - timer_overhead;
+}
+
 alt_u32 draw_rectangle_time(alt_u32 timer_overhead)
 {
 	alt_u32 time_start, time_end;
@@ -191,6 +206,14 @@ int main()
 
 	switch_palette(&palette_ega);
 
+	/* Draw Rectangle without acceleration, full screen */
+	printf("Time taken to draw rectangle without acceleration [ticks]: %u \n", draw_rectangle_software_time(timer_overhead));
+	printf("Time taken to draw rectangle without acceleration [ticks]: %u \n", draw_rectangle_software_time(timer_overhead));
+	printf("Time taken to draw rectangle without acceleration [ticks]: %u \n", draw_rectangle_software_time(timer_overhead));
+	printf("Time taken to draw rectangle without acceleration [ticks]: %u \n", draw_rectangle_software_time(timer_overhead));
+	printf("Time taken to draw rectangle without acceleration [ticks]: %u \n", draw_rectangle_software_time(timer_overhead));
+	printf("-----\n");
+
 	/* Draw Rectangle, full screen */
 	printf("Time taken to draw rectangle [ticks]: %u \n", draw_rectangle_time(timer_overhead));
 	printf("Time taken to draw rectangle [ticks]: %u \n", draw_rectangle_time(timer_overhead));
@@ -260,6 +283,7 @@ int main()
 	char error;
 	unsigned short layer_id = graphics_layer_add(&error);
 	pixbuf_t *layer = graphics_layer_get(layer_id, &error);
+	printf("Layer address: 0x08%x Main buffer address: 0x08%x\n", layer->base_address, graphics_get_final_buffer()->base_address);
 	printf("Time taken to perform a layer copy [ticks]: %u \n", layer_copy_time(layer, timer_overhead));
 	printf("Time taken to perform a layer copy [ticks]: %u \n", layer_copy_time(layer, timer_overhead));
 	printf("Time taken to perform a layer copy [ticks]: %u \n", layer_copy_time(layer, timer_overhead));
