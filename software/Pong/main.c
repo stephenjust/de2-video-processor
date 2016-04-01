@@ -354,10 +354,13 @@ int main()
 			if (toggle_raytracing){
 				graphics_draw_line(pixbuf, scale_input(ball.x), scale_input(ball.y),
 						scale_input(ball_prime.x), scale_input(ball_prime.y), 181);
-				graphics_draw_line(pixbuf, scale_input(ball_prime.x), scale_input(ball_prime.y),
-						scale_input(ball_doubleprime.x), scale_input(ball_doubleprime.y), 180);
-				graphics_draw_line(pixbuf, scale_input(ball_doubleprime.x), scale_input(ball_doubleprime.y),
-						scale_input(ball_tprime.x), scale_input(ball_tprime.y), 236);
+				if (ball.velocity_y != 0)
+				{
+					graphics_draw_line(pixbuf, scale_input(ball_prime.x), scale_input(ball_prime.y),
+							scale_input(ball_doubleprime.x), scale_input(ball_doubleprime.y), 180);
+					graphics_draw_line(pixbuf, scale_input(ball_doubleprime.x), scale_input(ball_doubleprime.y),
+							scale_input(ball_tprime.x), scale_input(ball_tprime.y), 236);
+				}
 			}
 
 

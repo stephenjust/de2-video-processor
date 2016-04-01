@@ -13,23 +13,33 @@
 Ball find_end_point(struct Ball my_ball, struct Paddle p1, struct Paddle p2){
 	int x_endleft = p1.x + 5*SCALE_FACTOR;
 	int x_endright = p2.x - 5*SCALE_FACTOR;
+	int y_top = 13*SCALE_FACTOR;
+	int y_bottom = 466*SCALE_FACTOR;
 	int y_steps, x_steps, new_x, new_y;
-	if (my_ball.velocity_y < 0)
-		y_steps = (13*SCALE_FACTOR - my_ball.y) / my_ball.velocity_y;
-	if (my_ball.velocity_y > 0)
-		y_steps = (466*SCALE_FACTOR - my_ball.y) / my_ball.velocity_y;
+
+	if (my_ball.velocity_y < 0) {
+		y_steps = (y_top - my_ball.y) / my_ball.velocity_y;
+	} else if (my_ball.velocity_y > 0) {
+		y_steps = (y_bottom - my_ball.y) / my_ball.velocity_y;
+	} else {
+		y_steps = 0;
+	}
+
 	if (my_ball.velocity_x > 0)
 		x_steps = (x_endright - my_ball.x) / my_ball.velocity_x;
-	if (my_ball.velocity_x < 0)
+	else if (my_ball.velocity_x < 0)
 		x_steps = (x_endleft - my_ball.x) / my_ball.velocity_x;
-	if (x_steps > y_steps){
+
+	if (x_steps > y_steps && y_steps != 0)
+	{
 		new_y = y_steps*my_ball.velocity_y + my_ball.y;
 		new_x = y_steps*my_ball.velocity_x + my_ball.x;
 		Ball ball = {.y = new_y, .x = new_x,
 				.velocity_x = my_ball.velocity_x, .velocity_y = my_ball.velocity_y*-1};
 		return ball;
 	}
-	else {
+	else
+	{
 		new_y = x_steps*my_ball.velocity_y + my_ball.y;
 		new_x = x_steps*my_ball.velocity_x + my_ball.x;
 		Ball ball = {.y = new_y, .x = new_x,
