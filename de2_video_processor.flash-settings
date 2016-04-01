@@ -11,7 +11,7 @@
       <string>/opt/altera/12.1sp1/nios2eds/components/altera_nios2/boot_loader_cfi.srec</string> 
      </void> 
      <void property="cpuResetAddress"> 
-      <string>0x404000</string> 
+      <string>0x0</string> 
      </void> 
      <void property="endAddress"> 
       <string>0x400000</string> 
@@ -25,10 +25,40 @@
       </object> 
      </void> 
      <void property="filename"> 
-      <string>/home/stephen/school/ECE492/de2-video-processor/software/de2_video_processor/de2_video_processor.elf</string> 
+      <string>/home/stephen/school/ECE492/de2-video-processor/software/Pong/Pong.elf</string> 
      </void> 
      <void property="memoryName"> 
       <string>generic_tristate_controller_0</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="com.altera.embeddedsw.flash.model.internal.FileModel"> 
+     <void property="baseAddress"> 
+      <string>0x0</string> 
+     </void> 
+     <void property="cpuResetAddress"> 
+      <string>0x0</string> 
+     </void> 
+     <void property="endAddress"> 
+      <string>0x400000</string> 
+     </void> 
+     <void property="extraArgs"> 
+      <string></string> 
+     </void> 
+     <void property="fileType"> 
+      <object class="com.altera.embeddedsw.flash.model.IMemoryFilesModel$FileType" method="valueOf"> 
+       <string>BINARY</string> 
+      </object> 
+     </void> 
+     <void property="filename"> 
+      <string>/home/stephen/school/ECE492/de2-video-processor/data.zip</string> 
+     </void> 
+     <void property="memoryName"> 
+      <string>generic_tristate_controller_0</string> 
+     </void> 
+     <void property="memoryOffset"> 
+      <string>0x100000</string> 
      </void> 
     </object> 
    </void> 
@@ -76,7 +106,7 @@
    </void> 
    <void method="put"> 
     <string>runFromResetEnabled</string> 
-    <string>false</string> 
+    <string>true</string> 
    </void> 
    <void method="put"> 
     <string>acceptBadSysId</string> 
@@ -88,7 +118,7 @@
    </void> 
    <void method="put"> 
     <string>processorCableName</string> 
-    <string>USB-Blaster on localhost [2-3.2]</string> 
+    <string>USB-Blaster on localhost [1-3]</string> 
    </void> 
    <void method="put"> 
     <string>processorDeviceIndex</string> 
