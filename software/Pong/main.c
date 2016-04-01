@@ -336,11 +336,6 @@ int main()
 			ball.x = ball.x + ball_speed*ball.velocity_x;
 			ball.y = ball.y + ball_speed*ball.velocity_y;
 
-			/* Determine next 2 ball locations */
-			Ball ball_prime = find_end_point(ball, paddle1, paddle2);
-			Ball ball_doubleprime = find_end_point(ball_prime, paddle1, paddle2);
-			Ball ball_tprime = find_end_point(ball_doubleprime, paddle1, paddle2);
-
 			/*Draw Everything*/
 			//draw_field(pixbuf);
 
@@ -352,6 +347,11 @@ int main()
 
 			/* Draw markers to determine where ball is going */
 			if (toggle_raytracing){
+				/* Determine next ball locations */
+				Ball ball_prime = find_end_point(ball, paddle1, paddle2);
+				Ball ball_doubleprime = find_end_point(ball_prime, paddle1, paddle2);
+				Ball ball_tprime = find_end_point(ball_doubleprime, paddle1, paddle2);
+
 				graphics_draw_line(pixbuf, scale_input(ball.x), scale_input(ball.y),
 						scale_input(ball_prime.x), scale_input(ball_prime.y), 181);
 				if (ball.velocity_y != 0)
