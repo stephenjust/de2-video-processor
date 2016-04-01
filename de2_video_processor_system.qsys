@@ -228,11 +228,11 @@
          type = "String";
       }
    }
-   element genesis_0.s0
+   element ci_copy_rect_0.s0
    {
       datum baseAddress
       {
-         value = "4232068";
+         value = "4231680";
          type = "String";
       }
    }
@@ -244,19 +244,11 @@
          type = "String";
       }
    }
-   element ci_copy_rect_0.s0
+   element ci_draw_circ_0.s0
    {
       datum baseAddress
       {
-         value = "4231680";
-         type = "String";
-      }
-   }
-   element ci_draw_rect_0.s0
-   {
-      datum baseAddress
-      {
-         value = "4231968";
+         value = "4231872";
          type = "String";
       }
    }
@@ -268,11 +260,19 @@
          type = "String";
       }
    }
-   element ci_draw_circ_0.s0
+   element ci_draw_rect_0.s0
    {
       datum baseAddress
       {
-         value = "4231872";
+         value = "4231968";
+         type = "String";
+      }
+   }
+   element genesis_0.s0
+   {
+      datum baseAddress
+      {
+         value = "4232068";
          type = "String";
       }
    }
@@ -281,14 +281,6 @@
       datum baseAddress
       {
          value = "4231840";
-         type = "String";
-      }
-   }
-   element onchip_memory2_0.s1
-   {
-      datum baseAddress
-      {
-         value = "4210688";
          type = "String";
       }
    }
@@ -302,6 +294,14 @@
       datum baseAddress
       {
          value = "8388608";
+         type = "String";
+      }
+   }
+   element onchip_memory2_0.s1
+   {
+      datum baseAddress
+      {
+         value = "4210688";
          type = "String";
       }
    }
@@ -470,7 +470,7 @@
  <parameter name="projectName">de2_video_processor.qpf</parameter>
  <parameter name="sopcBorderPoints" value="false" />
  <parameter name="systemHash" value="1" />
- <parameter name="timeStamp" value="1459280234022" />
+ <parameter name="timeStamp" value="1459549533851" />
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
  <interface name="clk" internal="clk_0.clk_in" type="clock" dir="end" />
@@ -568,7 +568,7 @@
   <parameter name="cpuID_stored" value="0" />
   <parameter name="breakOffset" value="32" />
   <parameter name="userDefinedSettings" value="" />
-  <parameter name="resetSlave" value="onchip_memory2_0.s1" />
+  <parameter name="resetSlave">generic_tristate_controller_0.uas</parameter>
   <parameter name="mmu_TLBMissExcSlave" value="" />
   <parameter name="exceptionSlave" value="onchip_memory2_0.s1" />
   <parameter name="breakSlave">nios2_qsys_0.jtag_debug_module</parameter>
