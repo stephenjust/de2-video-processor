@@ -112,7 +112,7 @@ architecture structure of de2_video_processor is
 		video_vga_controller_0_external_interface_R     : out   std_logic_vector(9 downto 0);                     -- R
 		video_vga_controller_0_external_interface_G     : out   std_logic_vector(9 downto 0);                     -- G
 		video_vga_controller_0_external_interface_B     : out   std_logic_vector(9 downto 0);                     -- B
-		genesis_0_conduit_end_vsync                     : in    std_logic                     := 'X';             -- vsync
+		genesis_0_conduit_end_trigger                   : in    std_logic                     := 'X';             -- vsync
 		genesis_0_conduit_end_dpad_up_input1            : in    std_logic                     := 'X';             -- dpad_up_input1
 		genesis_0_conduit_end_dpad_down_input1          : in    std_logic                     := 'X';             -- dpad_down_input1
 		genesis_0_conduit_end_dpad_left_input1          : in    std_logic                     := 'X';             -- dpad_left_input1
@@ -181,7 +181,7 @@ begin
 		video_vga_controller_0_external_interface_R     => VGA_R,     --                                          .R
 		video_vga_controller_0_external_interface_G     => VGA_G,     --                                          .G
 		video_vga_controller_0_external_interface_B     => VGA_B,     --                                          .B
-		genesis_0_conduit_end_vsync                     => VGA_VS,                -- Might want to do VGA_CLK instead, 
+		genesis_0_conduit_end_trigger                   => VGA_VS,                -- Might want to do VGA_CLK instead, 
 		genesis_0_conduit_end_dpad_up_input1            => GPIO_1(35),            --                                          .dpad_up_input1
 		genesis_0_conduit_end_dpad_down_input1          => GPIO_1(31),            --                                          .dpad_down_input1
 		genesis_0_conduit_end_dpad_left_input1          => GPIO_1(27),            --                                          .dpad_left_input1

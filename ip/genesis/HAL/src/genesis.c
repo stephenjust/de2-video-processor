@@ -47,13 +47,13 @@ genesis_dev_t *genesis_open_dev(const char *name)
  * Get the value of a genesis controller
  *
  * Arguments:
- *     player: 1 or 2
+ *     player: GENESIS_PLAYER_1 or GENESIS_PLAYER_2
  */
 genesis_controller_t genesis_get(unsigned char player)
 {
 	genesis_controller_t state = {};
 	unsigned int controller_value = IORD_32DIRECT(device_pointer->base, 0);
-	if (player == 1)
+	if (player == GENESIS_PLAYER_1)
 	{
 		state.up    = !!(controller_value & (1 << PLAYER1_UP_SHIFT));
 		state.down  = !!(controller_value & (1 << PLAYER1_DOWN_SHIFT));
@@ -64,7 +64,7 @@ genesis_controller_t genesis_get(unsigned char player)
 		state.c     = !!(controller_value & (1 << PLAYER1_C_SHIFT));
 		state.start = !!(controller_value & (1 << PLAYER1_START_SHIFT));
 	}
-	else if (player == 2)
+	else if (player == GENESIS_PLAYER_2)
 	{
 		state.up    = !!(controller_value & (1 << PLAYER2_UP_SHIFT));
 		state.down  = !!(controller_value & (1 << PLAYER2_DOWN_SHIFT));

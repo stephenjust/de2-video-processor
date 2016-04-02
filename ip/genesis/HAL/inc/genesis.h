@@ -13,6 +13,9 @@ extern "C"
 {
 #endif /* __cplusplus */
 
+#define GENESIS_PLAYER_1 1
+#define GENESIS_PLAYER_2 2
+
 typedef struct genesis_dev_t
 {
 	alt_dev dev;
