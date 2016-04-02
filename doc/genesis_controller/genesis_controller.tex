@@ -2,7 +2,7 @@
 
 % Document Info
 \title{Sega Genesis Controller Interfacing}
-\date{2016-03-13}
+\date{2016-04-02}
 \author{Mason Strong, Stephen Just}
 
 \usepackage{cite}
@@ -61,7 +61,7 @@ While the controller was designed for +5 Volts for power, because of its simple
 design, it is possible to determine that it is actually capable of 2 - 6 Volts.
 This is possible because the controller only contains a single 74HC157
 multiplexer chip inside, whose datasheet specifies that the device is operable
-within that range, with varying delay times.\cite{TC74HC157AP}
+within that range albeit with varying delay times.\cite{TC74HC157AP}
 
 In order to read the buttons on a controller, the master device should apply
 a logic high or low to the select pin of the controller, and then query the
@@ -85,14 +85,23 @@ three times in quick succession. If you want your application to tolerate six-
 button controllers, take care not to do this. The six-button controllers should
 not go in to this mode if you only toggle the select line once per frame.
 This appnote targets the standard three-button genesis controllers and 
-corresponding protocol.
+corresponding protocol, and the supplied code examples have only been verified
+to handle three-button controllers.
 
-\section{Project Setup}
+To simplify the example project, there is a simple process in the supplied VHDL
+top-level file to generate a pulse every 50ms to trigger the Genesis controller
+block, as opposed to connecting the block to a VSync signal.
+
+\section{System Requirements}
+
+\subsection{Hardware}
+
 Ensure that you are in possession of a three-button genesis controller, and a 
 corresponding adapter board to interface the DB9 connector with the appropriate 
-GPIO pins on the DE2. Should an adapter board be unavailable, a 40-pin ribbon 
-cable breadboarded with a male DB9 connector according to the pinout described 
-in Figure~\ref{fig:schematic}.
+GPIO pins on the DE2. Should an adapter board be unavailable, a 40-pin header 
+can be connected to two male DB9 connectors on a breadboard using the pinout
+described by the schematic in Figure~\ref{fig:schematic}. Then, you can use a
+ribbon cable to connect your breadboard to your DE2.
 
 \begin{figure}[h]
   \centering
@@ -101,72 +110,26 @@ in Figure~\ref{fig:schematic}.
   \label{fig:schematic}
 \end{figure}
 
-In a typical video game system, you might want to trigger the Genesis controller
-from a 60Hz pulse, such as a video VSync signal. However, to simplify this demo,
-there is a simple process in the VHDL top-level file to generate a pulse
-every 50ms to trigger the Genesis controller block.
+An Eagle project with a custom PCB design is included in
+\texttt{pcb\_design.tar.gz}, found with this document.
 
 \subsection{Qsys}
 
-In order to use a genesis controller, a custom component must be created in
-Qsys. This component is provided in the companion code to this application note,
-found in the \texttt{ip} directory. The following instructions detail how you
-might recreate this block, and set up a Qsys system to use it. The provided demo
-system is set up slightly differently, to use LEDs as an output.
+In order to interface with Genesis controllers, you may use the Qsys-compatible
+IP Core supplied with the example code in the \texttt{ip} directory. This IP
+core is also available standalone in the \texttt{genesis\_ipcore.tar.gz} archive
+supplied with this document.
 
-\begin{enumerate}
-  \item Name the component \texttt{genesis}
-  \item Provide \texttt{custom\_controller.vhd} as the synthesis file
-  \item Setup the signals as shown below in figure~\ref{fig:qsys_signals}:
+With the Genesis IP Core included in your project, you can connect it to your
+Qsys system. Figure~\ref{fig:qsys_system} shows how the Genesis Controller
+Interface can be connected to your system.
 
-    \begin{figure}[h]
-      \centering
-      \includegraphics[width=7cm]{fig1}
-      \caption{Genesis Component Signals}
-      \label{fig:qsys_signals}
-    \end{figure}
-
-  \item Configure the component interfaces as in figures
-    \ref{fig:qsys_signals2}, \ref{fig:qsys_signals3}, and
-    \ref{fig:qsys_signals4}:
-
-    \begin{figure}[h!]
-      \centering
-      \includegraphics[width=10cm]{fig2}
-      \caption{Genesis Component Clock and Reset Configuration}
-      \label{fig:qsys_signals2}
-    \end{figure}
-
-    \begin{figure}[h!]
-      \centering
-      \includegraphics[width=10cm]{fig3}
-      \caption{Genesis Component MM Slave Configuration}
-      \label{fig:qsys_signals3}
-    \end{figure}
-
-    \begin{figure}[h!]
-      \centering
-      \includegraphics[width=10cm]{fig4}
-      \caption{Genesis Component Conduit Configuration}
-      \label{fig:qsys_signals4}
-    \end{figure}
-
-  \item Add the custom component to your system. Connect \texttt{clock},
-    \texttt{s0}, and \texttt{reset} appropriately.
-    Ensure that \texttt{conduit\_end} is exported properly. An example of this
-    configuration is shown in figure~\ref{fig:qsys_signals5}.
-
-    \begin{figure}[h]
-      \centering
-      \includegraphics[width=10cm]{fig5}
-      \caption{Genesis Component Qsys Connections}
-      \label{fig:qsys_signals5}
-    \end{figure}
-
-
-  \item Regenerate base addresses in the event of conflicts.
-
-\end{enumerate}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{qsys_system}
+  \caption{Qsys System Connections}
+  \label{fig:qsys_system}
+\end{figure}
 
 \subsection{Quartus}
 
@@ -175,9 +138,83 @@ our system, we used \texttt{GPIO\_1}. To ensure correct controller behaviour,
 the GPIO connector should be configured as high-impedance by default, as is
 shown in Listing~\ref{lst:tl_port}.
 
-\begin{lstlisting}[language={vhdl},caption={Entity Port for Genesis Controllers},label={lst:tl_port}]
-  VGA_VS : buffer std_logic;
-  GPIO_1 : inout std_logic_vector (35 downto 0) := (others => 'Z');
+As well, the FPGA's internal weak pull-up resistors should be enabled to ensure
+that the inputs are not floating when controllers are not plugged in to the
+system. This can be done by adding the lines in Listing~\ref{lst:qsf_pullup} to
+your project's QSF file.
+
+\noindent\begin{minipage}{\textwidth}
+\begin{lstlisting}[language={vhdl},caption={Entity for Top-Level},label={lst:tl_port}]
+entity genesis_demo is
+	port
+	(
+		-- Clocks
+		CLOCK_50     : in       std_logic;
+
+		-- SDRAM on board
+		DRAM_ADDR    : out      std_logic_vector (11 downto 0);
+		DRAM_BA_0    : out      std_logic;
+		DRAM_BA_1    : out      std_logic;
+		DRAM_CAS_N   : out      std_logic;
+		DRAM_CKE     : out      std_logic;
+		DRAM_CLK     : out      std_logic;
+		DRAM_CS_N    : out      std_logic;
+		DRAM_DQ      : inout    std_logic_vector (15 downto 0);
+		DRAM_LDQM    : out      std_logic;
+		DRAM_UDQM    : out      std_logic;
+		DRAM_RAS_N   : out      std_logic;
+		DRAM_WE_N    : out      std_logic;
+
+		-- Input switches and buttons
+		KEY           : in       std_logic_vector (3 downto 0);
+
+		-- Indicator LEDs
+		LEDR         : out      std_logic_vector (17 downto 0);
+
+		-- GPIO Port 1
+		GPIO_1 : inout std_logic_vector (35 downto 0) := (others => 'Z')
+	);
+end genesis_demo;
+\end{lstlisting}
+\end{minipage}
+
+\begin{lstlisting}[language={tcl},caption={Commands to Enable GPIO Pull-Up Resistors},label={lst:qsf_pullup}]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_1[0]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_1[1]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_1[2]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_1[3]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_1[4]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_1[5]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_1[6]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_1[7]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_1[8]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_1[9]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_1[10]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_1[11]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_1[12]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_1[13]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_1[14]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_1[15]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_1[16]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_1[17]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_1[18]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_1[19]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_1[20]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_1[21]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_1[22]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_1[23]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_1[24]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_1[25]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_1[26]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_1[27]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_1[28]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_1[29]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_1[30]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_1[31]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_1[32]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_1[33]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_1[34]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_1[35]
 \end{lstlisting}
 
 The Qsys system containing the Genesis controller interface component includes
@@ -185,21 +222,21 @@ the ports similar to the ones shown in Listing~\ref{lst:comp_port} within its
 component declaration.
 
 \begin{lstlisting}[language={vhdl},caption={Qsys System Ports for Genesis Controller},label={lst:comp_port}]
-  genesis_0_conduit_end_vsync  : in    std_logic  := 'X';             -- trigger signal, usually vsync
-  genesis_0_conduit_end_dpad_up_input1            : in    std_logic  := 'X';             -- dpad_up_input1
-  genesis_0_conduit_end_dpad_down_input1          : in    std_logic  := 'X';             -- dpad_down_input1
-  genesis_0_conduit_end_dpad_left_input1          : in    std_logic  := 'X';             -- dpad_left_input1
-  genesis_0_conduit_end_dpad_right_input1         : in    std_logic  := 'X';             -- dpad_right_input1
-  genesis_0_conduit_end_select_input1             : out   std_logic;                     -- select_input1
-  genesis_0_conduit_end_start_c_input1            : in    std_logic  := 'X';             -- start_c_input1
-  genesis_0_conduit_end_ab_input1                 : in    std_logic  := 'X';             -- ab_input1
-  genesis_0_conduit_end_dpad_up_input2            : in    std_logic  := 'X';             -- dpad_up_input2
-  genesis_0_conduit_end_dpad_down_input2          : in    std_logic  := 'X';             -- dpad_down_input2
-  genesis_0_conduit_end_dpad_left_input2          : in    std_logic  := 'X';             -- dpad_left_input2
-  genesis_0_conduit_end_dpad_right_input2         : in    std_logic  := 'X';             -- dpad_right_input2
-  genesis_0_conduit_end_select_input2             : out   std_logic;                     -- select_input2
-  genesis_0_conduit_end_start_c_input2            : in    std_logic  := 'X';             -- start_c_input2
-  genesis_0_conduit_end_ab_input2                 : in    std_logic  := 'X';             -- ab_input2
+genesis_0_trigger                   : in    std_logic   := 'X';
+genesis_0_dpad_up_input1            : in    std_logic   := 'X';
+genesis_0_dpad_down_input1          : in    std_logic   := 'X';
+genesis_0_dpad_left_input1          : in    std_logic   := 'X';
+genesis_0_dpad_right_input1         : in    std_logic   := 'X';
+genesis_0_select_input1             : out   std_logic;
+genesis_0_start_c_input1            : in    std_logic  := 'X';
+genesis_0_ab_input1                 : in    std_logic  := 'X';
+genesis_0_dpad_up_input2            : in    std_logic  := 'X';
+genesis_0_dpad_down_input2          : in    std_logic  := 'X';
+genesis_0_dpad_left_input2          : in    std_logic  := 'X';
+genesis_0_dpad_right_input2         : in    std_logic  := 'X';
+genesis_0_select_input2             : out   std_logic;
+genesis_0_start_c_input2            : in    std_logic  := 'X';
+genesis_0_ab_input2                 : in    std_logic  := 'X';
 \end{lstlisting}
 
 The instance of the Qsys system defines which pins on the DE2's GPIO header are
@@ -207,93 +244,110 @@ connected to the pins on the Genesis controllers. The configuration used for our
 interface PCB is shown in Listing~\ref{lst:port_map}.
 
 \begin{lstlisting}[language={vhdl},caption={Port Map Configuration},label={lst:port_map}]
-  video_vga_controller_0_external_interface_VS => VGA_VS,
-  genesis_0_conduit_end_vsync  => genesis_trigger,
-  genesis_0_conduit_end_dpad_up_input1            => GPIO_1(9),
-  genesis_0_conduit_end_dpad_down_input1          => GPIO_1(13),
-  genesis_0_conduit_end_dpad_left_input1          => GPIO_1(17),
-  genesis_0_conduit_end_dpad_right_input1         => GPIO_1(19),
-  genesis_0_conduit_end_select_input1             => GPIO_1(15),
-  genesis_0_conduit_end_start_c_input1            => GPIO_1(21),
-  genesis_0_conduit_end_ab_input1                 => GPIO_1(11),
-  genesis_0_conduit_end_dpad_up_input2            => GPIO_1(23),
-  genesis_0_conduit_end_dpad_down_input2          => GPIO_1(27),
-  genesis_0_conduit_end_dpad_left_input2          => GPIO_1(31),
-  genesis_0_conduit_end_dpad_right_input2         => GPIO_1(33),
-  genesis_0_conduit_end_select_input2             => GPIO_1(29),
-  genesis_0_conduit_end_start_c_input2            => GPIO_1(35),
-  genesis_0_conduit_end_ab_input2                 => GPIO_1(25),
+genesis_0_trigger                       => genesis_poll_trigger,
+genesis_0_dpad_up_input1                => GPIO_1(35),
+genesis_0_dpad_down_input1              => GPIO_1(31),
+genesis_0_dpad_left_input1              => GPIO_1(27),
+genesis_0_dpad_right_input1             => GPIO_1(25),
+genesis_0_select_input1                 => GPIO_1(29),
+genesis_0_start_c_input1                => GPIO_1(23),
+genesis_0_ab_input1                     => GPIO_1(33),
+genesis_0_dpad_up_input2                => GPIO_1(13),
+genesis_0_dpad_down_input2              => GPIO_1(9),
+genesis_0_dpad_left_input2              => GPIO_1(5),
+genesis_0_dpad_right_input2             => GPIO_1(3),
+genesis_0_select_input2                 => GPIO_1(7),
+genesis_0_start_c_input2                => GPIO_1(1),
+genesis_0_ab_input2                     => GPIO_1(11),
 \end{lstlisting}
 
-Compile the project to ensure it is working. 
+\subsection{Nios II SBT}
 
-\subsection{Eclipse}
-
-A sample workspace is included in the companion code to read the Genesis
+A sample project is included in the companion code to read the Genesis
 controllers connected to the system, and output to the red LEDs on the DE2.
 This is located in the \texttt{software} directory of the companion code
-package.
+package. Import the project and its BSP into a new workspace.
 
-\section{Reading from the Controllers}
+\section{C Driver API}
 
-The current state for each button for either controller is stored 
-in a 32-bit value, with 16 of those bits corresponding to a button 
-on either controller. By reading the memory at \texttt{GENESIS\_0\_BASE}, 
-one can examine a particular bit to determine which button is being 
-pressed. The code below illustrates this simply: 
+A driver is provided with the Genesis IP Core. To make use of this driver,
+include \texttt{genesis.h} into your project. \texttt{genesis.h} is
+automatically added to your BSP when you include the Genesis IP Core in your
+system. Listing~\ref{lst:c_example} provides an example of how you might read
+the state of two Genesis controllers in software.
 
-\begin{lstlisting}[language={c},tabsize=2,caption={Reading Genesis Controller State}]
-	  int genesis_value = IORD_32DIRECT(GENESIS_0_BASE, 0);
+\begin{lstlisting}[language=c,tabsize=2,caption={Reading Genesis Controller Example},label={lst:c_example}]
+#include <stdio.h>
+#include <system.h>
+#include <genesis.h>
 
-	  if ((genesis_value)& (1 << 0)){
-		  printf("1 Up was pressed\n");
-	  }
-	  if ((genesis_value)& (1 << 1)){
-		  printf("1 Down was pressed\n");
-	  }
-	  if ((genesis_value)& (1 << 2)){
-		  printf("1 Left was pressed\n");
-	  }
-	  if ((genesis_value)& (1 << 3)){
-		  printf("1 Right was pressed\n");
-	  }
-	  if ((genesis_value)& (1 << 4)){
-		  printf("1 A was pressed\n");
-	  }
-	  if ((genesis_value)& (1 << 5)){
-		  printf("1 B was pressed\n");
-	  }
-	  if ((genesis_value)& (1 << 6)){
-		  printf("1 C was pressed\n");
-	  }
-	  if ((genesis_value)& (1 << 7)){
-		  printf("1 Start was pressed\n");
-	  }
+int main(void)
+{
+	// Initialize the Genesis controller interface
+	genesis_open_dev(GENESIS_0_NAME);
 
-	  if ((genesis_value)& (1 << 10)){
-		  printf("2 Up was pressed\n");
-	  }
-	  if ((genesis_value)& (1 << 11)){
-		  printf("2 Down was pressed\n");
-	  }
-	  if ((genesis_value)& (1 << 12)){
-		  printf("2 Left was pressed\n");
-	  }
-	  if ((genesis_value)& (1 << 13)){
-		  printf("2 Right was pressed\n");
-	  }
-	  if ((genesis_value)& (1 << 14)){
-		  printf("2 A was pressed\n");
-	  }
-	  if ((genesis_value)& (1 << 15)){
-		  printf("2 B was pressed\n");
-	  }
-	  if ((genesis_value)& (1 << 16)){
-		  printf("2 C was pressed\n");
-	  }
-	  if ((genesis_value)& (1 << 17)){
-		  printf("2 Start was pressed\n");
-	  }
+	genesis_controller_t player1, player2;
+	while (1)
+	{
+		// Poll the status of each Genesis controller
+		player1 = genesis_get(GENESIS_PLAYER_1);
+		player2 = genesis_get(GENESIS_PLAYER_2);
+
+		// Check which buttons are pressed on controller 1
+		if (player1.up){
+			printf("1 Up was pressed\n");
+		}
+		if (player1.down){
+			printf("1 Down was pressed\n");
+		}
+		if (player1.left){
+			printf("1 Left was pressed\n");
+		}
+		if (player1.right){
+			printf("1 Right was pressed\n");
+		}
+		if (player1.a){
+			printf("1 A was pressed\n");
+		}
+		if (player1.b){
+			printf("1 B was pressed\n");
+		}
+		if (player1.c){
+			printf("1 C was pressed\n");
+		}
+		if (player1.start){
+			printf("1 Start was pressed\n");
+		}
+
+		// Check which buttons are pressed on controller 2
+		if (player2.up){
+			printf("2 Up was pressed\n");
+		}
+		if (player2.down){
+			printf("2 Down was pressed\n");
+		}
+		if (player2.left){
+			printf("2 Left was pressed\n");
+		}
+		if (player2.right){
+			printf("2 Right was pressed\n");
+		}
+		if (player2.a){
+			printf("2 A was pressed\n");
+		}
+		if (player2.b){
+			printf("2 B was pressed\n");
+		}
+		if (player2.c){
+			printf("2 C was pressed\n");
+		}
+		if (player2.start){
+			printf("2 Start was pressed\n");
+		}
+    }
+
+	return 0;
+}
 \end{lstlisting}
 
 \newpage

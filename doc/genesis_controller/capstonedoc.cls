@@ -29,6 +29,7 @@
   escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
   keywordstyle=\color{blue},       % keyword style
   stringstyle=\color{mymauve},     % string literal style
+  frame=single,                    % draw a border around listing
 }
 
 % Macro to generate title page header
