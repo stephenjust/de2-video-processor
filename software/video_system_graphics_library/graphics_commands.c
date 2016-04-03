@@ -10,13 +10,13 @@
 void *graphics_sdram_backbuffer;
 static pixbuf_t sdram_backbuffer;
 
-static int min(int a, int b)
+static inline int min(int a, int b)
 {
 	if (a < b) return a;
 	else return b;
 }
 
-static int max(int a, int b)
+static inline int max(int a, int b)
 {
 	if (a > b) return a;
 	else return b;
@@ -24,13 +24,13 @@ static int max(int a, int b)
 
 char graphics_init()
 {
-	sdram_backbuffer.base_address = alt_uncached_malloc(FRAME_WIDTH * FRAME_HEIGHT);
+	sdram_backbuffer.base_address = (void *) alt_uncached_malloc(FRAME_WIDTH * FRAME_HEIGHT);
 	sdram_backbuffer.width = FRAME_WIDTH;
 	sdram_backbuffer.height = FRAME_HEIGHT;
 	if (sdram_backbuffer.base_address == 0) {
 		return -E_NOMEM;
 	} else {
-		IOWR_32DIRECT(VIDEO_FB_STREAMER_0_BASE, 0, sdram_backbuffer.base_address);
+		IOWR_32DIRECT(VIDEO_FB_STREAMER_0_BASE, 0, (int) sdram_backbuffer.base_address);
 		graphics_sdram_backbuffer = sdram_backbuffer.base_address; // FIXME: Remove this
 		return E_SUCCESS;
 	}
